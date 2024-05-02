@@ -12,6 +12,7 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_compl
 import multiprocessing as mp
 from threading import Lock
 import subprocess
+import itertools
 
 
 
@@ -26,6 +27,7 @@ parser.add_argument("input_directory", type=str, help="The input directory")
 parser.add_argument("-o", "--output-dir", type=str, help="The output directory, default is 'out/<input_directory>_minced_<timestamp>' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory instead into the 'out' directory of the current working directory")
 parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count(), dest="num_cpus")
+parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
 args = parser.parse_args()
 
 # Check if input directory exists or not
@@ -91,6 +93,11 @@ def unzip2(mag, unzipped_mag):
                 new_file.write(data)
     return 1
 
+def batched(iterable, n):
+    it = iter(iterable)
+    while (batch := tuple(itertools.islice(it, n))):
+        yield batch
+
 
 if __name__ == '__main__':
     mags = [os.path.join(dirpath,filename) 
@@ -106,6 +113,10 @@ if __name__ == '__main__':
     logging.info("Output dir: " + output_dir)
     logging.info(f"Found {tasks_total} MAGs")
     logging.info(f"Using {args.num_cpus} threads")
+
+    if args.dry_run:
+        logging.info('Dry run, exiting...')
+        exit()
 
     # ThreadPoolExecutor + unzip1 version
     futures = []
@@ -136,6 +147,29 @@ if __name__ == '__main__':
     #     popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
     #     popens.append(popen)
     # popens_returncode=[popen.wait() for popen in popens]
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      popens_returncode.count(0),
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
+
+    # # Popen Batched version
+    # popens=[]
+    # i=1
+    # logging.info('Running!')
+    # start_time = datetime.now()
+    # n_batchs=-(-tasks_total//num_cpus)
+    # logging.info(f'Divided in {n_batchs} parts')
+    # for batch in batched(mags, num_cpus):
+    #     for mag in batch:
+    #         unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #         popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
+    #         popens.append(popen)
+    #     popens_returncode=[popen.wait() for popen in popens]
+    #     logging.info(f'Unzipped {i}/{n_batchs} part')
+    #     i+=1
     # end_time = datetime.now()
     # logging.info('Unzipped {}/{} MAGs in {}'.format(
     #      popens_returncode.count(0),
