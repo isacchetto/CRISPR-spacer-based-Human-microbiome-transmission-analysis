@@ -99,7 +99,7 @@ if __name__ == '__main__':
          datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
     logging.info('Done!')
         
-    # # Popen version
+    # # # Popen version
     # popens=[]
     # ThreadPoolExecutor(1).submit(progress_process_indicator, popens)
     # logging.info('Running!')
@@ -110,6 +110,29 @@ if __name__ == '__main__':
     #     popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
     #     popens.append(popen)
     # popens_returncode=[popen.wait() for popen in popens]
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      popens_returncode.count(0),
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
+
+    # # Popen Batched version
+    # popens=[]
+    # i=1
+    # logging.info('Running!')
+    # start_time = datetime.now()
+    # n_batchs=-(-tasks_total//num_cpus)
+    # logging.info(f'Divided in {n_batchs} parts')
+    # for batch in batched(mags, num_cpus):
+    #     for mag in batch:
+    #         unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #         popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
+    #         popens.append(popen)
+    #     popens_returncode=[popen.wait() for popen in popens]
+    #     logging.info(f'Unzipped {i}/{n_batchs} part')
+    #     i+=1
     # end_time = datetime.now()
     # logging.info('Unzipped {}/{} MAGs in {}'.format(
     #      popens_returncode.count(0),
