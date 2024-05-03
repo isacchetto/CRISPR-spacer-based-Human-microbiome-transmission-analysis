@@ -8,7 +8,6 @@ import time
 from datetime import datetime
 import argparse
 import logging
-import bz2
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 import multiprocessing as mp
 from threading import Lock
@@ -25,7 +24,7 @@ parser = argparse.ArgumentParser(description="Run MinCED on a directory of MAGs"
 parser.add_argument("input_directory", type=str, help="The input directory of the MAGs")
 parser.add_argument("-o", "--output-dir", type=str, help="The output directory, default is 'out/<input_directory>_minced_<timestamp>' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory instead into the 'out' directory of the current working directory")
-parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count(), dest="num_cpus")
+parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=int(mp.cpu_count()/3), dest="num_cpus")
 parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
 args = parser.parse_args()
 
@@ -88,7 +87,8 @@ def batched(iterable, n):
 
 if __name__ == '__main__':
 
-    command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128"
+    command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
+    # command="minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50" # Default command
     command_run=command.split()
 
     mags = [os.path.join(dirpath,filename) 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     # logging.info('Running! subprocess.Popen version')
     # start_time = datetime.now()
     # for mag in mags:
-    #     minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr1", input_dir))
+    #     minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr", input_dir))
     #     os.makedirs(os.path.dirname(minced_mag), exist_ok=True)
     #     popen=subprocess.Popen(command_run + [mag], stdout=open(minced_mag, 'wb'))
     #     popens.append(popen)
@@ -130,30 +130,6 @@ if __name__ == '__main__':
     #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
     # logging.info('Done!')
 
-    # subprocess.Popen Batched version
-    tasks_completed = 0
-    popens=[]
-    i=1
-    logging.info('Running! subprocess.Popen Batched version')
-    start_time = datetime.now()
-    n_batchs=-(-tasks_total//args.num_cpus)
-    logging.info(f'Divided in {n_batchs} parts')
-    for batch in batched(mags, args.num_cpus):
-        print(f' Running {i}/{n_batchs} part', end='\r', flush=True)
-        i+=1
-        for mag in batch:
-            minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr2", input_dir))
-            os.makedirs(os.path.dirname(minced_mag), exist_ok=True)
-            popen=subprocess.Popen(command_run + [mag], stdout=open(minced_mag, 'wb'))
-            popens.append(popen)
-        popens_returncode=[popen.wait() for popen in popens]
-    end_time = datetime.now()
-    logging.info('Minced {}/{} MAGs in {}'.format(
-         popens_returncode.count(0),
-         tasks_total, 
-         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    logging.info('Done!')
-
     # subprocess.run + ThreadPoolExecutor version
     tasks_completed = 0
     futures = []
@@ -161,7 +137,7 @@ if __name__ == '__main__':
         logging.info('Running! subprocess.run + ThreadPoolExecutor version')
         start_time = datetime.now()
         for mag in mags:
-            minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr3", input_dir))
+            minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr", input_dir))
             os.makedirs(os.path.dirname(minced_mag), exist_ok=True)
             future=executor.submit(subprocess.run, command_run + [mag], stdout=open(minced_mag, 'wb'))
             future.add_done_callback(future_progress_indicator)
@@ -174,6 +150,30 @@ if __name__ == '__main__':
         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
     logging.info('Done!')
 
+    # # subprocess.Popen Batched version
+    # tasks_completed = 0
+    # popens=[]
+    # i=1
+    # logging.info('Running! subprocess.Popen Batched version')
+    # start_time = datetime.now()
+    # n_batchs=-(-tasks_total//args.num_cpus)
+    # logging.info(f'Divided in {n_batchs} parts')
+    # for batch in batched(mags, args.num_cpus):
+    #     print(f' Running {i}/{n_batchs} part', end='\r', flush=True)
+    #     i+=1
+    #     for mag in batch:
+    #         minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr", input_dir))
+    #         os.makedirs(os.path.dirname(minced_mag), exist_ok=True)
+    #         popen=subprocess.Popen(command_run + [mag], stdout=open(minced_mag, 'wb'))
+    #         popens.append(popen)
+    #     popens_returncode=[popen.wait() for popen in popens]
+    # end_time = datetime.now()
+    # logging.info('Minced {}/{} MAGs in {}'.format(
+    #      popens_returncode.count(0),
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
+
     # # subprocess.run + ProcessPoolExecutor version (!!! NOT WORKING !!!)
     # tasks_completed = 0
     # futures = []
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     #     logging.info('Running! subprocess.run + ProcessPoolExecutor version')
     #     start_time = datetime.now()
     #     for mag in mags:
-    #         minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr4", input_dir))
+    #         minced_mag=os.path.join(output_dir, os.path.relpath(mag[:-4]+".crispr", input_dir))
     #         os.makedirs(os.path.dirname(minced_mag), exist_ok=True)
     #         future=executor.submit(subprocess.run, command_run + [mag], stdout=open(minced_mag, 'wb'))
     #         future.add_done_callback(future_progress_indicator)
