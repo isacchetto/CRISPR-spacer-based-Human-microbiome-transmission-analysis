@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(description="Run minced on a directory of MAGs"
 parser.add_argument("input_directory", type=str, help="The input directory of the MAGs")
 parser.add_argument("-o", "--output-dir", type=str, help="The output directory, default is 'out/<input_directory>_minced_<timestamp>' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory instead into the 'out' directory of the current working directory")
-parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=int(mp.cpu_count()/3), dest="num_cpus")
+parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count()//3, dest="num_cpus")
 parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
 args = parser.parse_args()
 
