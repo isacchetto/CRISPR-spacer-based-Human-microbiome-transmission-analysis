@@ -15,8 +15,8 @@ import itertools
 
 
 # run_minced.py
-# Version 0.1
-# 30/04/2024
+# Version 1.0
+# 03/05/2024
 # by isacchetto
 
 # Argument parser
@@ -99,7 +99,6 @@ if __name__ == '__main__':
     # num_cpus = mp.cpu_count()
     lock = Lock()
     tasks_total = len(mags)
-    tasks_completed = 0
     logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
     logging.info("Input: " + input_dir)
     logging.info("Output: " + output_dir)
