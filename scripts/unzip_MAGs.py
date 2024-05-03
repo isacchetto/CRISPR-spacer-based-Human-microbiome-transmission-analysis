@@ -143,85 +143,123 @@ if __name__ == '__main__':
          tasks_total, 
          datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
     logging.info('Done!')
+
+    # # ThreadPoolExecutor + unzip2 version
+    # futures = []
+    # tasks_completed = 0
+    # with ThreadPoolExecutor(args.num_cpus) as executor:
+    #     logging.info('Running! ThreadPoolExecutor + unzip2 version')
+    #     start_time = datetime.now()
+    #     for mag in mags:
+    #         unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #         future=executor.submit(unzip2, mag, unzipped_mag)
+    #         future.add_done_callback(future_progress_indicator)
+    #         futures.append(future)
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      sum([future.result() for future in as_completed(futures)]), 
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
+
+    # # ThreadPoolExecutor + unzip3 version
+    # futures = []
+    # tasks_completed = 0
+    # with ThreadPoolExecutor(args.num_cpus) as executor:
+    #     logging.info('Running! ThreadPoolExecutor + unzip3 version')
+    #     start_time = datetime.now()
+    #     for mag in mags:
+    #         unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #         future=executor.submit(unzip3, mag, unzipped_mag)
+    #         future.add_done_callback(future_progress_indicator)
+    #         futures.append(future)
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      sum([future.result() for future in as_completed(futures)]), 
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
         
-    # subprocess.Popen version
-    popens=[]
-    tasks_completed = 0
-    ThreadPoolExecutor(1).submit(popen_progress_indicator, popens)
-    logging.info('Running! subprocess.Popen version')
-    start_time = datetime.now()
-    for mag in mags:
-        unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
-        os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
-        popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
-        popens.append(popen)
-    popens_returncode=[popen.wait() for popen in popens]
-    end_time = datetime.now()
-    logging.info('Unzipped {}/{} MAGs in {}'.format(
-         popens_returncode.count(0),
-         tasks_total, 
-         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    logging.info('Done!')
+    # # subprocess.Popen version
+    # popens=[]
+    # tasks_completed = 0
+    # ThreadPoolExecutor(1).submit(popen_progress_indicator, popens)
+    # logging.info('Running! subprocess.Popen version')
+    # start_time = datetime.now()
+    # for mag in mags:
+    #     unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #     os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #     popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
+    #     popens.append(popen)
+    # popens_returncode=[popen.wait() for popen in popens]
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      popens_returncode.count(0),
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
 
-    # subprocess.Popen Batched version
-    popens=[]
-    tasks_completed = 0
-    i=1
-    logging.info('Running! subprocess.Popen Batched version')
-    start_time = datetime.now()
-    n_batchs=-(-tasks_total//args.num_cpus)
-    logging.info(f'Divided in {n_batchs} parts')
-    for batch in batched(mags, args.num_cpus):
-        print(f' Unzipped {i}/{n_batchs} part', end='\r', flush=True)
-        i+=1
-        for mag in batch:
-            unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
-            os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
-            popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
-            popens.append(popen)
-        popens_returncode=[popen.wait() for popen in popens]
-    end_time = datetime.now()
-    logging.info('Unzipped {}/{} MAGs in {}'.format(
-         popens_returncode.count(0),
-         tasks_total, 
-         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    logging.info('Done!')
+    # # subprocess.Popen Batched version
+    # popens=[]
+    # tasks_completed = 0
+    # i=1
+    # logging.info('Running! subprocess.Popen Batched version')
+    # start_time = datetime.now()
+    # n_batchs=-(-tasks_total//args.num_cpus)
+    # logging.info(f'Divided in {n_batchs} parts')
+    # for batch in batched(mags, args.num_cpus):
+    #     print(f' Unzipped {i}/{n_batchs} part', end='\r', flush=True)
+    #     i+=1
+    #     for mag in batch:
+    #         unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #         popen=subprocess.Popen(['bunzip2', '-kc', mag], stdout=open(unzipped_mag, 'wb'))
+    #         popens.append(popen)
+    #     popens_returncode=[popen.wait() for popen in popens]
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      popens_returncode.count(0),
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
 
-    # subprocess.run + ThreadPoolExecutor version
-    tasks_completed = 0
-    futures = []
-    with ThreadPoolExecutor(args.num_cpus) as executor:
-        logging.info('Running! subprocess.run + ThreadPoolExecutor version')
-        start_time = datetime.now()
-        for mag in mags:
-            unzip_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
-            os.makedirs(os.path.dirname(unzip_mag), exist_ok=True)
-            future=executor.submit(subprocess.run, ['bunzip2', '-kc', mag], stdout=open(unzip_mag, 'wb'))
-            future.add_done_callback(future_progress_indicator)
-            futures.append(future)
-    processes_returncode=[future.result().returncode for future in futures]
-    end_time = datetime.now()
-    logging.info('Unzipped {}/{} MAGs in {}'.format(
-        processes_returncode.count(0),
-        tasks_total, 
-        datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    logging.info('Done!')
+    # # subprocess.run + ThreadPoolExecutor version
+    # tasks_completed = 0
+    # futures = []
+    # with ThreadPoolExecutor(args.num_cpus) as executor:
+    #     logging.info('Running! subprocess.run + ThreadPoolExecutor version')
+    #     start_time = datetime.now()
+    #     for mag in mags:
+    #         unzip_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzip_mag), exist_ok=True)
+    #         future=executor.submit(subprocess.run, ['bunzip2', '-kc', mag], stdout=open(unzip_mag, 'wb'))
+    #         future.add_done_callback(future_progress_indicator)
+    #         futures.append(future)
+    # processes_returncode=[future.result().returncode for future in futures]
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #     processes_returncode.count(0),
+    #     tasks_total, 
+    #     datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
 
-    # ProcessPoolExecutor + unzip1 version
-    tasks_completed = 0
-    futures = []
-    with ProcessPoolExecutor(args.num_cpus) as executor:
-        logging.info('Running! ProcessPoolExecutor + unzip1 version')
-        start_time = datetime.now()
-        for mag in mags:
-            unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
-            os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
-            future=executor.submit(unzip1, mag, unzipped_mag)
-            future.add_done_callback(future_progress_indicator)
-            futures.append(future)
-    end_time = datetime.now()
-    logging.info('Unzipped {}/{} MAGs in {}'.format(
-         sum([future.result() for future in as_completed(futures)]), 
-         tasks_total, 
-         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    logging.info('Done!')
+    # # ProcessPoolExecutor + unzip1 version
+    # tasks_completed = 0
+    # futures = []
+    # with ProcessPoolExecutor(args.num_cpus) as executor:
+    #     logging.info('Running! ProcessPoolExecutor + unzip1 version')
+    #     start_time = datetime.now()
+    #     for mag in mags:
+    #         unzipped_mag=os.path.join(output_dir, os.path.relpath(mag[:-4], input_dir))
+    #         os.makedirs(os.path.dirname(unzipped_mag), exist_ok=True)
+    #         future=executor.submit(unzip1, mag, unzipped_mag)
+    #         future.add_done_callback(future_progress_indicator)
+    #         futures.append(future)
+    # end_time = datetime.now()
+    # logging.info('Unzipped {}/{} MAGs in {}'.format(
+    #      sum([future.result() for future in as_completed(futures)]), 
+    #      tasks_total, 
+    #      datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    # logging.info('Done!')
