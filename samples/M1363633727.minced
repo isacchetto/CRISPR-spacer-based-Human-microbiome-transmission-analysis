@@ -1,0 +1,29 @@
+Sequence 'RubelMA_2020_k141_7162' (5015 bp)
+
+CRISPR 1   Range: 4862 - 5014
+POSITION	REPEAT				SPACER
+--------	-----------------------	------------------------------------------
+4862		TATCTACAATAGTAGAAATTAAA	ATGGCTTATTAGCCTGGCATTTCTTATATGTGTACTTTTTATA	[ 23, 43 ]
+4928		TATCTACAATAGTAGAAATTAAA	ATGGCTTATTAGCCCAATGTTGGCGATTCCTTCTGTCTACA	[ 23, 41 ]
+4992		TATCTACAATAGTAGAAATTAAA	
+--------	-----------------------	------------------------------------------
+Repeats: 3	Average Length: 23		Average Length: 42
+
+Time to find repeats: 1 ms
+
+
+Sequence 'RubelMA_2020_k141_23916' (26158 bp)
+
+CRISPR 2   Range: 9 - 240
+POSITION	REPEAT				SPACER
+--------	-------------------------------------	----------------------------
+9		TGTTGTATATCTTTATATTCCTACATCAAACCACAAC	CTGTTTCCTCATCGTTGGTTGGCCGTGA	[ 37, 28 ]
+74		TGTTGTATATCTTTATATTCCTACATCAAACCACAAC	CTATCTGAGGATAAGGGCTACGCAGAGG	[ 37, 28 ]
+139		TGTTGTATATCTTTATATTCCTACATCAAACCACAAC	TGCTTGCTCCTTGTCGTAGATTAATTTT	[ 37, 28 ]
+204		CGTTGTATATCTTTATATTCCTACATCAAACCACAAC	
+--------	-------------------------------------	----------------------------
+Repeats: 4	Average Length: 37		Average Length: 28
+
+Time to find repeats: 5 ms
+
+
