@@ -28,7 +28,7 @@ parser = argparse.ArgumentParser(description="Parse minced output files into a s
 parser.add_argument("input_directory", type=str, help="The input directory of the MinCED output files (file.crispr)")
 parser.add_argument("-out", "--output", type=str, help="The output file, default is 'out/<input_directory>_parsed.tsv' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output file near the input directory instead into the 'out' directory of the current working directory")
-parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=int(mp.cpu_count()/3), dest="num_cpus")
+parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count()//3, dest="num_cpus")
 parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
 args = parser.parse_args()
 
@@ -81,16 +81,16 @@ class CRISPR(object):
         if len(put_spacer) > 0:
             self.spacers.append(put_spacer)
 
-def parse_minced(path):
-    with open(path, 'r') as f:
+def parse_minced(file_path):
+    with open(file_path, 'r') as f:
         crisprs = []
         for ll in f:
             # Record sequence accession
             if ll.startswith('Sequence'):
-                sequence_current = re.sub('\' \(.*', '', re.sub('Sequence \'', '', ll))
+                contig_name = re.sub('\' \(.*', '', re.sub('Sequence \'', '', ll))
             # Create instance of CRISPR and add positions
             if ll.startswith('CRISPR'):
-                crisp_tmp = CRISPR(sequence_current, path.split('/')[-1].split('.')[0])
+                crisp_tmp = CRISPR(contig_name, file_path.split('/')[-1].split('.')[0])
                 pos = re.sub('.*Range: ', '', ll)
                 start = re.sub(' - .*', '', pos)
                 end = re.sub('.* - ', '', pos)
