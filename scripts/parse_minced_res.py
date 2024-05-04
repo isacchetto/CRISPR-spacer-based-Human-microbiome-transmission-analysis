@@ -50,9 +50,9 @@ def parse_minced(path):
 
     return crisprs
 
-basedir = '/shares/CIBIO-Storage/CM/scratch/users/matteo.ciciani/MetaRefSGB_Cas_mining/omegaRNA'
-outdir = '/shares/CIBIO-Storage/CM/scratch/users/matteo.ciciani/MetaRefSGB_Cas_mining/omegaRNA_preprocessed'
-releases = ['Sep22']
+basedir = '/Users/isaccocenacchi/Desktop/Tirocinio/out/MAGs_short_minced'
+outfile = f"{basedir}_parsed_matteo.tsv"
+releases = ['Aug19']
 
 for rel in releases:
     print('Processing {}...'.format(rel))
@@ -65,4 +65,4 @@ for rel in releases:
             chunk_array_df.columns = ['MAG', 'contig', 'start', 'end', 'spacers', 'repeats']
             rel_dfs.append(chunk_array_df)
     rel_data = pd.concat(rel_dfs).reset_index(drop=True)
-    rel_data.to_csv(os.path.join(outdir, rel+'_CRISPR.tsv'), sep='\t')
+    rel_data.to_csv(outfile, sep='\t')
