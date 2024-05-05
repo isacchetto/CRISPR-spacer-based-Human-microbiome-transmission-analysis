@@ -1,12 +1,12 @@
 
 # Folder #
 ##########
-Documenti/*
-Pdf/*
-out/*
-MAGs/*
+Documenti
+Pdf
+out
+Tools
+MAGs
 MAGs_*
-Tools/*
 
 # Packages #
 ############
