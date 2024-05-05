@@ -18,7 +18,7 @@ import itertools
 
 
 # parse_minced.py
-# Version 0.1
+# Version 1.0
 # 03/05/2024
 # by isacchetto
 
@@ -66,53 +66,94 @@ if os.path.exists(output_file) and not args.dry_run:
 
 
 class CRISPR(object):
-    def __init__(self, contig_name, file_name):
-        self.contig_name = contig_name.rstrip() # sequence = nome del contig
-        self.repeats = []
+    '''
+    A class used to represent a CRISPR
+
+    Attributes:
+        file_name (str): the name of the file that the CRISPR was found in
+        contig_name (str): the name of the contig that the CRISPR was found in
+        start (int): the start position of the CRISPR (Position of the first base in the CRISPR)
+        end (int): the end position of the CRISPR (position of the last base in the CRISPR)
+        spacers (list): a list of the ordered spacers in the CRISPR
+        repeats (list): a list of the ordered repeats in the CRISPR
+    
+    Methods:
+        __init__(): Constructor
+        __len__(): Returns the length of the CRISPR calculated as the sum of the lengths of the spacers and repeats
+        __bool__(): Returns True if the CRISPR is valid, False otherwise
+        setFile_name(file_name): Sets the file_name attribute
+        setContig_name(contig_name): Sets the contig_name attribute
+        setPos(start, end): Sets the start and end attributes
+        addRepeat(repeat): Adds a repeat to the repeats list
+        addSpacer(spacer): Adds a spacer to the spacers list
+    '''
+    def __init__(self):
+        self.file_name = None 
+        self.contig_name = None
+        self.start = None
+        self.end = None
         self.spacers = []
+        self.repeats = []
+    def __repr__(self):
+        return f'<CRISPR object: (\n{self.file_name}\n{self.contig_name}\n{self.start}\n{self.end}\n{self.spacers}\n{self.repeats})>\n'
+    def __str__(self):
+        return f'f_name: {self.file_name}\ncontig: {self.contig_name}\nstart: {self.start}\nend: {self.end}\nspacers: {self.spacers}\nrepeats: {self.repeats}\n'
+    def __len__(self):
+        return sum(len(spacer) for spacer in self.spacers) + sum(len(repeat) for repeat in self.repeats)
+    def __bool__(self):
+        return (len(self) == (self.end - self.start + 1) and 
+                type(self.file_name) is str and #self.file_name is not None and
+                type(self.contig_name) is str and #self.contig_name is not None and
+                type(self.start) is int and self.start >= 0 and
+                type(self.end) is int and self.end >= self.start
+                )
+    def __eq__(self, other):
+        return self.file_name == other.file_name and self.contig_name == other.contig_name and self.start == other.start and self.end == other.end
+    
+    def setFile_name(self, file_name):
         self.file_name = file_name
+    def setContig_name(self, contig_name):
+        self.contig_name = contig_name
     def setPos(self, start, end):
-        self.start = int(start.rstrip())
-        self.end = int(end.rstrip())
+        self.start = start
+        self.end = end
     def addRepeat(self, repeat):
-        self.repeats.append(repeat.rstrip())
+        self.repeats.append(repeat)
     def addSpacer(self, spacer):
-        put_spacer = spacer.rstrip()
-        if len(put_spacer) > 0:
-            self.spacers.append(put_spacer)
+        self.spacers.append(spacer)
 
 def parse_minced(file_path):
-    with open(file_path, 'r') as f:
-        crisprs = []
-        for ll in f:
-            # Record sequence accession
-            if ll.startswith('Sequence'):
-                contig_name = re.sub('\' \(.*', '', re.sub('Sequence \'', '', ll))
-            # Create instance of CRISPR and add positions
-            if ll.startswith('CRISPR'):
-                crisp_tmp = CRISPR(contig_name, file_path.split('/')[-1].split('.')[0])
-                pos = re.sub('.*Range: ', '', ll)
-                start = re.sub(' - .*', '', pos)
-                end = re.sub('.* - ', '', pos)
-                crisp_tmp.setPos(start, end)
-            # Add Repeats and Spacers to the current instance
-            if ll[:1].isdigit():
-                lll = ll.split()
-                if len(lll) == 7:
-                    crisp_tmp.addRepeat(lll[1])
-                    crisp_tmp.addSpacer(lll[2])
-                if len(lll) == 2:
-                    crisp_tmp.addRepeat(lll[1])
+    crisprs = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            if line.startswith("Sequence '"):
+                contig_name = line.split("'")[1]
+            elif line.startswith("CRISPR"):
+                start, end = map(int, line.split()[3:6:2]) # Take from 4th to 6th element, step 2
+                crispr_tmp = CRISPR()
+                crispr_tmp.setFile_name(file_path.split('/')[-1].split('.')[0])
+                crispr_tmp.setContig_name(contig_name)
+                crispr_tmp.setPos(start, end)
+            elif line[:1].isdigit():
+                seqs = line.split()
+                if len(seqs) == 7:
+                    crispr_tmp.addRepeat(seqs[1])
+                    crispr_tmp.addSpacer(seqs[2])
+                if len(seqs) == 2:
+                    crispr_tmp.addRepeat(seqs[1])
             # Save the instance
-            if ll.startswith('Repeats'):
-                crisprs.append(crisp_tmp)
+            elif line.startswith("Repeats"):
+                if bool(crispr_tmp):
+                    crisprs.append(crispr_tmp)
+                else:
+                    raise ValueError(f"Invalid CRISPR format in file {file_path}")
     return crisprs
+
 
 if __name__ == '__main__':
 
-    basedir = '/shares/CIBIO-Storage/CM/scratch/users/matteo.ciciani/MetaRefSGB_Cas_mining/omegaRNA'
-    outdir = '/shares/CIBIO-Storage/CM/scratch/users/matteo.ciciani/MetaRefSGB_Cas_mining/omegaRNA_preprocessed'
-    releases = ['Sep22']
+    # input_dir = '/Users/isaccocenacchi/Desktop/Tirocinio/out/MAGs_short_minced'
+    # output_file=f"{input_dir}_parsed.tsv"
 
     files = [os.path.join(dirpath,filename) 
              for dirpath, _, filenames in os.walk(input_dir) 
@@ -130,17 +171,25 @@ if __name__ == '__main__':
         logging.info('Dry run, exiting...')
         exit()
 
+    logging.info('Running!')
+    start_time = datetime.now()
 
-    for rel in releases:
-        print('Processing {}...'.format(rel))
-        rel_dfs = [] # lista di dataframe
-        for chunk in os.listdir(os.path.join(basedir, rel)):
-            crispr_paths = glob.glob(os.path.join(basedir, rel, chunk, '*.crispr')) 
-            chunk_arrays = [array for path in crispr_paths for array in parse_minced(path)]
-            chunk_array_df = pd.DataFrame([[a.mag, a.sequence, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in chunk_arrays])
-            if chunk_array_df.shape[1]==6:
-                chunk_array_df.columns = ['MAG', 'contig', 'start', 'end', 'spacers', 'repeats']
-                rel_dfs.append(chunk_array_df)
-        rel_data = pd.concat(rel_dfs).reset_index(drop=True)
-        rel_data.to_csv(os.path.join(outdir, rel+'_CRISPR.tsv'), sep='\t')
+    tasks_completed = 0
+    # crisprs_total = [crispr for file in files for crispr in parse_minced(file)]
+    crisprs_total = []
+    for file in files:
+        crisprs_total+=parse_minced(file)
+        tasks_completed+=1
+
+    crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
+                            columns=['MAG', 'contig', 'start', 'end', 'spacers', 'repeats'])
+
+    crisprs_df.to_csv(output_file, sep='\t')
+
+    end_time = datetime.now()
+    logging.info('Parse {}/{} Files in {}'.format(
+        tasks_completed,
+        tasks_total, 
+        datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
+    logging.info('Done!')
         
