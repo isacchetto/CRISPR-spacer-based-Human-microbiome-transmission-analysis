@@ -92,7 +92,6 @@ def unzip_and_run2(input_file, output_file):
     with bz2.BZ2File(input_file) as file, tempfile.NamedTemporaryFile("wb",prefix=os.path.basename(input_file)[:-8], delete=True) as tmp_file:
         shutil.copyfileobj(file, tmp_file)
         tmp_file.flush()
-        tmp_file.
         subprocess.run(command_run + [tmp_file.name], stdout=open(output_file, 'wb'))
 
 
