@@ -88,11 +88,12 @@ def unzip_and_run(input_file, output_file):
         with subprocess.Popen(['bzip2', '-d', '-c', input_file], stdout=subprocess.PIPE) as process:
             shutil.copyfileobj(process.stdout, output)
 
-def unzip_and_run2(input_file, output_file):
-    with bz2.BZ2File(input_file) as file, tempfile.NamedTemporaryFile("wb",prefix=os.path.basename(input_file)[:-8], delete=True) as tmp_file:
+def unzip_and_run2(input_file, output_file, command_run):
+    with bz2.BZ2File(input_file) as file, tempfile.NamedTemporaryFile("wb",prefix=os.path.basename(input_file)[:-8], suffix=".fna", delete=True) as tmp_file:
         shutil.copyfileobj(file, tmp_file)
         tmp_file.flush()
-        subprocess.run(command_run + [tmp_file.name], stdout=open(output_file, 'wb'))
+        completedProcess=subprocess.run(command_run + [tmp_file.name], stdout=open(output_file, 'wb'), check=True)
+    return completedProcess.returncode
 
 
 def batched(iterable, n):
