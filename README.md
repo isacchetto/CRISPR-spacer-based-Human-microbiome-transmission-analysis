@@ -19,7 +19,7 @@ conda env create -f environment.yml
 ```
 To activate the conda environment, run the following command:
 ```bash
-conda activate crispr-transmission
+conda activate CRISPR-transmission
 ```
 ## Project Execution
 
