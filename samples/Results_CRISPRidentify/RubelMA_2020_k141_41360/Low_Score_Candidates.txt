@@ -1,0 +1,30 @@
+Low score CRISPR: 1, 3509-3549, number of Repeats: 2, avg. length of Repeat: 19, avg length of Spacer: 3
+
+3509   ...................  AAC      s:0 i:0 d:0
+3531   .A.................           s:1 i:0 d:0
+____________________________________________________________________________________________________
+       GCAATAGGCTTCGATGGGC           s:1 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.8589832688185761
+avg_spacer_len: 3.0
+spacer_similarity: 1.0
+number_mismatches: 1.0
+spacer_evenness: -0.0
+mfe_score: -0.40
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 19.0
+at_richness: 0.4473684210526316
+
+Certainty Score: 0.2252180079638483
+
+
+
+====================================================================================================
+

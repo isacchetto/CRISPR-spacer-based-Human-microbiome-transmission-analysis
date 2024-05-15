@@ -1,0 +1,32 @@
+Possible CRISPR: 1, 205-45, number of Repeats: 4, avg. length of Repeat: 36, avg length of Spacer: 29
+
+205   ....................................  GAAAATTAATCTACGACAAGGAGCAAGCA      s:0 i:0 d:0
+140   ....................................  ACCTCTGCGTAGCCCTTATCCTCAGATAG      s:0 i:0 d:0
+75    ....................................  ATCACGGCCAACCAACGATGAGGAAACAG      s:0 i:0 d:0
+10    ....................................                                     s:0 i:0 d:0
+____________________________________________________________________________________________________
+      GTTGTGGTTTGATGTAGGAATATAAAGATATACAAC                                     s:0 i:0 d:0
+
+Strand: Reversed
+
+
+repeat_similarity: 1.0
+avg_spacer_len: 29.0
+spacer_similarity: 0.2585364010705846
+number_mismatches: 0.0
+spacer_evenness: -0.0
+mfe_score: -0.70
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 4.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 36.0
+at_richness: 0.6944444444444444
+
+Certainty Score: 0.6372553601094844
+
+
+
+====================================================================================================
+
