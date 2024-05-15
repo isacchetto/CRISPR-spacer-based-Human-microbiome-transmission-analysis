@@ -1,0 +1,31 @@
+Low score CRISPR: 1, 9139-9191, number of Repeats: 3, avg. length of Repeat: 18, avg length of Spacer: 0
+
+9139   .T.TG.C............        s:3 i:1 d:0
+9158   ...... ............        s:0 i:0 d:0
+9176   ...... ...TT.-...-T        s:3 i:0 d:2
+____________________________________________________________________________________________________
+       ACTCCT TTAACTCCTTTA        s:6 i:1 d:2
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.5477132200957784
+avg_spacer_len: 0.0
+spacer_similarity: 1.0
+number_mismatches: 9.0
+spacer_evenness: -0.0
+mfe_score: 0.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 3.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 19.0
+at_richness: 0.7169811320754716
+
+Certainty Score: 0.1326513634595646
+
+
+
+====================================================================================================
+
