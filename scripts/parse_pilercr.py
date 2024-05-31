@@ -2,30 +2,23 @@
 
 import os
 import sys
-import glob
-import re
 import pandas as pd
-import time
 from datetime import datetime
 import argparse
 import logging
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 import multiprocessing as mp
-import subprocess
-from threading import Lock
-import itertools
 
 
 
-# parse_minced.py
+# parse_pilercr.py
 # Version 1.0
-# 03/05/2024
+# 31/05/2024
 # by isacchetto
 
 
 # Argument parser
-parser = argparse.ArgumentParser(description="Parse minced output files into a single TSV file")
-parser.add_argument("input_directory", type=str, help="The input directory of the MinCED output files (file.crispr)")
+parser = argparse.ArgumentParser(description="Parse pilercr output files into a single TSV file")
+parser.add_argument("input_directory", type=str, help="The input directory of the PilerCR output files (file.pilercr)")
 parser.add_argument("-out", "--output", type=str, help="The output file, default is 'out/<input_directory>_parsed.tsv' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output file near the input directory instead into the 'out' directory of the current working directory")
 parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count()//3, dest="num_cpus")
@@ -143,29 +136,57 @@ class CRISPR:
     def setFlankerRight(self, right):
         self.flankers['right'] = right
 
-def parse_minced(file_path):
+def develop_repeats(repeats, reference):
+    developed_repeats = []
+    for repeat in repeats:
+        repeat = list(repeat)
+        for i in range(len(reference)):
+            if repeat[i] == '.': 
+                repeat[i] = reference[i]
+        repeat = ''.join(repeat)
+        repeat = repeat.replace('-', '')
+        developed_repeats.append(repeat)
+    return developed_repeats
+
+def parse_pilercr(file_path):
     crisprs = []
     with open(file_path, 'r') as file:
+        crispr_tmp = None
         for line in file:
-            if line.startswith("Sequence '"):
-                contig_name = line.split("'")[1]
-            elif line.startswith("CRISPR"):
-                start, end = map(int, line.split()[3:6:2]) # Take from 4th to 6th element, step 2
-                crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=end)
+            line = line.strip()
+            if line.startswith("Array"):
+                if crispr_tmp is not None:
+                    raise ValueError(f"CRISPR not finished in file {file_path}, contig {crispr_tmp.contig_name}")
+            elif line.startswith(">"):
+                contig_name = line[1:]
             elif line[:1].isdigit():
                 seqs = line.split()
-                if len(seqs) == 7:
-                    crispr_tmp.addRepeat(seqs[1])
-                    crispr_tmp.addSpacer(seqs[2])
-                if len(seqs) == 2:
-                    crispr_tmp.addRepeat(seqs[1])
-            # Save the instance
-            elif line.startswith("Repeats"):
-                if bool(crispr_tmp):
-                    crisprs.append(crispr_tmp)
-                else:
-                    raise ValueError(f"Invalid CRISPR format in file {file_path}")
-    return crisprs
+                if len(seqs) == 7 and crispr_tmp is None: # first line: flankerLeft - repeat - spacer
+                    start=int(seqs[0]) + seqs[5][:seqs[5].find(".")].count("-") # adjust start position if there are gaps in the repeat
+                    crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
+                    crispr_tmp.setFlankerLeft(seqs[4])
+                    repeats = [seqs[5]]
+                    crispr_tmp.addSpacer(seqs[6])
+                elif len(seqs) == 7 and crispr_tmp is not None: # next line: repeat - spacer
+                    repeats.append(seqs[5])
+                    crispr_tmp.addSpacer(seqs[6])
+                elif len(seqs) == 6 and crispr_tmp is not None: # last line: repeat - flankerRight
+                    repeats.append(seqs[4])
+                    crispr_tmp.setFlankerRight(seqs[5])
+                elif len(seqs) == 4 and crispr_tmp is not None: # consensus repeat
+                    consensus = seqs[3]
+                    for repeat in develop_repeats(repeats, consensus):
+                        crispr_tmp.addRepeat(repeat)
+                    repeats = []
+                    crispr_tmp.setEnd(crispr_tmp.start + len(crispr_tmp) - 1)
+                    if bool(crispr_tmp):
+                        crisprs.append(crispr_tmp)
+                        crispr_tmp = None
+                    else:
+                        raise ValueError(f"Invalid CRISPR format in file {file_path}")
+            elif line.startswith("SUMMARY"):
+                break
+        return crisprs
 
 
 if __name__ == '__main__':
@@ -176,7 +197,7 @@ if __name__ == '__main__':
     files = [os.path.join(dirpath,filename) 
              for dirpath, _, filenames in os.walk(input_dir) 
              for filename in filenames 
-             if filename.endswith('.minced')
+             if filename.endswith('.pilercr')
             ]
     tasks_total = len(files)
     logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
@@ -196,7 +217,7 @@ if __name__ == '__main__':
     # crisprs_total = [crispr for file in files for crispr in parse_minced(file)]
     crisprs_total = []
     for file in files:
-        crisprs_total+=parse_minced(file)
+        crisprs_total+=parse_pilercr(file)
         tasks_completed+=1
 
     crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
