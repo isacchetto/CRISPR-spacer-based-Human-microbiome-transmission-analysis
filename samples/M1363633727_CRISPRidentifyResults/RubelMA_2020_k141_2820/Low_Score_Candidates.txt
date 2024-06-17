@@ -1,0 +1,60 @@
+Low score CRISPR: 1, 5946-6122, number of Repeats: 2, avg. length of Repeat: 39, avg length of Spacer: 99
+
+5946   .......................................  GGATAAAATCTTCACGCTCAAGAATGAAAAAACTTTTTCATTCTCTTCGCTTACTCAGATTTTTGCACTACCTTTTAATAAAGTAGGCTGCACTCAACA      s:0 i:0 d:0
+6084   .......................................                                                                                                           s:0 i:0 d:0
+____________________________________________________________________________________________________
+       ATAAAAATAAATGAATTTATTTTGTATTGTCTTCGTTTT                                                                                                           s:0 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 1.0
+avg_spacer_len: 99.0
+spacer_similarity: 1.0
+number_mismatches: 0.0
+spacer_evenness: -0.0
+mfe_score: -2.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 39.0
+at_richness: 0.8461538461538461
+
+Certainty Score: 0.40671269262961934
+
+
+
+====================================================================================================
+
+Low score CRISPR: 2, 17162-17202, number of Repeats: 2, avg. length of Repeat: 19, avg length of Spacer: 3
+
+17162   ...................  CAA      s:0 i:0 d:0
+17184   ...................           s:0 i:0 d:0
+____________________________________________________________________________________________________
+        CTAAAATCGTTAAACCACA           s:0 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 1.0
+avg_spacer_len: 3.0
+spacer_similarity: 1.0
+number_mismatches: 0.0
+spacer_evenness: -0.0
+mfe_score: 0.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 19.0
+at_richness: 0.6842105263157895
+
+Certainty Score: 0.3581803565387523
+
+
+
+====================================================================================================
+
