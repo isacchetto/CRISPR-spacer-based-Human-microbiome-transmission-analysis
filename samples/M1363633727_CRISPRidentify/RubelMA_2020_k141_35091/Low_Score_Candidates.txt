@@ -1,0 +1,61 @@
+Low score CRISPR: 1, 2682-2841, number of Repeats: 2, avg. length of Repeat: 54, avg length of Spacer: 52
+
+2682   ......................................................  GTTCGAATCCTGTCGCCCCGACTTATTCTTAGTTCATTTATACATTGTATTT      s:0 i:0 d:0
+2788   ......................................................                                                            s:0 i:0 d:0
+____________________________________________________________________________________________________
+       ACGGGGTGTAGCGCAGCCCGGTAGCGCTCCTGGTTTGGGACCAGGTGGTCGCAG                                                            s:0 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 1.0
+avg_spacer_len: 52.0
+spacer_similarity: 1.0
+number_mismatches: 0.0
+spacer_evenness: -0.0
+mfe_score: -25.80
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 54.0
+at_richness: 0.3148148148148148
+
+Certainty Score: 0.5045347716700291
+
+
+
+====================================================================================================
+
+Low score CRISPR: 2, 16265-16354, number of Repeats: 3, avg. length of Repeat: 22, avg length of Spacer: 12
+
+16265   .... ..................  A                             s:0 i:0 d:0
+16288   .... .....C............  AGAAGGCCTGCTTTGCCCGTTATT      s:1 i:0 d:0
+16334   .T..T.-C.T-T...........                                s:4 i:1 d:2
+____________________________________________________________________________________________________
+        GATG ACAGGTCTTGGTCTTAAT                                s:5 i:1 d:2
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.6161632587926317
+avg_spacer_len: 12.5
+spacer_similarity: 0.0
+number_mismatches: 8.0
+spacer_evenness: 0.386853
+mfe_score: -1.70
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 3.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 22.0
+at_richness: 0.6
+
+Certainty Score: 0.21684940553028662
+
+
+
+====================================================================================================
+

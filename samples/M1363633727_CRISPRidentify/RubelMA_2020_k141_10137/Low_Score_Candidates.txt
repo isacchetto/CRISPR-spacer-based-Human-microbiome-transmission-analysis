@@ -1,0 +1,63 @@
+Low score CRISPR: 1, 15557-15645, number of Repeats: 4, avg. length of Repeat: 20, avg length of Spacer: 3
+
+15557   ....T .. -T.........-C.  ATA      s:2 i:1 d:2
+15579   .... CT.TG.-A.....A....  GAG      s:4 i:2 d:1
+15603   ....  .. ..............  GAA      s:0 i:0 d:0
+15626   .G..  .. ..............           s:1 i:0 d:0
+____________________________________________________________________________________________________
+        GTTG  CA TAGTCGTACGACAT           s:7 i:3 d:3
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.49527968240776915
+avg_spacer_len: 3.0
+spacer_similarity: 0.15230825575318896
+number_mismatches: 13.0
+spacer_evenness: -0.0
+mfe_score: -2.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 4.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 21.0
+at_richness: 0.55
+
+Certainty Score: 0.10904462464418642
+
+
+
+====================================================================================================
+
+Low score CRISPR: 2, 26296-26360, number of Repeats: 3, avg. length of Repeat: 19, avg length of Spacer: 4
+
+26296   ...................  GCTT      s:0 i:0 d:0
+26319   ...........C.......  GCTT      s:1 i:0 d:0
+26342   ..........G........            s:1 i:0 d:0
+____________________________________________________________________________________________________
+        GCCATCTATTATGACCAAG            s:2 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.7148572699058439
+avg_spacer_len: 4.0
+spacer_similarity: 0.9999999999999993
+number_mismatches: 2.0
+spacer_evenness: -0.0
+mfe_score: 0.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 3.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 19.0
+at_richness: 0.543859649122807
+
+Certainty Score: 0.18710036881928427
+
+
+
+====================================================================================================
+

@@ -1,0 +1,60 @@
+Low score CRISPR: 1, 1465-1501, number of Repeats: 2, avg. length of Repeat: 18, avg length of Spacer: 1
+
+1465   ..................  A      s:0 i:0 d:0
+1484   ..................         s:0 i:0 d:0
+____________________________________________________________________________________________________
+       CAGGGCGTGTGGGGTAAA         s:0 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 1.0
+avg_spacer_len: 1.0
+spacer_similarity: 1.0
+number_mismatches: 0.0
+spacer_evenness: -0.0
+mfe_score: 0.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 18.0
+at_richness: 0.3888888888888889
+
+Certainty Score: 0.3632150787609745
+
+
+
+====================================================================================================
+
+Low score CRISPR: 2, 19457-19528, number of Repeats: 2, avg. length of Repeat: 30, avg length of Spacer: 12
+
+19457   ..............................  TTTGGAACTTGT      s:0 i:0 d:0
+19499   ........G.....................                    s:1 i:0 d:0
+____________________________________________________________________________________________________
+        GTTCTAAACTATCGAACTTATGTTCTAAAG                    s:1 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.8598938905758426
+avg_spacer_len: 12.0
+spacer_similarity: 1.0
+number_mismatches: 1.0
+spacer_evenness: -0.0
+mfe_score: -3.40
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 30.0
+at_richness: 0.7
+
+Certainty Score: 0.2812160916461477
+
+
+
+====================================================================================================
+

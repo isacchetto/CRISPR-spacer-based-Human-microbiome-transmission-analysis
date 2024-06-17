@@ -1,0 +1,118 @@
+Low score CRISPR: 1, 370-1151, number of Repeats: 8, avg. length of Repeat: 22, avg length of Spacer: 87
+
+370    TAT. -T... .. -T... ......  TGGTTTGACAAGCTTGACCATCCCTTCCAGTGTTACTGAGATAGGCGAATCAGCTTTTCAAGATTGTAGTGGTTTGACAAGCTTGACCCTCCCTTCCGGTGTTACTTCGATAAGCAATCATGCTTTTTCAGGTTGCAGTGGATTGACAAGCTTGACCATCCCTTCCGGTGTTACTGAGATAGGCT      s:5 i:0 d:2
+575    .... ..... .. G.... .....A  AGGATTGACAAGCTTGACCATCCCTTCCAGTGTTACTTCGATAGGCGATTATGCTTTTTCAGGTTGCAGTGGATTGACAAGCTTGACCCTCCCTTCCAGTGTTACTTCGATAGGC                                                                            s:2 i:0 d:0
+712    .A.TA..C.. .. ..... ......  TGGATTGACAAGCTTGACCATCCCTTCCGGTGTTACTGAGATAGGCT                                                                                                                                                s:3 i:1 d:0
+782    .... .AC.. ..CA-A.. ....-A  AAGGATTGACAAGCTTGACCATCCCTTCCAGTGTTACTAAGATAGGCA                                                                                                                                               s:5 i:1 d:2
+851    ..TT ..C.. .. .....T.G-T..  TGGATTGACAAGCTTGACCATCCCTTCCAGTGTTACTAAGATAGACTGCT                                                                                                                                             s:5 i:1 d:1
+923    .... ..... .. ..... ......  TGGTTTGACAAGCTTGACCCTCCCTTCCTGTGTTACTTCGATAGGCT                                                                                                                                                s:0 i:0 d:0
+992    .... ..... .. ..... ......  TAGATTGACAAGCTTGACCATCCCTTCCAGTGTTACTTCGATAGGCGAATCAGCTTTTCAAGGTTGCAGTGGTTTGACAAGCTTGACCATCCCTTCCAGTGTTACTTCGATAGGCAA                                                                          s:0 i:0 d:0
+1131   .A-A ..C..T.- A.... ......                                                                                                                                                                                                 s:4 i:1 d:2
+____________________________________________________________________________________________________
+       GGGG TGTTT TT TATGG TTGCAG                                                                                                                                                                                                 s:24 i:4 d:7
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.547437715097462
+avg_spacer_len: 87.0
+spacer_similarity: 0.7564605445693053
+number_mismatches: 35.0
+spacer_evenness: 0.381138
+mfe_score: 0.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 8.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 23.0
+at_richness: 0.5895953757225434
+
+Certainty Score: 0.1134878546000959
+
+
+
+====================================================================================================
+
+Low score CRISPR: 2, 394-1266, number of Repeats: 13, avg. length of Repeat: 42, avg length of Spacer: 27
+
+394    .................................GA.......  GAATCAGCTTTTCAAGATTGTAGTGGT         s:2 i:0 d:0
+463    ...............C........G..............A..  AATCATGCTTTTTCAGGTTGCAGTGGA         s:3 i:0 d:0
+532    ........................G........GA.......  TGGGGTGTTTTTGATGGTTGCAAAGGA         s:3 i:0 d:0
+601    ..........................................  GATTATGCTTTTTCAGGTTGCAGTGGA         s:0 i:0 d:0
+670    ...............C..........................  GAGTATGCTTTTTATGGTTGCAGTGGA         s:1 i:0 d:0
+739    ........................G........GA.......  TGGGGTACTTTTCAAGGTTGCAAAGGA         s:3 i:0 d:0
+808    .................................AA.......  AGGTTTGCTTTTTATGGTTGTAGTGGA         s:2 i:0 d:0
+877    .................................AA.....A.  TGCTGGGGTGTTTTTTATGGTTGCAGTGGT      s:3 i:0 d:0
+949    ...............C........T.................  TGGGGTGTTTTTTATGGTTGCAGTAGA         s:2 i:0 d:0
+1018   ..........................................  GAATCAGCTTTTCAAGGTTGCAGTGGT         s:0 i:0 d:0
+1087   ..........................................  AAGAATGCTTTTAATGGTTGCAGTGGC         s:0 i:0 d:0
+1156   ...............C.................GG.......  TGGTATGCTTTTAAAGGTTGCAGTAGA         s:3 i:0 d:0
+1225   ..................................G......T                                      s:2 i:0 d:0
+____________________________________________________________________________________________________
+       TTGACAAGCTTGACCATCCCTTCCAGTGTTACTTCGATAGGC                                      s:24 i:0 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.7980512784315617
+avg_spacer_len: 27.25
+spacer_similarity: 0.502547831989292
+number_mismatches: 24.0
+spacer_evenness: -0.0
+mfe_score: -1.90
+orf_score: 56.31
+blast_score_1: 0.0
+number_repeats: 13.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 42.0
+at_richness: 0.5183150183150184
+
+Certainty Score: 0.24997219309990448
+
+
+
+====================================================================================================
+
+Low score CRISPR: 3, 376-1248, number of Repeats: 13, avg. length of Repeat: 43, avg length of Spacer: 26
+
+376    .....T . ..........T.............. ..........  AGTGTTACTGAGATAGGCGAATCAGC         s:2 i:0 d:1
+444    ....C. AGA...T.....T..............C-C........  GGTGTTACTTCGATAAGCAATCATGCT        s:6 i:2 d:2
+514    ....C. . ......................... ..........  GGTGTTACTGAGATAGGCTGGGGTGT         s:1 i:0 d:1
+582    ....G... ......AA................. ..........  AGTGTTACTTCGATAGGCGATTATGCT        s:3 i:0 d:0
+652    ....C. . ......................... .C........  AGTGTTACTTCGATAGGCGAGTATGC         s:2 i:0 d:1
+720    ........ ......................... ..........  GGTGTTACTGAGATAGGCTGGGGTAC         s:0 i:0 d:0
+789    ....C.A. ......AA................. ..........  AGTGTTACTAAGATAGGCAGGTTTGC         s:4 i:0 d:0
+858    ........ ....T.................... ..........  AGTGTTACTAAGATAGACTGCTGGGGTGT      s:1 i:0 d:0
+930    ........ ..........T.............. .C........  TGTGTTACTTCGATAGGCTGGGGTGT         s:2 i:0 d:0
+999    ........ ........A................ ..........  AGTGTTACTTCGATAGGCGAATCAGC         s:1 i:0 d:0
+1068   ....C.A. ..........T.............. ..........  AGTGTTACTTCGATAGGCAAGAATGC         s:3 i:0 d:0
+1137   ....A... ..........C.............. .C........  AGTGTTACTGGGATAGGCTGGTATGC         s:3 i:0 d:0
+1206   ....A.A. ........A................ ..........                                     s:3 i:0 d:0
+____________________________________________________________________________________________________
+       TTTTTATG GTTGCAGTGGATTGACAAGCTTGAC CATCCCTTCC                                     s:31 i:2 d:5
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.7425173594226879
+avg_spacer_len: 26.416666666666668
+spacer_similarity: 0.5354082898149036
+number_mismatches: 38.0
+spacer_evenness: -0.0
+mfe_score: -6.30
+orf_score: 53.42
+blast_score_1: 0.0
+number_repeats: 13.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 43.0
+at_richness: 0.5485611510791367
+
+Certainty Score: 0.25424286208953145
+
+
+
+====================================================================================================
+

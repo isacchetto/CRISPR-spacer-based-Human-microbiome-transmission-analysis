@@ -1,0 +1,61 @@
+Low score CRISPR: 1, 6251-6316, number of Repeats: 3, avg. length of Repeat: 18, avg length of Spacer: 8
+
+6251   ......-A...--...T.  TTAAAAGCAAGAATGCT      s:2 i:0 d:3
+6283   ....T.............                         s:1 i:0 d:0
+6301   -...-.............                         s:0 i:0 d:2
+____________________________________________________________________________________________________
+       CTTTGTACTTTTTTACCT                         s:3 i:0 d:5
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.5912404297810759
+avg_spacer_len: 17.0
+spacer_similarity: 1.0
+number_mismatches: 8.0
+spacer_evenness: 0.386853
+mfe_score: 0.00
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 3.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 18.0
+at_richness: 0.7959183673469388
+
+Certainty Score: 0.0997535388674123
+
+
+
+====================================================================================================
+
+Low score CRISPR: 2, 18985-19040, number of Repeats: 2, avg. length of Repeat: 23, avg length of Spacer: 13
+
+18985   ......---..............  TCTCCGCCACAGT      s:0 i:0 d:3
+19018   ..........A...CAG......                     s:4 i:0 d:0
+____________________________________________________________________________________________________
+        GGCCTTCTCCGCCATGATGGCCT                     s:4 i:0 d:3
+
+Strand: Forward (Orientation was not computed)
+
+
+repeat_similarity: 0.47958817865116243
+avg_spacer_len: 13.0
+spacer_similarity: 1.0
+number_mismatches: 7.0
+spacer_evenness: -0.0
+mfe_score: -9.40
+orf_score: 0.0
+blast_score_1: 0.0
+number_repeats: 2.0
+hmmr_score: 0.0
+blast_score_2: 0.0
+repeat_len: 23.0
+at_richness: 0.3488372093023256
+
+Certainty Score: 0.12690481992694155
+
+
+
+====================================================================================================
+
