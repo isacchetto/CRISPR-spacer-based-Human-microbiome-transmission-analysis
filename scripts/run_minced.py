@@ -118,8 +118,8 @@ def run(command_run, input_file, output_file):
 if __name__ == '__main__':
 
 
-    # command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
-    command="minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50" # Default command
+    command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
+    # command="minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50" # Default command
     command_run=command.split()
 
 

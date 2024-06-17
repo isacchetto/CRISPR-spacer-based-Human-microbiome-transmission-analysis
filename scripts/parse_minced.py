@@ -198,6 +198,7 @@ if __name__ == '__main__':
     for file in files:
         crisprs_total+=parse_minced(file)
         tasks_completed+=1
+        print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
 
     crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
                             columns=['MAG', 'contig', 'start', 'end', 'spacers', 'repeats'])

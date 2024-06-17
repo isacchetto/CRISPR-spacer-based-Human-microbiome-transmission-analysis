@@ -117,8 +117,15 @@ def run(command_run, input_file, output_file):
 
 if __name__ == '__main__':
 
+    # Default parameters:
+    # -minarray 3 -mincons 0.9 
+    # -minrepeat 16 -maxrepeat 64 
+    # -minspacer 8 -maxspacer 64 
+    # -minrepeatratio 0.9 -minspacerratio 0.75 
+    # -minhitlength 16 -minid 0.94
+    # command="pilercr -noinfo -quiet" # PILER_1 (default)
+    command= "pilercr -noinfo -quiet -minarray 3 -mincons 0.8 -minid 0.85 -maxrepeat 128 -maxspacer 128" # PILER_2
 
-    command="pilercr -noinfo -quiet"
     command_run=command.split()
 
 
