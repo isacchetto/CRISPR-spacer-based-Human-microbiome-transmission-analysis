@@ -21,5 +21,11 @@ To activate the conda environment, run the following command:
 ```bash
 conda activate CRISPR-transmission
 ```
+
+I've also install the following packages in all the conda environments:
+```bash
+conda install ipykernel
+```
+
 ## Project Execution
 
