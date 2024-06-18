@@ -91,7 +91,7 @@ def batched(iterable, n):
 
 def unzip_and_run(command_run, input_file, output_file):
     global errors, lock_errors
-    with open(input_file, 'rb') as file, tempfile.NamedTemporaryFile("wb",prefix=os.path.basename(input_file)[:-8], suffix=".fna", delete=True) as tmp_file:
+    with open(input_file, 'rb') as file, tempfile.NamedTemporaryFile("wb", suffix="_" + os.path.basename(input_file)[:-8]+".fna", delete=True) as tmp_file:
         decompressor = bz2.BZ2Decompressor()
         for data in iter(lambda : file.read(100 * 1024), b''):
             tmp_file.write(decompressor.decompress(data))
