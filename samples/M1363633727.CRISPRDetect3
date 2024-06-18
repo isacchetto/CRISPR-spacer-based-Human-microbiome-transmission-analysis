@@ -1,0 +1,29 @@
+Array 1 10-241 		**** Predicted by CRISPRDetect 3.0 *** 
+>RubelMA_2020_k141_23916		Array_Orientation: Unconfirmed
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence              	Insertion/Deletion
+==========	======	======	======	====================================	=============================	==================
+        10	    36	 100.0	    29	....................................	CTGTTTCCTCATCGTTGGTTGGCCGTGAT	
+        75	    36	 100.0	    29	....................................	CTATCTGAGGATAAGGGCTACGCAGAGGT	
+       140	    36	 100.0	    29	....................................	TGCTTGCTCCTTGTCGTAGATTAATTTTC	
+       205	    36	 100.0	     0	....................................	|                            	
+==========	======	======	======	====================================	=============================	==================
+         4	    36	 100.0	    29	GTTGTATATCTTTATATTCCTACATCAAACCACAAC	                             	       
+
+# Left flank :   |
+# Right flank :  |
+
+# Questionable array : NO	 Score: 4.16
+# 	Score Detail : 1:0, 2:0, 3:0, 4:1.00, 5:0.5, 6:1, 7:0.06, 8:0.6, 9:1,
+# 	Score Legend : 1: cas, 2: matched_database_repeat, 3: motif_match, 4: overall_repeat_identity, 5: one_repeat_cluster, 6: exp_repeat_length, 7: exp_spacer_length, 8: spacer_identity, 9: log(total repeats) - log(total mutated repeats),
+# Primary repeat :     GTTGTATATCTTTATATTCCTACATCAAACCACAAC
+# Alternate repeat :   NA
+
+# Array family : NA
+ 
+# Summary: ID_START_STOP_DIR: RubelMA_2020_k141_23916-10-241-NA; REP_DR:GTTGTATATCTTTATATTCCTACATCAAACCACAAC; DR_LENGTH:36; NUM_DRs:4; MUTATIONS:0; INSERTIONS:0; SCORE:4.16; SPACERS:CTGTTTCCTCATCGTTGGTTGGCCGTGAT,CTATCTGAGGATAAGGGCTACGCAGAGGT,TGCTTGCTCCTTGTCGTAGATTAATTTTC
+ 
+ 
+//
+
+
