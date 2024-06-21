@@ -1,7 +1,36 @@
 # TODO
-- [ ] finire di installare CRISPRCasFinder 
-- [x] creare link per environment.yml di CRISPRDetect
-- [x] creare parsing per pilercr
-- [ ] creare parsing per CRISPRDetect
-- [ ] creare parsing per CRISPRidentify
-- [ ] creare parsing per CRISPRCasFinder
+- [x] Installare tools
+    - [x] installare minced
+    - [x] installare pilercr
+    - [x] installare CRISPRDetect
+        - [x] creare link per environment_CRISPRDetect.yml di CRISPRDetect
+        - [x] rederlo eseguibile come CRISPRDetect (non `perl CRISPRDetect.pl`)
+    - [x] installare CRISPRidentify
+        - [x] rendere eseguibile come CRISPRidentify (non `python3 CRISPRidentify.py`)
+    - [x] installare CRISPRCasFinder
+        - [x] creare link per ccf.environment.yml di CRISPRCasFinder
+        - [x] rendere eseguibile come CRISPRCasFinder (non `perl CRISPRCasFinder.pl`)
+- [ ] Creare script di run e girare tutto con i parametri del paper
+    - [x] minced
+    - [x] pilercr (1 e 2)
+    - [ ] CRISPRDetect
+- [ ] Creare parsing:
+    - [x] creare parsing per minced
+    - [x] creare parsing per pilercr
+    - [ ] creare parsing per CRISPRDetect
+    - [ ] creare parsing per CRISPRidentify
+    - [ ] creare parsing per CRISPRCasFinder
+- [ ] Creare file di output tsv
+    - [x] creare file di output per minced
+    - [x] creare file di output per pilercr
+    - [ ] creare file di output per CRISPRDetect
+    - [ ] creare file di output per CRISPRidentify
+    - [ ] creare file di output per CRISPRCasFinder
+- [x] Creare file tools_difference.txt con un esempio di differenza tra i CRISPR trovati dai tools
+- [ ] Capire come funziona crispidentify 
+- [ ] Dividere i CRISPR in base alla distanza tra cas e crispr
+    - [ ] 0-1000 bp
+    - [ ] 1000-10.000 bp
+    - [ ] >10.000 bp
+- [ ] Internal problem: in AlignTraps, b=0, truncating list
+- [ ] Catturare lo std error magari in un file di log 
