@@ -1,3 +1,11 @@
+CRISPRidentify --file samples/M1363633727.fna --result_folder out/M1363633727_CRISPRidentifyResults --cas True --fast_run True --cpu 192 --parallel True
+            --input_folder
+            --input_folder_multifasta
+
+CRISPRidentify --file samples/M1363633727.fna --result_folder out/M1363633727_CRISPRidentifyResults --cas True
+
+
+
 MAG:    M1363633727
 Contig: RubelMA_2020_k141_23916
 

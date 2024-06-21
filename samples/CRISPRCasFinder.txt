@@ -1,0 +1,22 @@
+
+CRISPRCasFinder -so /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/sel392v2.so -dbc /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/supplementary_files/CRISPR_crisprdb.csv -rpts /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/supplementary_files/Repeat_List.csv -drpt /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/supplementary_files/repeatDirection.tsv -in M1363633727.fna -out M1363633727_CRISPRCasFinderResults  
+
+Total number of CRISPRs arrays found = 12
+Number of perfect macthes between CRISPRCasFinder and CRISPRDirection = 0
+Number of Forward by CRISPRCasFinder = 5
+Number of Forward by CRISPRDirection = 0
+Number of Reverse by CRISPRCasFinder = 4
+Number of Reverse by CRISPRDirection = 0
+
+Number of unoriented by CRISPRCasFinder = 3
+Number of unoriented by CRISPRDirection = 12
+Orientations count file created: M1363633727_CRISPRCasFinderResults/crisprs_orientations_count.tsv
+
+Nb CRISPRs matching CRISPRdb / All CRISPRs = 0 / 12
+
+The script lasted: 0.0208333333333333 hour(s) 1.25 minute(s) 75 second(s)
+
+
+
+
+CRISPRCasFinder -so /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/sel392v2.so -dbc /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/supplementary_files/CRISPR_crisprdb.csv -rpts /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/supplementary_files/Repeat_List.csv -drpt /home/isacco.cenacchi/data/tools/CRISPRCasFinder-release-4.3.2/supplementary_files/repeatDirection.tsv -in M1363633727.fna -out M1363633727_CRISPRCasFinderResults_cas -cas -ccvr -vi 1000 -cpuM 192
