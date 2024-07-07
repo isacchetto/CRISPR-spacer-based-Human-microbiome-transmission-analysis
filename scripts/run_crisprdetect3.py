@@ -106,13 +106,25 @@ if __name__ == '__main__':
     # -T 4 (number of threads)
     # -check_direction 1
     # -annotate_cas_genes 0
-    # -array_quality_score_cutoff 3
+    # -array_quality_score_cutoff 3 (default for fasta files, "4" for GenBank files with cas annotations)
 
     # word_length=11
     # minimum_word_repeatation=3
+
     # repeat_length_cutoff=17
     # minimum_no_of_repeats=3
     # minimum_repeat_length=23
+
+    # max_gap_between_crisprs=500
+    # left_flank_length=500
+    # right_flank_length=500
+
+    # minimum_spacer_gap=50-word_length
+    # maximum_spacer_gap=100+word_length
+
+    # remove_insertion_from_repeat=1
+
+    # fix_gaps_in_repeats=1
 
 
     #CRISPRDetect3 -array_quality_score_cutoff 3 -annotate_cas_genes 1 -check_direction 1 -T 0 -left_flank_length 0 -right_flank_length 0 -f M1856252453.fna -o M1856252453_cas.CRISPRDetect3
