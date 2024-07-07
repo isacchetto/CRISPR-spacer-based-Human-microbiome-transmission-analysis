@@ -102,10 +102,20 @@ def run(command_run, input_file, output_file):
 if __name__ == '__main__':
 
     # Default parameters:
-    # -minarray 3
-    # -minrepeat 23
+    # -q 0 (quiet)
+    # -T 4 (number of threads)
+    # -check_direction 1
+    # -annotate_cas_genes 0
+    # -array_quality_score_cutoff 3
+
+    # word_length=11
+    # minimum_word_repeatation=3
+    # repeat_length_cutoff=17
+    # minimum_no_of_repeats=3
+    # minimum_repeat_length=23
 
 
+    #CRISPRDetect3 -array_quality_score_cutoff 3 -annotate_cas_genes 1 -check_direction 1 -T 0 -left_flank_length 0 -right_flank_length 0 -f M1856252453.fna -o M1856252453_cas.CRISPRDetect3
     
     command= "CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 6 -left_flank_length 0 -right_flank_length 0"
     # CRISPRDetect3 -f ./samples/M1363633727.fna -o test_CRISPRDetect3 -check_direction 0 -array_quality_score_cutoff 3 -T 6 -q 1 -left_flank_length 0 -right_flank_length 0

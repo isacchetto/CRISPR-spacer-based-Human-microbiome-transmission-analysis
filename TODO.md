@@ -5,6 +5,9 @@
     - [x] installare CRISPRDetect
         - [x] creare link per environment_CRISPRDetect.yml di CRISPRDetect
         - [x] rederlo eseguibile come CRISPRDetect (non `perl CRISPRDetect.pl`)
+        - [x] scaricare GeneMarkS
+            - [x] copiare gmhmmp e gmhmmp.pl in CRISPRDetect e renderli eseguibili
+            - [x] aggiungere la key decopressa in ~/.gm_key
     - [x] installare CRISPRidentify
         - [x] rendere eseguibile come CRISPRidentify (non `python3 CRISPRidentify.py`)
     - [x] installare CRISPRCasFinder
