@@ -5,21 +5,73 @@ channels:
   - defaults
 dependencies:
   - python>=3.12.4
+  - ipykernel>=6.29.4
   - bzip2>=1.0.8
-  - pandas>=2.2.2
   - minced>=0.4.2
   - piler-cr>=1.06
+  - numpy>=2.0.0
+  - pandas>=2.2.2
 
+
+
+# After installation create ./envs/CRISPR-transmission/.condarc configuration file with the following commands:
+# ```sh
+# conda config --env --add channels defaults
+# conda config --env --add channels bioconda
+# conda config --env --add channels conda-forge
+# conda config --env --set channel_priority strict
+# ```
 
 # Package versions at the time of writing this file
-# python                         3.12.4
-# bzip2                          1.0.8
-# pandas                         2.2.2
-# minced                         0.4.2
-# piler-cr                       1.06
 
+# python                         3.12.4
+  # - bzip2 >=1.0.8,<2.0a0
+  # - expat >=2.6.2,<3.0a0
+  # - libffi >=3.4,<4.0a0
+  # - ncurses >=6.4,<7.0a0
+  # - openssl >=3.0.13,<4.0a0
+  # - readline >=8.1.2,<9.0a0
+  # - sqlite >=3.45.3,<4.0a0
+  # - tk >=8.6.14,<8.7.0a0
+  # - tzdata
+  # - xz >=5.4.6,<6.0a0
+  # - zlib >=1.2.13,<1.3.0a0
+  # - pip
 # ipykernel                      6.29.4
+  # - __osx
+  # - appnope
+  # - comm >=0.1.1
+  # - debugpy >=1.6.5
+  # - ipython >=7.23.1
+  # - jupyter_client >=6.1.12
+  # - jupyter_core >=4.12,!=5.0.*
+  # - matplotlib-inline >=0.1
+  # - nest-asyncio
+  # - packaging
+  # - psutil
+  # - python >=3.8
+  # - pyzmq >=24
+  # - tornado >=6.1
+  # - traitlets >=5.4.0
+# bzip2                          1.0.8
+# minced                         0.4.2
+  # - openjdk >=8
+# piler-cr                       1.06
+  # - libcxx >=12.0.1
 # numpy                          2.0.0
-# matplotlib                     3.8.4
-# scipy                          1.14.0
-# scikit-learn                   1.5.0
+  # - __osx >=10.13
+  # - libblas >=3.9.0,<4.0a0
+  # - libcblas >=3.9.0,<4.0a0
+  # - libcxx >=16
+  # - liblapack >=3.9.0,<4.0a0
+  # - python >=3.9,<3.10.0a0
+  # - python_abi 3.9.* *_cp39
+# pandas                         2.2.2
+  # - __osx >=10.13
+  # - libcxx >=16
+  # - numpy >=1.19,<3
+  # - python >=3.9,<3.10.0a0
+  # - python-dateutil >=2.8.1
+  # - python-tzdata >=2022a
+  # - python_abi 3.9.* *_cp39
+  # - pytz >=2020.1
