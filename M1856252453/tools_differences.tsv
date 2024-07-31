@@ -1,0 +1,7 @@
+ToolRunned	minNumRepeats	MinRepeatConservation	minRepeatLenght	maxRepeatLenght	minSpacerLength	maxSpacerLength	searchWL	MinLocalAlignmentLength	MinLocalAlignIdentity	min/max_repeatLenRatio	min/max_spacerLenRatio	
+MincedDefault	3		23	47	26	50	8					
+MincedPaper	3		16	128	16	128	8					
+Pilercr_1(Default)	3	0.9	16	64	8	64		16	0.94	0.9	0.75	
+Pilercr_2	3	0.8	16	128	8	128		16	0.85	0.9	0.75	
+CRISPRDetect3	3		23			125 (500)	11					
+CRISPRDetect3(online)	3		11			125	11					

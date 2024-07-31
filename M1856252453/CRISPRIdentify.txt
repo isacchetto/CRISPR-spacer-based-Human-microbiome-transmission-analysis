@@ -1,0 +1,68 @@
+CRISPRidentify --file samples/M1363633727.fna --result_folder out/M1363633727_CRISPRidentifyResults --cas True --fast_run True --cpu 192 --parallel True
+            --input_folder
+            --input_folder_multifasta
+
+CRISPRidentify --file samples/M1363633727.fna --result_folder out/M1363633727_CRISPRidentifyResults --cas True
+
+real    56m57.275s
+user    52m51.849s
+sys     52m29.981s
+
+
+MAG:    M1363633727
+Contig: RubelMA_2020_k141_23916
+
+ID,Region index,Start,End,Length,Consensus repeat,Repeat Length,Average Spacer Length,Number of spacers,Strand,Category,Score
+1,1,10,240,231,GTTGTGGTTTGATGTAGGAATATAAAGATATACAAC,36,29,3,Reversed,Possible,0.6372553601094844
+
+Low score CRISPR: 1, 7-240, number of Repeats: 4, avg. length of Repeat: 39, avg length of Spacer: 25
+
+7     ... ....................................  CTGTTTCCTCATCGTTGGTTGGCCGT      s:0 i:0 d:0
+72    .A. ....................................  CTATCTGAGGATAAGGGCTACGCAGA      s:1 i:0 d:0
+137   ... ....................................  TGCTTGCTCCTTGTCGTAGATTAAT       s:0 i:0 d:0
+201   TT.C....................................                                  s:2 i:1 d:0
+____________________________________________________________________________________________________
+      GGT GTTGTATATCTTTATATTCCTACATCAAACCACAAC                                  s:3 i:1 d:0
+
+Strand: Forward (Orientation was not computed)
+
+Low score CRISPR: 2, 6-243, number of Repeats: 4, avg. length of Repeat: 43, avg length of Spacer: 21
+
+6     ....  .......................................  TTTCCTCATCGTTGGTTGGCCG      s:0 i:0 d:0
+71    T.A.  ......................................A  TCTGAGGATAAGGGCTACGCAG      s:3 i:0 d:0
+136   ....  ...................................-...  CTTGCTCCTTGTCGTAGATTA       s:0 i:0 d:1
+199   .TT.TC......................................A                              s:3 i:2 d:0
+____________________________________________________________________________________________________
+      AGGT  GTTGTATATCTTTATATTCCTACATCAAACCACAACCTG                              s:6 i:2 d:1
+
+Strand: Forward (Orientation was not computed)
+
+Possible CRISPR: 1, 205-45, number of Repeats: 4, avg. length of Repeat: 36, avg length of Spacer: 29
+
+205   ....................................  GAAAATTAATCTACGACAAGGAGCAAGCA      s:0 i:0 d:0
+140   ....................................  ACCTCTGCGTAGCCCTTATCCTCAGATAG      s:0 i:0 d:0
+75    ....................................  ATCACGGCCAACCAACGATGAGGAAACAG      s:0 i:0 d:0
+10    ....................................                                     s:0 i:0 d:0
+____________________________________________________________________________________________________
+      GTTGTGGTTTGATGTAGGAATATAAAGATATACAAC                                     s:0 i:0 d:0
+
+Strand: Reversed
+
+Possible Discarded CRISPR: 1, 9-240, number of Repeats: 4, avg. length of Repeat: 37, avg length of Spacer: 27
+
+9     . ....................................  CTGTTTCCTCATCGTTGGTTGGCCGTGA      s:0 i:0 d:0
+74    . ....................................  CTATCTGAGGATAAGGGCTACGCAGAGG      s:0 i:0 d:0
+139   . ....................................  TGCTTGCTCCTTGTCGTAGATTAATTT       s:0 i:0 d:0
+203   .C....................................                                    s:0 i:1 d:0
+____________________________________________________________________________________________________
+      T GTTGTATATCTTTATATTCCTACATCAAACCACAAC                                    s:0 i:1 d:0
+
+Strand: Forward (Orientation was not computed)
+
+
+GTTGTGGTTTGATGTAGGAATATAAAGATATACAAC seq
+CAACACCAAACTACATCCTTATATTTCTATATGTTG complementare
+CAACATATAGAAATATAAGGATGTAGTTTGGTGTTG reversed
+
+
+GGATTAGGTGTTGTATATCTTTATATTCCTACATCAAACCACAACCTGTTTCCTCATCGTTGGTTGGCCGTGATGTTGTATATCTTTATATTCCTACATCAAACCACAACCTATCTGAGGATAAGGGCTACGCAGAGGTGTTGTATATCTTTATATTCCTACATCAAACCACAACTGCTTGCTCCTTGTCGTAGATTAATTTTCGTTGTATATCTTTATATTCCTACATCAAACCACAACCTAAAGAAACGAATATACTGATAATCAGGTAATAATAACCATATTTCTTGTAAGAAATGGCGAGTAGGACTTTTTTTCTATATGCAAATTTACTAAAAAAATTCCAGTTGAATAGGTTCACTGATTACTTTTTTCGTAATTTTACTCTTATTAATACTTTTAGGCTTCCCCCAGAAATTA

@@ -1,0 +1,120 @@
+Array 1 1-300 		**** Predicted by CRISPRDetect 3.0 *** 
+>NODE_6421_length_4372_cov_9.0278		Array_Orientation: Unconfirmed
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                 	Spacer_Sequence                     	Insertion/Deletion
+==========	======	======	======	================================	====================================	==================
+         1	    32	 100.0	    36	................................	AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGCC	
+        69	    32	 100.0	    35	................................	GTAACAGGGAAATATGTATGCGCATCAGCAGATTC 	
+       136	    32	  96.9	    35	........................A.......	TAAATGGCAGGACGAAACAGTAGAAACAGTTCTTC 	
+       203	    32	  90.6	    33	.................A....A..G......	TTTTGTAAAAAGTGCAATCGAATTTACTTTTTT   	
+       268	    32	  71.9	     0	.C....T....TA.A...T.A.......G..G	|                                   	
+==========	======	======	======	================================	====================================	==================
+         5	    32	  91.9	    35	GTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT	                                    	       
+
+# Left flank :   |
+# Right flank :  |
+
+# Questionable array : NO	 Score: 3.96
+# 	Score Detail : 1:0, 2:0, 3:0, 4:0.60, 5:0, 6:0.7, 7:0.94, 8:0.8, 9:0.92,
+# 	Score Legend : 1: cas, 2: matched_database_repeat, 3: motif_match, 4: overall_repeat_identity, 5: one_repeat_cluster, 6: exp_repeat_length, 7: exp_spacer_length, 8: spacer_identity, 9: log(total repeats) - log(total mutated repeats),
+# Primary repeat :     GTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
+# Alternate repeat :   NA
+
+# Array family : NA
+ 
+# Summary: ID_START_STOP_DIR: NODE_6421_length_4372_cov_9.0278-1-300-NA; REP_DR:GTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT; DR_LENGTH:32; NUM_DRs:5; MUTATIONS:13; INSERTIONS:0; SCORE:3.96; SPACERS:AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGCC,GTAACAGGGAAATATGTATGCGCATCAGCAGATTC,TAAATGGCAGGACGAAACAGTAGAAACAGTTCTTC,TTTTGTAAAAAGTGCAATCGAATTTACTTTTTT
+ 
+ 
+//
+
+
+Array 1 7324-8350 		**** Predicted by CRISPRDetect 3.0 *** 
+>NODE_2676_length_8889_cov_6.11014		Array_Orientation: Unconfirmed
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence                	Insertion/Deletion
+==========	======	======	======	====================================	===============================	==================
+      7324	    36	 100.0	    30	....................................	TTCCAGTGTGGGATAGAACAACGCTTTTCT 	
+      7390	    36	 100.0	    29	....................................	ATACAGCGGACGCAACCAAGAAAGCTACT  	
+      7455	    36	 100.0	    30	....................................	TCAAGTTCTATGCTATAATACAATTCATAG 	
+      7521	    36	 100.0	    30	....................................	TTCTACACGACAAAAAATATCAGCAAACTC 	
+      7587	    36	 100.0	    30	....................................	AAGCGTGAGCTGCTCCTACTAAATCTACTG 	
+      7653	    36	 100.0	    31	....................................	GGCGATCAATACAGAACTTGGAAGAATAGCA	
+      7720	    36	 100.0	    30	....................................	TGTTTTGGAAACTATCAAGGTATAGGGTGA 	
+      7786	    36	 100.0	    30	....................................	CAAAAAAGTTGGCAATACGACAGAAAATGA 	
+      7852	    36	 100.0	    30	....................................	GCACGATGATCTCGAACTTTGGAAAAGTAG 	
+      7918	    36	 100.0	    30	....................................	AGGATGATCTGGAGAACTGGTGCGGCGGAA 	
+      7984	    36	 100.0	    30	....................................	CATTTCTTGCAACGAGTATGTGTTCCAGTG 	
+      8050	    36	 100.0	    30	....................................	ATCTTGCGCAGAATCAACGTTAGCATTAGT 	
+      8116	    36	 100.0	    30	....................................	AAATTACAATTAAATACTATCCTGTTGCGA 	
+      8182	    36	 100.0	    30	....................................	AGGCAAAAATGCTACAATGTTCTAAAAACA 	
+      8248	    36	 100.0	    30	....................................	CAACCGTACAAGATGCATAGCGTGCTTGTT 	
+      8314	    36	 100.0	     0	....................................	|                              	
+==========	======	======	======	====================================	===============================	==================
+        16	    36	 100.0	    30	GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	                               	       
+
+# Left flank :   |
+# Right flank :  |
+
+# Questionable array : NO	 Score: 4.76
+# 	Score Detail : 1:0, 2:0, 3:0, 4:1.00, 5:0.5, 6:1, 7:0.26, 8:1, 9:1,
+# 	Score Legend : 1: cas, 2: matched_database_repeat, 3: motif_match, 4: overall_repeat_identity, 5: one_repeat_cluster, 6: exp_repeat_length, 7: exp_spacer_length, 8: spacer_identity, 9: log(total repeats) - log(total mutated repeats),
+# Primary repeat :     GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+# Alternate repeat :   NA
+
+# Array family : NA
+ 
+# Summary: ID_START_STOP_DIR: NODE_2676_length_8889_cov_6.11014-7324-8350-NA; REP_DR:GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC; DR_LENGTH:36; NUM_DRs:16; MUTATIONS:0; INSERTIONS:0; SCORE:4.76; SPACERS:TTCCAGTGTGGGATAGAACAACGCTTTTCT,ATACAGCGGACGCAACCAAGAAAGCTACT,TCAAGTTCTATGCTATAATACAATTCATAG,TTCTACACGACAAAAAATATCAGCAAACTC,AAGCGTGAGCTGCTCCTACTAAATCTACTG,GGCGATCAATACAGAACTTGGAAGAATAGCA,TGTTTTGGAAACTATCAAGGTATAGGGTGA,CAAAAAAGTTGGCAATACGACAGAAAATGA,GCACGATGATCTCGAACTTTGGAAAAGTAG,AGGATGATCTGGAGAACTGGTGCGGCGGAA,CATTTCTTGCAACGAGTATGTGTTCCAGTG,ATCTTGCGCAGAATCAACGTTAGCATTAGT,AAATTACAATTAAATACTATCCTGTTGCGA,AGGCAAAAATGCTACAATGTTCTAAAAACA,CAACCGTACAAGATGCATAGCGTGCTTGTT
+ 
+ 
+//
+
+
+Array 1 24-1584 		**** Predicted by CRISPRDetect 3.0 *** 
+>NODE_1078_length_18534_cov_9.17663		Array_Orientation: Unconfirmed
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                 	Spacer_Sequence                     	Insertion/Deletion
+==========	======	======	======	================================	====================================	==================
+        24	    32	 100.0	    34	................................	TGTATCTCTCTACTTTCTTTGGCTTCGCTTTGAA  	
+        90	    32	 100.0	    33	................................	TGCAATCTGGCGTGCACATACTGCTACCAGATC   	
+       155	    32	 100.0	    33	................................	CATATCCTTAGCTCTAATATTTCCGCTAATGTT   	
+       220	    32	 100.0	    34	................................	TGGCTCAATCCATTACCTGCGGCGGCAGGTCAAT  	
+       286	    32	 100.0	    35	................................	CGTGCGGCGTGTGCTTCGGATTGCCGACTATTCCT 	
+       353	    32	 100.0	    34	................................	CGATGCCGACCCGGAACAGTGGGAGAAGATAGAC  	
+       419	    32	 100.0	    35	................................	GTTATTCAGTTTACAACATGACCGTATGTGGACTT 	
+       486	    32	 100.0	    35	................................	GGAGCCCGTTTGAAGTACTAGGACAGACGGTAAGT 	
+       553	    32	 100.0	    35	................................	TCCCATACGCCTGCAACTTTAGTTTTAATTGCATT 	
+       620	    32	 100.0	    35	................................	GATAGCCAGATTAGTGGAAATAACGTCGAAGAATT 	
+       687	    32	 100.0	    35	................................	GCGTAGCGATTATGTACAATAAGCACCATACAGAT 	
+       754	    32	 100.0	    35	................................	GGAGACTTCAAGACAACAGATGTAGCTCTGGAAGC 	
+       821	    32	 100.0	    34	................................	CGAACATTCAGACAGAACTTGCTGGATGGAAGAA  	
+       887	    32	 100.0	    34	................................	AAGTATCAGCAGGCGCATACAACGCACTGGTTGA  	
+       953	    32	 100.0	    33	................................	ATTATTCCACAGTACTTGCATCTCCTGATCAGA   	
+      1018	    32	 100.0	    36	................................	GAGAATCACTCCGGTTACAATGAACAGGGGGCAGCT	
+      1086	    32	 100.0	    34	................................	CTGGGGATTTTTTGAAGTGAGGTGATGATATGGC  	
+      1152	    32	 100.0	    34	................................	TGAAACTTATTCATGGATTGATGATGATGGCGTA  	
+      1218	    32	 100.0	    35	................................	GAGGGTGAGGAAATCCCTTACAGCAAGTTTACTGT 	
+      1285	    32	 100.0	    35	................................	GAAGAGGCAATATTTCCTTGCATGGAAGATATGAC 	
+      1352	    32	 100.0	    33	................................	CACGCCCCAGATGGTGTAGACATATGGGACGAT   	
+      1417	    32	 100.0	    36	................................	GGAAAAGCGTTGGTTTGGTGTTGCCAGGACTGCTAC	
+      1485	    32	 100.0	    35	................................	GATCAAGTAAAAACATTTACCGTAAACAGCGGAGT 	
+      1552	    32	 100.0	     0	................................	|                                   	
+==========	======	======	======	================================	====================================	==================
+        24	    32	 100.0	    34	ATTTCAACTCACAGCCTCACGAAGAGGCTGAC	                                    	       
+
+# Left flank :   |
+# Right flank :  |
+
+# Questionable array : NO	 Score: 4.83
+# 	Score Detail : 1:0, 2:0, 3:0, 4:1.00, 5:0.5, 6:0.7, 7:0.63, 8:1, 9:1,
+# 	Score Legend : 1: cas, 2: matched_database_repeat, 3: motif_match, 4: overall_repeat_identity, 5: one_repeat_cluster, 6: exp_repeat_length, 7: exp_spacer_length, 8: spacer_identity, 9: log(total repeats) - log(total mutated repeats),
+# Primary repeat :     ATTTCAACTCACAGCCTCACGAAGAGGCTGAC
+# Alternate repeat :   NA
+
+# Array family : NA
+ 
+# Summary: ID_START_STOP_DIR: NODE_1078_length_18534_cov_9.17663-24-1584-NA; REP_DR:ATTTCAACTCACAGCCTCACGAAGAGGCTGAC; DR_LENGTH:32; NUM_DRs:24; MUTATIONS:0; INSERTIONS:0; SCORE:4.83; SPACERS:TGTATCTCTCTACTTTCTTTGGCTTCGCTTTGAA,TGCAATCTGGCGTGCACATACTGCTACCAGATC,CATATCCTTAGCTCTAATATTTCCGCTAATGTT,TGGCTCAATCCATTACCTGCGGCGGCAGGTCAAT,CGTGCGGCGTGTGCTTCGGATTGCCGACTATTCCT,CGATGCCGACCCGGAACAGTGGGAGAAGATAGAC,GTTATTCAGTTTACAACATGACCGTATGTGGACTT,GGAGCCCGTTTGAAGTACTAGGACAGACGGTAAGT,TCCCATACGCCTGCAACTTTAGTTTTAATTGCATT,GATAGCCAGATTAGTGGAAATAACGTCGAAGAATT,GCGTAGCGATTATGTACAATAAGCACCATACAGAT,GGAGACTTCAAGACAACAGATGTAGCTCTGGAAGC,CGAACATTCAGACAGAACTTGCTGGATGGAAGAA,AAGTATCAGCAGGCGCATACAACGCACTGGTTGA,ATTATTCCACAGTACTTGCATCTCCTGATCAGA,GAGAATCACTCCGGTTACAATGAACAGGGGGCAGCT,CTGGGGATTTTTTGAAGTGAGGTGATGATATGGC,TGAAACTTATTCATGGATTGATGATGATGGCGTA,GAGGGTGAGGAAATCCCTTACAGCAAGTTTACTGT,GAAGAGGCAATATTTCCTTGCATGGAAGATATGAC,CACGCCCCAGATGGTGTAGACATATGGGACGAT,GGAAAAGCGTTGGTTTGGTGTTGCCAGGACTGCTAC,GATCAAGTAAAAACATTTACCGTAAACAGCGGAGT
+ 
+ 
+//
+
+

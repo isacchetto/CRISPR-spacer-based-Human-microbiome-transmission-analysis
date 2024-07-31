@@ -1,0 +1,161 @@
+pilercr v1.06
+By Robert C. Edgar
+
+M1856252453.fna: 5 putative CRISPR arrays found.
+
+
+
+DETAIL REPORT
+
+
+
+Array 1
+>NODE_264_length_53435_cov_9.29292
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat               Spacer
+==========  ======  ======  ======  ==========    =================    ======
+     50389      17    82.4     113  CAAATATAGG    -....T.........T.    ACATTGCGTTTAAGGTAAATGCTGATTTTGAGAATATTCCTTTGGAAGACTCGGATGTTGTTATGATATTGGGAAATTTATTAGACAATGCAATAGAAGCCTCAATGGAAAGT
+     50519      17    88.2      98  AATGGAAAGT    .........G.G.....    GTTATATATTGCGAATAAAAATGATATGTTTATTTTGAAAGTTATAAATACATATGAAATTGAACCAGTGACAAAAGGTGAGAGGTTTATAAGTAACA
+     50634      17   100.0          ATAAGTAACA    .................    CACGGATGGGGA
+==========  ======  ======  ======  ==========    =================
+         3      17             105                AAAAAGAAAAAAATAAA
+
+
+Array 2
+>NODE_1078_length_18534_cov_9.17663
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                              Spacer
+==========  ======  ======  ======  ==========    ================================    ======
+        24      32   100.0      34  TACATATCCT    ................................    TGTATCTCTCTACTTTCTTTGGCTTCGCTTTGAA
+        90      32   100.0      33  TCGCTTTGAA    ................................    TGCAATCTGGCGTGCACATACTGCTACCAGATC
+       155      32   100.0      33  CTACCAGATC    ................................    CATATCCTTAGCTCTAATATTTCCGCTAATGTT
+       220      32   100.0      34  CGCTAATGTT    ................................    TGGCTCAATCCATTACCTGCGGCGGCAGGTCAAT
+       286      32   100.0      35  GCAGGTCAAT    ................................    CGTGCGGCGTGTGCTTCGGATTGCCGACTATTCCT
+       353      32   100.0      34  GACTATTCCT    ................................    CGATGCCGACCCGGAACAGTGGGAGAAGATAGAC
+       419      32   100.0      35  GAAGATAGAC    ................................    GTTATTCAGTTTACAACATGACCGTATGTGGACTT
+       486      32   100.0      35  ATGTGGACTT    ................................    GGAGCCCGTTTGAAGTACTAGGACAGACGGTAAGT
+       553      32   100.0      35  GACGGTAAGT    ................................    TCCCATACGCCTGCAACTTTAGTTTTAATTGCATT
+       620      32   100.0      35  TAATTGCATT    ................................    GATAGCCAGATTAGTGGAAATAACGTCGAAGAATT
+       687      32   100.0      35  TCGAAGAATT    ................................    GCGTAGCGATTATGTACAATAAGCACCATACAGAT
+       754      32   100.0      35  CCATACAGAT    ................................    GGAGACTTCAAGACAACAGATGTAGCTCTGGAAGC
+       821      32   100.0      34  CTCTGGAAGC    ................................    CGAACATTCAGACAGAACTTGCTGGATGGAAGAA
+       887      32   100.0      34  GATGGAAGAA    ................................    AAGTATCAGCAGGCGCATACAACGCACTGGTTGA
+       953      32   100.0      33  CACTGGTTGA    ................................    ATTATTCCACAGTACTTGCATCTCCTGATCAGA
+      1018      32   100.0      36  CCTGATCAGA    ................................    GAGAATCACTCCGGTTACAATGAACAGGGGGCAGCT
+      1086      32   100.0      34  GGGGGCAGCT    ................................    CTGGGGATTTTTTGAAGTGAGGTGATGATATGGC
+      1152      32   100.0      34  ATGATATGGC    ................................    TGAAACTTATTCATGGATTGATGATGATGGCGTA
+      1218      32   100.0      35  TGATGGCGTA    ................................    GAGGGTGAGGAAATCCCTTACAGCAAGTTTACTGT
+      1285      32   100.0      35  AGTTTACTGT    ................................    GAAGAGGCAATATTTCCTTGCATGGAAGATATGAC
+      1352      32   100.0      33  AAGATATGAC    ................................    CACGCCCCAGATGGTGTAGACATATGGGACGAT
+      1417      32   100.0      36  ATGGGACGAT    ................................    GGAAAAGCGTTGGTTTGGTGTTGCCAGGACTGCTAC
+      1485      32   100.0      35  GGACTGCTAC    ................................    GATCAAGTAAAAACATTTACCGTAAACAGCGGAGT
+      1552      32   100.0          ACAGCGGAGT    ................................    AGCAATTCTG
+==========  ======  ======  ======  ==========    ================================
+        24      32              34                ATTTCAACTCACAGCCTCACGAAGAGGCTGAC
+
+
+Array 3
+>NODE_1161_length_17535_cov_8.67431
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                   Spacer
+==========  ======  ======  ======  ==========    =====================    ======
+     11467      21    81.0      57  AATCATTTAT    ..............T...---    TCTTATTGACTGATTATCACTGATTGTACCCCCGTTTATGTTAATGTTTGAGTAAGA
+     11545      21    90.5      54  TTGAGTAAGA    ..A.A................    CGTTGCACTATGTCCACTGATTGTACCTCCATTCACATTGACAGTTGCATGTTC
+     11620      21   100.0          TTGCATGTTC    .....................    TTCAACTGTGT
+==========  ======  ======  ======  ==========    =====================
+         3      21              55                CGCATATATTCCACCGCCATA
+
+
+Array 4
+>NODE_2676_length_8889_cov_6.11014
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
+==========  ======  ======  ======  ==========    ====================================    ======
+      7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
+      7390      36   100.0      29  ACGCTTTTCT    ....................................    ATACAGCGGACGCAACCAAGAAAGCTACT
+      7455      36   100.0      30  GAAAGCTACT    ....................................    TCAAGTTCTATGCTATAATACAATTCATAG
+      7521      36   100.0      30  CAATTCATAG    ....................................    TTCTACACGACAAAAAATATCAGCAAACTC
+      7587      36   100.0      30  CAGCAAACTC    ....................................    AAGCGTGAGCTGCTCCTACTAAATCTACTG
+      7653      36   100.0      31  AAATCTACTG    ....................................    GGCGATCAATACAGAACTTGGAAGAATAGCA
+      7720      36   100.0      30  AAGAATAGCA    ....................................    TGTTTTGGAAACTATCAAGGTATAGGGTGA
+      7786      36   100.0      30  TATAGGGTGA    ....................................    CAAAAAAGTTGGCAATACGACAGAAAATGA
+      7852      36   100.0      30  CAGAAAATGA    ....................................    GCACGATGATCTCGAACTTTGGAAAAGTAG
+      7918      36   100.0      30  GGAAAAGTAG    ....................................    AGGATGATCTGGAGAACTGGTGCGGCGGAA
+      7984      36   100.0      30  TGCGGCGGAA    ....................................    CATTTCTTGCAACGAGTATGTGTTCCAGTG
+      8050      36   100.0      30  TGTTCCAGTG    ....................................    ATCTTGCGCAGAATCAACGTTAGCATTAGT
+      8116      36   100.0      30  TAGCATTAGT    ....................................    AAATTACAATTAAATACTATCCTGTTGCGA
+      8182      36   100.0      30  CCTGTTGCGA    ....................................    AGGCAAAAATGCTACAATGTTCTAAAAACA
+      8248      36   100.0      30  TCTAAAAACA    ....................................    CAACCGTACAAGATGCATAGCGTGCTTGTT
+      8314      36   100.0          CGTGCTTGTT    ....................................    CAGATGAAGG
+==========  ======  ======  ======  ==========    ====================================
+        16      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+
+Array 5
+>NODE_6421_length_4372_cov_9.0278
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                               Spacer
+==========  ======  ======  ======  ==========    =================================    ======
+         1      33    97.0      35                -................................    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
+        69      33   100.0      34  CCTGTAGCGC    .................................    GTAACAGGGAAATATGTATGCGCATCAGCAGATT
+       136      33    97.0      34  TCAGCAGATT    .........................A.......    TAAATGGCAGGACGAAACAGTAGAAACAGTTCTT
+       203      33    90.9          AACAGTTCTT    ..................A....A..G......    TTTTGTAAAAA
+==========  ======  ======  ======  ==========    =================================
+         4      33              34                CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
+
+
+SUMMARY BY SIMILARITY
+
+
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer  +  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  =  =========
+    2  NODE_1078_length          24        1560        24      32      34  +  ATTTCAACTCACAGCCTCACGAAGAGGCTGAC-
+    5  NODE_6421_length           1         234         4      33      34  -  ATTTCAACTCACAGCCTCACGAAGAGGCTGACG
+                                                                              ******************************** 
+
+    1  NODE_264_length_       50389         261         3      17     105  +  AAAAAGAAAAAAATAAA
+
+    3  NODE_1161_length       11467         171         3      21      55  +  CGCATATATTCCACCGCCATA
+
+    4  NODE_2676_length        7324        1026        16      36      30  +  GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+
+
+SUMMARY BY POSITION
+
+
+
+>NODE_264_length_53435_cov_9.29292
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    1  NODE_264_length_       50389         261         3      17     105              AAAAAGAAAAAAATAAA
+
+
+>NODE_1078_length_18534_cov_9.17663
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    2  NODE_1078_length          24        1560        24      32      34              ATTTCAACTCACAGCCTCACGAAGAGGCTGAC
+
+
+>NODE_1161_length_17535_cov_8.67431
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    3  NODE_1161_length       11467         171         3      21      55              CGCATATATTCCACCGCCATA
+
+
+>NODE_2676_length_8889_cov_6.11014
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    4  NODE_2676_length        7324        1026        16      36      30              GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+
+>NODE_6421_length_4372_cov_9.0278
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    5  NODE_6421_length           1         234         4      33      34              CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
