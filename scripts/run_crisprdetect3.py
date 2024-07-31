@@ -26,7 +26,7 @@ parser.add_argument("input_directory", type=str, help="The input directory of th
 parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format")
 parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is 'out/<input_directory>_CRISPRDetect3_<timestamp>' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory instead into the 'out' directory of the current working directory")
-parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count()//3, dest="num_cpus")
+parser.add_argument("-t", "--threads", type=int, help="Number of threads to use (default ALL/3)", default=mp.cpu_count()//3, dest="num_cpus")
 parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
 args = parser.parse_args()
 
@@ -129,8 +129,7 @@ if __name__ == '__main__':
 
     #CRISPRDetect3 -array_quality_score_cutoff 3 -annotate_cas_genes 1 -check_direction 1 -T 0 -left_flank_length 0 -right_flank_length 0 -f M1856252453.fna -o M1856252453_cas.CRISPRDetect3
     
-    command= "CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 6 -left_flank_length 0 -right_flank_length 0"
-    # CRISPRDetect3 -f ./samples/M1363633727.fna -o test_CRISPRDetect3 -check_direction 0 -array_quality_score_cutoff 3 -T 6 -q 1 -left_flank_length 0 -right_flank_length 0
+    command= "CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
     command_run=command.split()
 
 
@@ -174,7 +173,7 @@ if __name__ == '__main__':
                 future=executor.submit(run, command_run, mag, output_file)
             future.add_done_callback(future_progress_indicator)
     end_time = datetime.now()
-    logging.info('Pilercr {}/{} MAGs in {}'.format(
+    logging.info('CRISPRDetect3 {}/{} MAGs in {}'.format(
         tasks_completed,
         tasks_total, 
         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
