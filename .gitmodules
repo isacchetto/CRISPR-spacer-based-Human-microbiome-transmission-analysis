@@ -1,0 +1,3 @@
+[submodule "tools/CRISPRDetect_3.0"]
+	path = tools/CRISPRDetect_3.0
+	url = https://github.com/ambarishbiswas/CRISPRDetect_3.0.git

@@ -20,6 +20,7 @@ dependencies:
 # conda config --env --add channels bioconda
 # conda config --env --add channels conda-forge
 # conda config --env --set channel_priority strict
+# conda config --env --set auto_stack 1
 # ```
 
 # Package versions at the time of writing this file
