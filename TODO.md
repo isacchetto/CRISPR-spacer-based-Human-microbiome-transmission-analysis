@@ -16,7 +16,7 @@
 - [ ] Creare script di run e girare tutto con i parametri del paper
     - [x] minced
     - [x] pilercr (1 e 2)
-    - [ ] CRISPRDetect
+    - [x] CRISPRDetect
 - [ ] Creare parsing:
     - [x] creare parsing per minced
     - [x] creare parsing per pilercr
