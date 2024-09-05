@@ -11,6 +11,7 @@ dependencies:
   - piler-cr>=1.06
   - numpy>=2.0.0
   - pandas>=2.2.2
+  - simple-term-menu>=1.6.4
 
 
 
