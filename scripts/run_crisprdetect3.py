@@ -13,8 +13,6 @@ from concurrent.futures import ThreadPoolExecutor
 import multiprocessing as mp
 from threading import Lock
 import tempfile
-from simple_term_menu import TerminalMenu
-
 
 
 # run_crisprdetect3.py
@@ -23,7 +21,7 @@ from simple_term_menu import TerminalMenu
 # by isacchetto
 
 # Argument parser
-parser = argparse.ArgumentParser(description="Run minced/pilercr/CRISPRDetect3 on a directory of MAGs")
+parser = argparse.ArgumentParser(description="Run CRISPRDetect3 on a directory of MAGs")
 parser.add_argument("input_directory", type=str, help="The input directory of the MAGs")
 parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format")
 parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is 'out/<input_directory>_CRISPRDetect3_<timestamp>' (see --inplace for more info)", default=None, dest="out")
@@ -39,25 +37,18 @@ else:
     print("The input directory does not exist", file=sys.stderr)
     exit()
 
-# Select the tool to use
-tools = ["minced", "pilercr", "CRISPRDetect3"]
-terminal_menu = TerminalMenu(tools)
-menu_entry_index = terminal_menu.show()
-tool=tools[menu_entry_index]
-print(f"You have selected {tools[menu_entry_index]}!")
-
 # Create output directory
 if args.inplace:
     if args.out==None:
         # Create output directory with unique name near the input directory
-        output_dir = f"{input_dir}_{tool}_{time.strftime('%Y%m%d%H%M%S')}"
+        output_dir = f"{input_dir}_CRISPRDetect3_{time.strftime('%Y%m%d%H%M%S')}"
     else:
         # Create output directory with name specified by the user near the input directory
         output_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.out))
 else:
     if args.out==None:
         # Create output directory with unique name in the out directory of the current working directory
-        output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool}_{time.strftime('%Y%m%d%H%M%S')}")
+        output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_CRISPRDetect3_{time.strftime('%Y%m%d%H%M%S')}")
     else:
         # Create output directory with name specified by the user in the out directory of the current working directory
         output_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.out))
@@ -88,17 +79,11 @@ def unzip_and_run(command_run, input_file, output_file):
         decompressor = bz2.BZ2Decompressor()
         for data in iter(lambda : file.read(100 * 1024), b''):
             tmp_file.write(decompressor.decompress(data))
-        match tool:
-            case "minced":
-                completedProcess = subprocess.run(command_run + [tmp_file.name], stdout=open(output_file, 'wb'))
-            case "pilercr":
-                completedProcess = subprocess.run(command_run + ['-in', tmp_file.name, '-out', output_file])
-            case "CRISPRDetect3":
-                completedProcess = subprocess.run(command_run + ['-f', tmp_file.name, '-o', output_file], stdout = subprocess.DEVNULL)
+        completedProcess = subprocess.run(command_run + ['-f', tmp_file.name, '-o', output_file], stdout = subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
         with lock_errors:
-            errors.append(f"Error in {input_file}: {tool} returned {e.returncode}")
+            errors.append(f"Error in {input_file}: CRISPRDetect3 returned {e.returncode}")
         return 0
     else:
         return 1
