@@ -39,18 +39,29 @@ else:
     print("The input directory does not exist", file=sys.stderr)
     exit()
 
+# Verify the presence of the tools
+tools = []
+if shutil.which("minced"):
+    tools.append("minced")
+if shutil.which("pilercr"):
+    tools.append("pilercr")
+if shutil.which("CRISPRDetect3"):
+    tools.append("CRISPRDetect3")
+if not tools:
+    print("No tools found: minced, pilercr, CRISPRDetect3", file=sys.stderr)
+    exit()
+
 # Select the tool to use
-tools = ["minced", "pilercr", "CRISPRDetect3"]
-terminal_menu = TerminalMenu(tools, title="Select the tool to use:  (Press Q or Esc to quit) \n", 
+tools_menu = TerminalMenu(tools, title="Select the tool to use:  (Press Q or Esc to quit) \n", 
                              menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
                              menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                             clear_screen=True, raise_error_on_interrupt=True,)
-try: menu_entry_index = terminal_menu.show()
+                             clear_screen=True, raise_error_on_interrupt=True)
+try: menu_tool_index = tools_menu.show()
 except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-if menu_entry_index is None: 
-    print("No tool selected, ", file=sys.stderr); exit()
+if menu_tool_index is None: 
+    print("No tool selected", file=sys.stderr); exit()
 else:
-    tool=tools[menu_entry_index]
+    tool=tools[menu_tool_index]
 
 # Create output directory
 if args.inplace:
@@ -128,6 +139,10 @@ def run(command_run, input_file, output_file):
     else:
         return 1
 
+# Function to show the command preview for TerminalMenu
+def show_preview(command):
+    return commands[command]
+
 
 if __name__ == '__main__':
 
@@ -141,18 +156,19 @@ if __name__ == '__main__':
 
             commands = {"Paper":"minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128", 
                         "Default":"minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50"}
-            terminal_menu = TerminalMenu(commands, title="minced command:\n", 
+            commands_menu = TerminalMenu(commands, title="minced command:\n", 
                              menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
                              menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                             clear_screen=True, raise_error_on_interrupt=True, preview_command=commands[{}])
-            try: menu_entry_index = terminal_menu.show()
+                             clear_screen=True, raise_error_on_interrupt=True, preview_command=show_preview)
+            try: menu_command_index = commands_menu.show()
             except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-            if menu_entry_index is None: 
+            if menu_command_index is None: 
                 print("No command selected, ", file=sys.stderr); exit()
             else:
-                command=commands[menu_entry_index]
-            exit()
-            command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
+                command=commands[menu_command_index]
+                command=commands
+            print(command)
+            # command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
             # command="minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50" # Default command
         case "pilercr":
             # pilercr default parameters:
