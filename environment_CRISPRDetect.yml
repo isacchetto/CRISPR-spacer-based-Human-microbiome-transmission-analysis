@@ -11,8 +11,9 @@ dependencies:
   - cd-hit=4.8.1
   - blast=2.15
   - hmmer=3.4
+  # - simple-term-menu>=1.6.4
 variables:
   # write the path to the CRISPRDetect_3.0 folder in your system
-  PATH: "/home/isacco.cenacchi/data/tools/CRISPRDetect_3.0:$PATH" 
+  # PATH: "~/data/tools/CRISPRDetect_3.0:$PATH" 
 
 

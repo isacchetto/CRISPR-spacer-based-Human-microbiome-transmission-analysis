@@ -31,9 +31,10 @@
     - [ ] creare file di output per CRISPRCasFinder
 - [x] Creare file tools_difference.txt con un esempio di differenza tra i CRISPR trovati dai tools
 - [ ] Capire come funziona crispidentify 
-- [ ] Dividere i CRISPR in base alla distanza tra cas e crispr
-    - [ ] 0-1000 bp
-    - [ ] 1000-10.000 bp
-    - [ ] >10.000 bp
+- [x] Dividere i CRISPR in base alla distanza tra cas e crispr
+    - [x] 0-1000 bp
+    - [x] 1000-10.000 bp
+    - [x] >10.000 bp
 - [ ] Internal problem: in AlignTraps, b=0, truncating list
 - [ ] Catturare lo std error magari in un file di log 
+- [ ] capire se usare veramete CRISPRDetect3 e nel caso aggiornare bene l'environment.yml
