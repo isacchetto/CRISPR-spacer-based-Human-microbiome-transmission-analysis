@@ -24,10 +24,10 @@ import pandas as pd
 # by isacchetto
 
 # Argument parser
-parser = argparse.ArgumentParser(description="Run minced/pilercr/CRISPRDetect3 on a directory of MAGs, and create a file.tsv of CRISPRs found")
+parser = argparse.ArgumentParser(description="Run minced/pilercr/CRISPRDetect3 on a directory of MAGs, and create a file.tsv of CRISPRs found with this column: MAG, Contig, Start, End, Spacers, Repeats, Cas_0-1000, Cas_1000-10000, Cas_>100000, Cas_overlayed")
 parser.add_argument("input_directory", type=str, help="The input directory of the MAGs")
 parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format")
-parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is 'out/<input_directory>_CRISPRDetect3_<timestamp>' (see --inplace for more info)", default=None, dest="out")
+parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is './out/<input_directory>_CRISPRDetect3_<timestamp>' (see --inplace for more info)", default=None, dest="out")
 parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory instead into the 'out' directory of the current working directory")
 parser.add_argument("-t", "--threads", type=int, help="Number of threads to use (default ALL/3)", default=mp.cpu_count()//3, dest="num_cpus")
 parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
@@ -483,7 +483,7 @@ if __name__ == '__main__':
             pass
 
     crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
-                            columns=['MAG', 'contig', 'start', 'end', 'spacers', 'repeats'])
+                                columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'])
 
     crisprs_df.to_csv(parsed_file, sep='\t')
 
