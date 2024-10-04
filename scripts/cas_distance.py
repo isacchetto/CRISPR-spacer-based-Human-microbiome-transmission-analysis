@@ -6,7 +6,6 @@ import pandas as pd
 from datetime import datetime
 import argparse
 import logging
-import multiprocessing as mp
 
 
 
