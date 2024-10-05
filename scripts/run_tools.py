@@ -5,6 +5,7 @@ import sys
 import shutil
 import bz2
 import subprocess
+import textwrap
 import time
 from datetime import datetime
 import argparse
@@ -19,76 +20,10 @@ import pandas as pd
 
 
 # run_tools.py
-# Version 1.0
-# 01/10/2024
+# Version 2.0
+# 05/10/2024
 # by isacchetto
 
-# Argument parser
-parser = argparse.ArgumentParser(description="Run minced/pilercr/CRISPRDetect3 on a directory of MAGs, and create a file.tsv of CRISPRs found with this column: MAG, Contig, Start, End, Spacers, Repeats, Cas_0-1000, Cas_1000-10000, Cas_>100000, Cas_overlayed")
-parser.add_argument("input_directory", type=str, help="The input directory of the MAGs")
-parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format")
-parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is './out/<input_directory>_CRISPRDetect3_<timestamp>' (see --inplace for more info)", default=None, dest="out")
-parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory instead into the 'out' directory of the current working directory")
-parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes ", default='samples/Aug19_cas_genes.tsv', dest="cas_database")
-parser.add_argument("-t", "--threads", type=int, help="Number of threads to use (default ALL/3)", default=mp.cpu_count()//3, dest="num_cpus")
-parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it")
-args = parser.parse_args()
-
-# Check if input directory exists or not
-if os.path.exists(args.input_directory):
-    input_dir = os.path.abspath(args.input_directory)
-else:
-    print("The input directory does not exist", file=sys.stderr)
-    exit()
-
-# Verify the presence of the tools
-tools = []
-if shutil.which("minced"):
-    tools.append("minced")
-if shutil.which("pilercr"):
-    tools.append("pilercr")
-if shutil.which("CRISPRDetect3"):
-    tools.append("CRISPRDetect3")
-if not tools:
-    print("No tools found: minced, pilercr, CRISPRDetect3", file=sys.stderr)
-    exit()
-
-# Select the tool to use
-tools_menu = TerminalMenu(tools, title="Select the tool to use:  (Press Q or Esc to quit) \n", 
-                             menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
-                             menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                             clear_screen=True, raise_error_on_interrupt=True)
-try: menu_tool_index = tools_menu.show()
-except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-if menu_tool_index is None: 
-    print("No tool selected", file=sys.stderr); exit()
-else:
-    tool=tools[menu_tool_index]
-
-# Create output directory
-if args.inplace:
-    if args.out==None:
-        # Create output directory with unique name near the input directory
-        output_dir = f"{input_dir}_{tool}_{time.strftime('%Y%m%d%H%M%S')}"
-    else:
-        # Create output directory with name specified by the user near the input directory
-        output_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.out))
-else:
-    if args.out==None:
-        # Create output directory with unique name in the out directory of the current working directory
-        output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool}_{time.strftime('%Y%m%d%H%M%S')}")
-    else:
-        # Create output directory with name specified by the user in the out directory of the current working directory
-        output_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.out))
-
-# Check if output directory exists and ask the user if they want to overwrite it
-if os.path.exists(output_dir) and not args.dry_run:
-    print(f"The output directory already exists: '{output_dir}'\nOVERWRITING IT? [y/N]", file=sys.stderr)
-    overwrite = input()
-    if overwrite.lower() != 'y':
-        exit()
-    else:
-        shutil.rmtree(output_dir)
 
 # Function to report progress
 def future_progress_indicator(future):
@@ -304,6 +239,60 @@ def parse_pilercr(file_path):
 
 if __name__ == '__main__':
 
+    # Argument parser
+    parser = argparse.ArgumentParser(prog='run_tools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
+                                    Run minced/pilercr/CRISPRDetect3 on a directory of MAGs,
+                                    and create a file.tsv of CRISPRs found with this column:
+                                    'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats',
+                                    ['Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'] (if --cas_database is used)."""))
+    parser.add_argument("input_directory", type=str, help="The input directory of the MAGs (in .fna or .bz2 format, see --decompress)")
+    parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format (default: False)")
+    parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is './out/<input_directory>_<tool>_<timestamp>' \n(see --inplace for more info)", default=None, dest="output_directory", metavar='OUTPUT_DIR')
+    parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory, \ninstead into the 'out' directory of the current working directory (default: False)")
+    parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes (created by CRISPCasFinder). \nBy adding this, the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed' \nwill be added to the file.tsv", default=None, dest="cas_database", metavar='CAS_DB')
+    parser.add_argument("-t", "--threads", type=int, help=f"Number of threads to use (default: ALL/3 = {mp.cpu_count()//3})", default=mp.cpu_count()//3, dest="num_cpus", metavar='N_CPUS')
+    parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it (default: False)")
+    args = parser.parse_args()
+
+    # Check if input directory exists or not
+    if os.path.exists(args.input_directory):
+        input_dir = os.path.abspath(args.input_directory)
+    else:
+        print("The input directory does not exist", file=sys.stderr)
+        exit()
+    
+    # Check if cas database file exists or not
+    if args.cas_database is not None:
+        if os.path.exists(args.cas_database):
+            cas_database = os.path.abspath(args.cas_database)
+        else:
+            print("The cas database file does not exist, check the path", file=sys.stderr)
+            exit()
+    
+    # Verify the presence of the tools
+    tools = []
+    if shutil.which("minced"):
+        tools.append("minced")
+    if shutil.which("pilercr"):
+        tools.append("pilercr")
+    if shutil.which("CRISPRDetect3"):
+        tools.append("CRISPRDetect3")
+    if not tools:
+        print("No tools found: minced, pilercr, CRISPRDetect3", file=sys.stderr)
+        exit()
+
+    # Select the tool to use
+    tools_menu = TerminalMenu(tools, title="Select the tool to use:  (Press Q or Esc to quit) \n", 
+                                menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
+                                menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
+                                clear_screen=False, raise_error_on_interrupt=True)
+    try: menu_tool_index = tools_menu.show()
+    except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
+    if menu_tool_index is None: 
+        print("No tool selected", file=sys.stderr); exit()
+    else:
+        tool=tools[menu_tool_index]
+
     # COMMANDS
     match tool:
         case "minced":
@@ -312,18 +301,19 @@ if __name__ == '__main__':
             # -minRL 23 -maxRL 47
             # -minSL 26 -maxSL 50
 
-            commands = {"Paper":"minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128", # Parameters on Paper PMCID: PMC10910872
-                        "Default":"minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50"} # Default command
+            commands = {"Default":"minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50", # Default command
+                        "Paper":"minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128"} # Parameters on Paper PMCID: PMC10910872
             commands_menu = TerminalMenu(commands, title="minced command:\n", 
                              menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
                              menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                             clear_screen=True, raise_error_on_interrupt=True, preview_command=show_preview)
+                             clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview)
             try: menu_command_index = commands_menu.show()
             except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
             if menu_command_index is None: 
                 print("No command selected, ", file=sys.stderr); exit()
             else:
-                command=list(commands.values())[menu_command_index]
+                command = list(commands.values())[menu_command_index]
+                version = list(commands.keys())[menu_command_index]
         case "pilercr":
             # pilercr default parameters:
             # -minarray 3 -mincons 0.9 
@@ -332,18 +322,19 @@ if __name__ == '__main__':
             # -minrepeatratio 0.9 -minspacerratio 0.75 
             # -minhitlength 16 -minid 0.94
             
-            commands = {"PILER_1 (default)":"pilercr -noinfo -quiet",
+            commands = {"PILER_1":"pilercr -noinfo -quiet",
                         "PILER_2":"pilercr -noinfo -quiet -minarray 3 -mincons 0.8 -minid 0.85 -maxrepeat 128 -maxspacer 128"}
             commands_menu = TerminalMenu(commands, title="pilercr command:\n", 
                              menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
                              menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                             clear_screen=True, raise_error_on_interrupt=True, preview_command=show_preview)
+                             clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview)
             try: menu_command_index = commands_menu.show()
             except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
             if menu_command_index is None: 
                 print("No command selected, ", file=sys.stderr); exit()
             else:
-                command=list(commands.values())[menu_command_index]
+                command = list(commands.values())[menu_command_index]
+                version = list(commands.keys())[menu_command_index]
         case "CRISPRDetect3":
             # CRISPRDetect3 default parameters:
             # -q 0 (quiet)
@@ -379,9 +370,35 @@ if __name__ == '__main__':
             if menu_command_index is None: 
                 print("No command selected, ", file=sys.stderr); exit()
             else:
-                command=list(commands.values())[menu_command_index]
+                command = list(commands.values())[menu_command_index]
+                version = list(commands.keys())[menu_command_index]
 
     command_run=command.split()
+
+    # Create output directory
+    if args.inplace:
+        if args.output_directory==None:
+            # Create output directory with unique name near the input directory
+            output_dir = f"{input_dir}_{tool}_{version}_{time.strftime('%Y%m%d%H%M%S')}"
+        else:
+            # Create output directory with name specified by the user near the input directory
+            output_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.output_directory))
+    else:
+        if args.output_directory==None:
+            # Create output directory with unique name in the out directory of the current working directory
+            output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool}_{version}_{time.strftime('%Y%m%d%H%M%S')}")
+        else:
+            # Create output directory with name specified by the user in the out directory of the current working directory
+            output_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.output_directory))
+
+    # Check if output directory exists and ask the user if they want to overwrite it
+    if os.path.exists(output_dir) and not args.dry_run:
+        print(f"The output directory already exists: '{output_dir}'\nOVERWRITING IT? [y/N]", file=sys.stderr)
+        overwrite = input()
+        if overwrite.lower() != 'y':
+            exit()
+        else:
+            shutil.rmtree(output_dir)
 
     # Find all MAGs in the input directory
     if args.decompress:
@@ -404,16 +421,18 @@ if __name__ == '__main__':
     else:
         os.makedirs(output_dir, exist_ok=True)
         logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, 'run_crisprdetect3.log'))])
-    logging.info("Tool: " + tool)
-    logging.info("Input directory: " + input_dir)
-    logging.info("Output directory: " + output_dir)
+    logging.info("Tool: " + tool + ' -> ' + list(commands.keys())[menu_command_index])
     match tool:
         case "minced":
-            logging.info("Command: " + str(command_run + ['<mag>', '>', '<out.minced>' ]))
+            logging.info("Command: " + ' '.join(command_run + ['<mag>', '>', '<out.minced>']))
         case "pilercr":
-            logging.info("Command: " + str(command_run + ['-in','<mag>', '-out', '<out.pilercr>' ]))
+            logging.info("Command: " + ' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>']))
         case "CRISPRDetect3":
-            logging.info("Command: " + str(command_run + ['-f','<mag>', '-o', '<out.CRISPRDetect3>' ]))
+            logging.info("Command: " + ' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>']))
+    logging.info("Input directory: " + input_dir)
+    if args.cas_database is not None:
+        logging.info("Cas database: " + cas_database)
+    logging.info("Output directory: ./" + os.path.relpath(output_dir))
     logging.info(f"Found {tasks_total} MAGs")
     logging.info(f"Using {args.num_cpus} threads")
     if args.dry_run:
@@ -427,7 +446,7 @@ if __name__ == '__main__':
     errors = [] # used for catch subprocess errors
     output_files = [] # used for parsing
     with ThreadPoolExecutor(args.num_cpus) as executor:
-        logging.info(f'RUNNING TOOL... ({"unzip +" if args.decompress else ""} subprocess.run + ThreadPoolExecutor version)')
+        logging.info(f'RUNNING {"UNZIP +" if args.decompress else ""} TOOL... ')
         start_time = datetime.now()
         for mag in mags:
             output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 2 if args.decompress else 1)[0]+"."+tool, input_dir))
@@ -452,12 +471,12 @@ if __name__ == '__main__':
         logging.info('Done!')
 
     # Parsing files
-    tasks_total = len(output_files)  
-    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool+'_parsed.tsv')
-
     logging.info('RUNNING PARSE...')
     start_time = datetime.now()
 
+    tasks_total = len(output_files)  
+    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool+'_'+version+'_parsed.tsv')
+    logging.info('Parsed file: ./' + os.path.relpath(parsed_file))
 
     # match tool:
     #     case "minced":
@@ -481,7 +500,10 @@ if __name__ == '__main__':
                 tasks_completed+=1
                 print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
         case "CRISPRDetect3":
-            pass
+            logging.error("CRISPRDetect3 not implemented yet")
+            logging.error("Done without parsing!")
+            exit()
+
 
     crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
                                 columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'])
@@ -495,3 +517,59 @@ if __name__ == '__main__':
         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
     logging.info('Done!')
 
+    # Add Cas Distance
+    logging.info('RUNNING CAS DISTANCE...')
+    start_time = datetime.now()
+
+    # Output file
+    output_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool+'_'+version+'_parsed_cas.tsv')
+    logging.info("Output cas file: ./" + os.path.relpath(output_file))
+
+    # Upload the TSV files
+    try:
+        cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
+    except ValueError as e:
+        logging.error('Errore: ', e)
+        logging.error('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file')
+        logging.error('Done, without adding Cas Distance!')
+        exit()
+
+    # Create a DataFrame with the data of the CRISPR and Cas combined
+    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+
+    # Add columns to the DataFrame
+    crisprs_df['Cas_0-1000']=0
+    crisprs_df['Cas_1000-10000']=0
+    crisprs_df['Cas_>100000']=0
+    crisprs_df['Cas_overlayed']=0
+
+    # Calculate the distance between CRISPR and Cas
+    for index, row in merged_df.iterrows():
+        if row['Start_Cas'] >= row['End_CRISPR']:
+            # print('Cas davati al CRISPR')
+            distance = row['Start_Cas'] - row['End_CRISPR']
+        elif row['End_Cas'] <= row['Start_CRISPR']:
+            # print('Cas prima il CRISPR')
+            distance = row['Start_CRISPR'] - row['End_Cas']
+        else:
+            # print('Cas che sovrappone al CRISPR')
+            distance = -1
+        
+        if distance >= 0 and distance <= 1000:
+            crisprs_df.at[index, 'Cas_0-1000'] += 1
+        elif distance > 1000 and distance <= 10000:
+            crisprs_df.at[index, 'Cas_1000-10000'] += 1
+        elif distance > 10000:
+            crisprs_df.at[index, 'Cas_>100000'] += 1
+        elif distance == -1:
+            crisprs_df.at[index, 'Cas_overlayed'] += 1
+        else:
+            logging.error(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
+
+    # Save the DataFrame in a TSV file
+    crisprs_df.to_csv(output_file, sep='\t')
+
+    end_time = datetime.now()
+    logging.info('Add Cas Distance in {}'.format(datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))
+    logging.info('Done!')
+    

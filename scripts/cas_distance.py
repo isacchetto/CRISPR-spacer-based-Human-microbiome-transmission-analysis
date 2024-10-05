@@ -78,30 +78,30 @@ if __name__ == '__main__':
     logging.info('Running!')
     start_time = datetime.now()
 
-    # Carica i file TSV
+    # Upload the TSV files
     try:
-        CRISPR_df = pd.read_csv(os.path.abspath(args.input_file), delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int}, index_col=False)
+        CRISPR_df = pd.read_csv(input_file, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int}, index_col=False)
     except ValueError as e:
         print('Errore: ', e)
         print('Check the column names in the input file (MAG, Contig, Start, End, Spacers, Repeats), and secure that file is a TSV file')
         exit()
     try:
-        Cas_df = pd.read_csv(os.path.abspath(args.cas_database), delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
+        Cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
     except ValueError as e:
         print('Errore: ', e)
         print('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file')
         exit()
 
-    # Creo un DataFrame con i dati dei CRISPR e dei Cas combinati
+    # Create a DataFrame with the data of the CRISPR and Cas combined
     merged_df = CRISPR_df.drop(columns=['Spacers', 'Repeats']).reset_index().merge(Cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
 
-    # Aggiunge le colonne al DataFrame
+    # Add columns to the DataFrame
     CRISPR_df['Cas_0-1000']=0
     CRISPR_df['Cas_1000-10000']=0
     CRISPR_df['Cas_>100000']=0
     CRISPR_df['Cas_overlayed']=0
 
-    # Calcola la distanza tra i CRISPR e i Cas
+    # Calculate the distance between CRISPR and Cas
     for index, row in merged_df.iterrows():
         if row['Start_Cas'] >= row['End_CRISPR']:
             # print('Cas davati al CRISPR')
@@ -122,10 +122,10 @@ if __name__ == '__main__':
         elif distance == -1:
             CRISPR_df.at[index, 'Cas_overlayed'] += 1
         else:
-            print('Errore')
-            print('Distanza: ', distance)
+            print('Error')
+            print('Distance: ', distance)
 
-    # Salva il DataFrame in un file TSV
+    # Save the DataFrame in a TSV file
     CRISPR_df.to_csv(output_file, sep='\t')
 
     end_time = datetime.now()
