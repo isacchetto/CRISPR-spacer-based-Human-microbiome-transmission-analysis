@@ -18,7 +18,7 @@ import logging
 # Argument parser
 parser = argparse.ArgumentParser(description="Creates from an input tsv file with these columns: 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', a new tsv file adding the columns: 'Cas_0-1000', 'Cas_1000- 10000', 'Cas_>100000', 'Cas_overlayed' using a cas_database.tsv (created by CRISPCasFinder)")
 parser.add_argument("input_file", type=str, help="The input file (file.tsv)")
-parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes ", default='samples/Aug19_cas_genes.tsv', dest="cas_database")
+parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes", default='samples/Aug19_cas_genes.tsv', dest="cas_database")
 # parser.add_argument("-out", "--output", type=str, help="The output file, default is 'out/<input_file>_parsed_cas.tsv' (see --inplace for more info)", default=None, dest="out")
 # parser.add_argument("-i", "--inplace", action="store_true", help="Created output file near the input file instead into the 'out' directory of the current working directory")
 # parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count()//3, dest="num_cpus")

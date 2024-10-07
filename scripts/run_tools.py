@@ -364,7 +364,7 @@ if __name__ == '__main__':
             commands_menu = TerminalMenu(commands, title="CRISPRDetect3 command:\n", 
                              menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
                              menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                             clear_screen=True, raise_error_on_interrupt=True, preview_command=show_preview)
+                             clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview)
             try: menu_command_index = commands_menu.show()
             except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
             if menu_command_index is None: 
