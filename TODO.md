@@ -39,4 +39,6 @@
 - [ ] Catturare lo std error magari in un file di log 
 - [ ] capire se usare veramete CRISPRDetect3 e nel caso aggiornare bene l'environment.yml
 - [ ] aggiungere un argoument per far partire direttamente il tool che si vuole
+- [ ] possibilita di far partire piu tool insieme (in serie) sulla stessa input dir
 - [ ] ricreare i tool intermedi basandosi su run_tool
+- [ ] 
