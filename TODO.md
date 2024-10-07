@@ -38,3 +38,5 @@
 - [ ] Internal problem: in AlignTraps, b=0, truncating list
 - [ ] Catturare lo std error magari in un file di log 
 - [ ] capire se usare veramete CRISPRDetect3 e nel caso aggiornare bene l'environment.yml
+- [ ] aggiungere un argoument per far partire direttamente il tool che si vuole
+- [ ] ricreare i tool intermedi basandosi su run_tool
