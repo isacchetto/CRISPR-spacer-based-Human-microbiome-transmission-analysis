@@ -329,6 +329,13 @@ if __name__ == '__main__':
         command = list(commands.values())[menu_command_index]
         tool_version = list(commands.keys())[menu_command_index]
 
+    # select multi command to use
+    # commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit) \n",
+    #                             menu_cursor="> ", menu_cursor_style=("fg_red", "bold"),
+    #                             menu_highlight_style=("bg_red", "fg_yellow", "bold"),
+    #                             clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview,
+    #                             multi_select=True, show_multi_select_hint=True)
+
     # Split the command
     command_run=command.split()
 
