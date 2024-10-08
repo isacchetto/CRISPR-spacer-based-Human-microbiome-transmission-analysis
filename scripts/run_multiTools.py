@@ -18,9 +18,9 @@ import pandas as pd
 
 
 
-# run_tools.py
-# Version 2.0
-# 05/10/2024
+# run_multiTools.py
+# Version 0.1
+# 08/10/2024
 # by isacchetto
 
 
@@ -317,33 +317,56 @@ if __name__ == '__main__':
         exit()
 
     # Select the command to use
-    commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit) \n",
-                                menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
-                                menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                                clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview)
+    # commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit) \n",
+    #                             menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
+    #                             menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
+    #                             clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview)
+    # try: menu_command_index = commands_menu.show()
+    # except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
+    # if menu_command_index is None: 
+    #     print("No command selected", file=sys.stderr); exit()
+    # else:
+    #     command = list(commands.values())[menu_command_index]
+    #     tool_version = list(commands.keys())[menu_command_index]
+
+    # select multi command to use
+    commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit)", 
+                                 menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), menu_highlight_style=("bg_red", "fg_yellow", "bold"), clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview, preview_title="Command Preview", multi_select=True, show_multi_select_hint=True, multi_select_cursor_style=("fg_red", "bold"), multi_select_empty_ok=False, multi_select_select_on_accept=False)
     try: menu_command_index = commands_menu.show()
     except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-    if menu_command_index is None: 
+    if menu_command_index is None:
         print("No command selected", file=sys.stderr); exit()
     else:
-        command = list(commands.values())[menu_command_index]
-        tool_version = list(commands.keys())[menu_command_index]
+        print(menu_command_index)
+        print(commands_menu.chosen_menu_indices)
+        exit()
+        
+        # command = [list(commands.values())[i] for i in menu_command_index]
+        # tool_version = '_'.join([list(commands.keys())[i] for i in menu_command_index])
+        # exit()
+
+    for i in menu_command_index:
+        command = list(commands.values())[i]
+        tool_codename = list(commands.keys())[i]
 
     # Split the command
     command_run=command.split()
 
     # Create output directory
+    if menu_command_index.size > 1 and args.unify_output:
+        tool_codename = 'multiTools'
+        
     if args.inplace:
         if args.output_directory==None:
             # Create output directory with unique name near the input directory
-            output_dir = f"{input_dir}_{tool_version}"
+            output_dir = f"{input_dir}_{tool_codename}"
         else:
             # Create output directory with name specified by the user near the input directory
             output_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.output_directory))
     else:
         if args.output_directory==None:
             # Create output directory with unique name in the out directory of the current working directory
-            output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool_version}")
+            output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool_codename}")
         else:
             # Create output directory with name specified by the user in the out directory of the current working directory
             output_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.output_directory))
@@ -387,7 +410,7 @@ if __name__ == '__main__':
     else:
         os.makedirs(output_dir, exist_ok=True)
         logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, 'run_crisprdetect3.log'))])
-    tool=tool_version.split('_')
+    tool=tool_codename.split('_')
     logging.info("Tool: " + ' -> '.join(tool))
     tool=tool[0]
     match tool:
@@ -443,7 +466,7 @@ if __name__ == '__main__':
     start_time = datetime.now()
 
     tasks_total = len(output_files)  
-    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_version+'_parsed.tsv')
+    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_codename+'_parsed.tsv')
     logging.info('Parsed file: ./' + os.path.relpath(parsed_file))
 
     # match tool:
