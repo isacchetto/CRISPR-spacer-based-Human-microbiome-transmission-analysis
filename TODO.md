@@ -42,3 +42,8 @@
 - [ ] possibilita di far partire piu tool insieme (in serie) sulla stessa input dir
 - [ ] ricreare i tool intermedi basandosi su run_tool
 - [ ] 
+- [ ] far girare CRISPRDetect3
+- [ ] fare grafici
+- [ ] 
+- [x] conforntare i tool e vedere se ci sono sovrapposti
+  - [x] colonne: ID crispr , tool_version

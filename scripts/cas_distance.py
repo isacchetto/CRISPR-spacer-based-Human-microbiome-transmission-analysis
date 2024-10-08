@@ -16,9 +16,9 @@ import logging
 
 
 # Argument parser
-parser = argparse.ArgumentParser(description="Creates from an input tsv file with these columns: 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', a new tsv file adding the columns: 'Cas_0-1000', 'Cas_1000- 10000', 'Cas_>100000', 'Cas_overlayed' using a cas_database.tsv (created by CRISPCasFinder)")
+parser = argparse.ArgumentParser(description="Creates from an input tsv file with these columns: 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename', a new tsv file adding the columns: 'Cas_0-1000', 'Cas_1000- 10000', 'Cas_>100000', 'Cas_overlayed' using a cas_database.tsv (created by CRISPCasFinder)")
 parser.add_argument("input_file", type=str, help="The input file (file.tsv)")
-parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes", default='samples/Aug19_cas_genes.tsv', dest="cas_database")
+parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes", default=None, dest="cas_database")
 # parser.add_argument("-out", "--output", type=str, help="The output file, default is 'out/<input_file>_parsed_cas.tsv' (see --inplace for more info)", default=None, dest="out")
 # parser.add_argument("-i", "--inplace", action="store_true", help="Created output file near the input file instead into the 'out' directory of the current working directory")
 # parser.add_argument("-t", "--threads", type=int, help="Number of threads to use", default=mp.cpu_count()//3, dest="num_cpus")
@@ -80,26 +80,26 @@ if __name__ == '__main__':
 
     # Upload the TSV files
     try:
-        CRISPR_df = pd.read_csv(input_file, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int}, index_col=False)
+        crispr_df = pd.read_csv(input_file, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str}, index_col=False)
     except ValueError as e:
         print('Errore: ', e)
-        print('Check the column names in the input file (MAG, Contig, Start, End, Spacers, Repeats), and secure that file is a TSV file')
+        print('Check the column names in the input file (MAG, Contig, Start, End, Spacers, Repeats, ToolCodename), and secure that file is a TSV file')
         exit()
     try:
-        Cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
+        cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
     except ValueError as e:
         print('Errore: ', e)
-        print('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file')
+        print('Check the column names in the cas file (MAG, Contig, Start, End), and secure that file is a TSV file')
         exit()
 
     # Create a DataFrame with the data of the CRISPR and Cas combined
-    merged_df = CRISPR_df.drop(columns=['Spacers', 'Repeats']).reset_index().merge(Cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+    merged_df = crispr_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
 
     # Add columns to the DataFrame
-    CRISPR_df['Cas_0-1000']=0
-    CRISPR_df['Cas_1000-10000']=0
-    CRISPR_df['Cas_>100000']=0
-    CRISPR_df['Cas_overlayed']=0
+    crispr_df['Cas_0-1000']=0
+    crispr_df['Cas_1000-10000']=0
+    crispr_df['Cas_>100000']=0
+    crispr_df['Cas_overlayed']=0
 
     # Calculate the distance between CRISPR and Cas
     for index, row in merged_df.iterrows():
@@ -114,19 +114,19 @@ if __name__ == '__main__':
             distance = -1
         
         if distance >= 0 and distance <= 1000:
-            CRISPR_df.at[index, 'Cas_0-1000'] += 1
+            crispr_df.at[index, 'Cas_0-1000'] += 1
         elif distance > 1000 and distance <= 10000:
-            CRISPR_df.at[index, 'Cas_1000-10000'] += 1
+            crispr_df.at[index, 'Cas_1000-10000'] += 1
         elif distance > 10000:
-            CRISPR_df.at[index, 'Cas_>100000'] += 1
+            crispr_df.at[index, 'Cas_>100000'] += 1
         elif distance == -1:
-            CRISPR_df.at[index, 'Cas_overlayed'] += 1
+            crispr_df.at[index, 'Cas_overlayed'] += 1
         else:
             print('Error')
             print('Distance: ', distance)
 
     # Save the DataFrame in a TSV file
-    CRISPR_df.to_csv(output_file, sep='\t')
+    crispr_df.to_csv(output_file, sep='\t')
 
     end_time = datetime.now()
     logging.info('Add Cas Distance in {}'.format(datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))

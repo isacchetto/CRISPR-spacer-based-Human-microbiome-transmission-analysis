@@ -242,7 +242,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='run_tools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
                                     Run minced/pilercr/CRISPRDetect3 on a directory of MAGs,
                                     and create a file.tsv of CRISPRs found with this column:
-                                    'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats',
+                                    'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'
                                     ['Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'] (if --cas_database is used)."""))
     parser.add_argument("input_directory", type=str, help="The input directory of the MAGs (in .fna or .bz2 format, see --decompress)")
     parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format (default: False)")
@@ -327,7 +327,7 @@ if __name__ == '__main__':
         print("No command selected", file=sys.stderr); exit()
     else:
         command = list(commands.values())[menu_command_index]
-        tool_version = list(commands.keys())[menu_command_index]
+        tool_codename = list(commands.keys())[menu_command_index]
 
     # Split the command
     command_run=command.split()
@@ -336,14 +336,14 @@ if __name__ == '__main__':
     if args.inplace:
         if args.output_directory==None:
             # Create output directory with unique name near the input directory
-            output_dir = f"{input_dir}_{tool_version}"
+            output_dir = f"{input_dir}_{tool_codename}"
         else:
             # Create output directory with name specified by the user near the input directory
             output_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.output_directory))
     else:
         if args.output_directory==None:
             # Create output directory with unique name in the out directory of the current working directory
-            output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool_version}")
+            output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool_codename}")
         else:
             # Create output directory with name specified by the user in the out directory of the current working directory
             output_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.output_directory))
@@ -387,7 +387,7 @@ if __name__ == '__main__':
     else:
         os.makedirs(output_dir, exist_ok=True)
         logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, 'run_crisprdetect3.log'))])
-    tool=tool_version.split('_')
+    tool=tool_codename.split('_')
     logging.info("Tool: " + ' -> '.join(tool))
     tool=tool[0]
     match tool:
@@ -443,7 +443,7 @@ if __name__ == '__main__':
     start_time = datetime.now()
 
     tasks_total = len(output_files)  
-    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_version+'_parsed.tsv')
+    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_codename+'_parsed.tsv')
     logging.info('Parsed file: ./' + os.path.relpath(parsed_file))
 
     # match tool:
@@ -473,8 +473,8 @@ if __name__ == '__main__':
             exit()
 
 
-    crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
-                                columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'])
+    crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats), tool_codename] for a in crisprs_total],
+                                columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'])
 
     crisprs_df.to_csv(parsed_file, sep='\t')
 
@@ -494,7 +494,7 @@ if __name__ == '__main__':
     start_time = datetime.now()
 
     # Output file
-    cas_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool+'_parsed_cas.tsv')
+    cas_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_codename+'_parsed_cas.tsv')
     logging.info("Output cas file: ./" + os.path.relpath(cas_file))
 
     # Upload the TSV files
@@ -507,7 +507,7 @@ if __name__ == '__main__':
         exit()
 
     # Create a DataFrame with the data of the CRISPR and Cas combined
-    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
 
     # Add columns to the DataFrame
     crisprs_df['Cas_0-1000']=0
