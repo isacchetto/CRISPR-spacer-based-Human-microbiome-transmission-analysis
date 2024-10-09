@@ -37,10 +37,25 @@
 - [ ] 
 - [ ] far girare CRISPRDetect3
   - [ ] parsing CRISPRDetect3
-- [ ] fare grafici
+- [ ] fare grafici per ogni tool:
+  - [ ] lunghezza mediana DR (per capire i valori outlier e fare un successivo cut-off)
+  - [ ] lunghezza mediana SP (per capire i valori outlier e fare un successivo cut-off)
+  - [ ] deviazione standard lunghezza DR (per capire se i DR differiscono moltom, ma piu utile forse il coefficente di variazione)
+  - [ ] deviazione standard lunghezza SP (per capire se gli SP differiscono molto, ma piu utile forse il coefficente di variazione)
+  - [ ] coefficente di variazione lunghezza DR (utile per uniformare i valori dato che le dimensioni dei DR variano molto tra CRISPR diversi)
+  - [ ] coefficente di variazione lunghezza SP (utile per uniformare i valori dato che le dimensioni degli SP variano molto tra CRISPR diversi)
+  - [ ] ratio minlen/maxlen DR (-minrepeatratio in pilercr) (per capire se ci sono CRISPR con DR fuori scala)
+  - [ ] conservazione DR (-mincons in pilercr 0.9 (PILER1) e 0.8 (PILER2)) (per capire se i DR sono conservati o se ci sono molti errori/mismatches)
+  - [ ] Cosa mettere nel Database di DR in base alle statistiche sopra:
+    - [ ] riguardo la lunghezza mediana possiamo rimuvere i CRISPR con DR troppo corti o troppo lunghi (outliers)
+    - [ ] riguardo il coefficente di variazione / deviazione standard possiamo rimuovere i CRISPR con DR molto diversi tra loro (outliers)
+    - [ ] riguardo la conservazione possiamo rimuovere i CRISPR con DR poco conservati (outliers)
+    - [ ] riguardo il ratio minlen/maxlen DR potremmo pensare di rimuovere solo i DR che sono fuori scala
+    - [ ] con alcune statistiche si potrebbe pensare, invece che fare un cut-off per escludere i CRISPR, un modo per escludere i singoli DR che non rispettano i criteri (troppo lunghi o troppo poco conservati) per poi avere un DR unico per ogni crispr (o un motivo in modo da dare anche l'informazione dei mismatch)
 - [ ] 
 - [x] conforntare i tool e vedere se ci sono sovrapposti
-  - [x] colonne: ID crispr , tool_version
+  - [x] colonne: ID crispr , ToolCodename
+  - [x] sistemare la colonna ToolCodename in modo che sia un set (non duplicati e ordinati)
   - [ ] inserirlo nel multi_tool
   - [ ] creare uno script .py
   - [ ] 
