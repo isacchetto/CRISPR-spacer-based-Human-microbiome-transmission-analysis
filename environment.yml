@@ -12,6 +12,9 @@ dependencies:
   - numpy>=2.0.0
   - pandas>=2.2.2
   - simple-term-menu>=1.6.4
+  # - matplotlib>=3.9.2
+  # - seaborn>=0.13.2
+
 
 
 

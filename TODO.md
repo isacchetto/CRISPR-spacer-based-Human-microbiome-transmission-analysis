@@ -13,7 +13,7 @@
     - [x] installare CRISPRCasFinder
         - [x] creare link per ccf.environment.yml di CRISPRCasFinder
         - [x] rendere eseguibile come CRISPRCasFinder (non `perl CRISPRCasFinder.pl`)
-- [ ] Creare script di run e girare tutto con i parametri del paper
+- [x] Creare script di run e girare tutto con i parametri del paper
     - [x] minced
     - [x] pilercr (1 e 2)
     - [x] CRISPRDetect
@@ -21,29 +21,26 @@
     - [x] creare parsing per minced
     - [x] creare parsing per pilercr
     - [ ] creare parsing per CRISPRDetect
-    - [ ] creare parsing per CRISPRidentify
-    - [ ] creare parsing per CRISPRCasFinder
 - [ ] Creare file di output tsv
     - [x] creare file di output per minced
     - [x] creare file di output per pilercr
     - [ ] creare file di output per CRISPRDetect
-    - [ ] creare file di output per CRISPRidentify
-    - [ ] creare file di output per CRISPRCasFinder
 - [x] Creare file tools_difference.txt con un esempio di differenza tra i CRISPR trovati dai tools
-- [ ] Capire come funziona crispidentify 
 - [x] Dividere i CRISPR in base alla distanza tra cas e crispr
     - [x] 0-1000 bp
     - [x] 1000-10.000 bp
     - [x] >10.000 bp
-- [ ] Internal problem: in AlignTraps, b=0, truncating list
-- [ ] Catturare lo std error magari in un file di log 
 - [ ] capire se usare veramete CRISPRDetect3 e nel caso aggiornare bene l'environment.yml
 - [ ] aggiungere un argoument per far partire direttamente il tool che si vuole
 - [ ] possibilita di far partire piu tool insieme (in serie) sulla stessa input dir
 - [ ] ricreare i tool intermedi basandosi su run_tool
 - [ ] 
 - [ ] far girare CRISPRDetect3
+  - [ ] parsing CRISPRDetect3
 - [ ] fare grafici
 - [ ] 
 - [x] conforntare i tool e vedere se ci sono sovrapposti
   - [x] colonne: ID crispr , tool_version
+  - [ ] inserirlo nel multi_tool
+  - [ ] creare uno script .py
+  - [ ] 
