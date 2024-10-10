@@ -1,0 +1,66 @@
+Array 1 6679-7427 		**** Predicted by CRISPRDetect 3.0 *** 
+>NODE_492_length_39267_cov_15.735		Array_Orientation: Unconfirmed
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence              	Insertion/Deletion
+==========	======	======	======	====================================	=============================	==================
+      6679	    36	  91.7	    29	..T..G...................G..........	AACTTAAAGTACTTGGACTCCCATGTCGA	AG [6684]
+      6746	    36	 100.0	    29	....................................	CACGAAAACTTTTTGGACGTGGTATGTCA	
+      6811	    36	 100.0	    29	....................................	CTTTTCATCGGCTTTATAAACCGTGCCTT	
+      6876	    36	 100.0	    28	....................................	GGATTATACGACCATGCACGCTACCATG 	
+      6940	    36	 100.0	    28	....................................	CCAAAGTGTGACACACTTAAAACCGCAA 	
+      7004	    36	 100.0	    29	....................................	AATGTTCTCGTTAGAGTAAGTGAGCGTGA	
+      7069	    36	 100.0	    27	....................................	GTATTAGCCTGTTCATTTTCCCATTGT  	
+      7132	    36	 100.0	    29	....................................	TGACAGTGCAAAAGTAGTGTATAAGTTTA	
+      7197	    36	 100.0	    29	....................................	CGGCTTTTCTTCTATGCCTTCCGTTACGA	
+      7262	    36	 100.0	    29	....................................	TACGTAGCTCGGCCACTACCGGGATAACC	
+      7327	    36	 100.0	    28	....................................	GTACGGGCATTGGCAGGAACTATTTATT 	
+      7391	    36	 100.0	     0	....................................	|                            	
+==========	======	======	======	====================================	=============================	==================
+        12	    36	  99.3	    29	ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC	                             	       
+
+# Left flank :   |
+# Right flank :  |
+
+# Questionable array : NO	 Score: 4.49
+# 	Score Detail : 1:0, 2:0, 3:0, 4:0.96, 5:0.5, 6:1, 7:0.03, 8:1, 9:1,
+# 	Score Legend : 1: cas, 2: matched_database_repeat, 3: motif_match, 4: overall_repeat_identity, 5: one_repeat_cluster, 6: exp_repeat_length, 7: exp_spacer_length, 8: spacer_identity, 9: log(total repeats) - log(total mutated repeats),
+# Primary repeat :     ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
+# Alternate repeat :   NA
+
+# Array family : NA
+ 
+# Summary: ID_START_STOP_DIR: NODE_492_length_39267_cov_15.735-6679-7427-NA; REP_DR:ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC; DR_LENGTH:36; NUM_DRs:12; MUTATIONS:3; INSERTIONS:1; SCORE:4.49; SPACERS:AACTTAAAGTACTTGGACTCCCATGTCGA,CACGAAAACTTTTTGGACGTGGTATGTCA,CTTTTCATCGGCTTTATAAACCGTGCCTT,GGATTATACGACCATGCACGCTACCATG,CCAAAGTGTGACACACTTAAAACCGCAA,AATGTTCTCGTTAGAGTAAGTGAGCGTGA,GTATTAGCCTGTTCATTTTCCCATTGT,TGACAGTGCAAAAGTAGTGTATAAGTTTA,CGGCTTTTCTTCTATGCCTTCCGTTACGA,TACGTAGCTCGGCCACTACCGGGATAACC,GTACGGGCATTGGCAGGAACTATTTATT
+ 
+ 
+//
+
+
+Array 1 5331-5582 		**** Predicted by CRISPRDetect 3.0 *** 
+>NODE_313_length_55098_cov_16.9228		Array_Orientation: Unconfirmed
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                 	Spacer_Sequence                          	Insertion/Deletion
+==========	======	======	======	================================	=========================================	==================
+      5331	    32	 100.0	    41	................................	TCAGCATAACATTCAAGTAAACTTGATGTTCTGCATTCACC	
+      5404	    32	  87.5	    41	..........................T..ACC	TTAGCAAAATATTCAAACGAGTTTGATATTTTGCATTCGGT	
+      5477	    32	 100.0	    41	................................	TCAGCATAACATTCAAGTAAATTTGAGGTTTTGCATTCACC	
+      5550	    32	  87.5	     0	...................A......T...AG	|                                        	
+==========	======	======	======	================================	=========================================	==================
+         4	    32	  93.8	    42	TTGCACTATCTTTGCATAAGATAGGCAGCGGT	                                         	       
+
+# Left flank :   |
+# Right flank :  |
+
+# Questionable array : NO	 Score: 3.02
+# 	Score Detail : 1:0, 2:0, 3:0, 4:0.69, 5:0, 6:0.7, 7:0.23, 8:0.4, 9:1,
+# 	Score Legend : 1: cas, 2: matched_database_repeat, 3: motif_match, 4: overall_repeat_identity, 5: one_repeat_cluster, 6: exp_repeat_length, 7: exp_spacer_length, 8: spacer_identity, 9: log(total repeats) - log(total mutated repeats),
+# Primary repeat :     TTGCACTATCTTTGCATAAGATAGGCAGCGGT
+# Alternate repeat :   NA
+
+# Array family : NA
+ 
+# Summary: ID_START_STOP_DIR: NODE_313_length_55098_cov_16.9228-5331-5582-NA; REP_DR:TTGCACTATCTTTGCATAAGATAGGCAGCGGT; DR_LENGTH:32; NUM_DRs:4; MUTATIONS:8; INSERTIONS:0; SCORE:3.02; SPACERS:TCAGCATAACATTCAAGTAAACTTGATGTTCTGCATTCACC,TTAGCAAAATATTCAAACGAGTTTGATATTTTGCATTCGGT,TCAGCATAACATTCAAGTAAATTTGAGGTTTTGCATTCACC
+ 
+ 
+//
+
+
