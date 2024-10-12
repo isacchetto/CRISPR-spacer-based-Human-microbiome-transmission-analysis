@@ -1,14 +1,5 @@
 # Tools Differences
 
-# Tools Differences
-
-| Tool runned | minNumRepeats | MinRepeatConservation | minRepeatLenght | maxRepeatLenght | minSpacerLength | maxSpacerLength | min/max repeatLen Ratio | min/max spacerLen Ratio |
-|-------------|---------------|-----------------------|-----------------|-----------------|-----------------|-----------------|-------------------------|-------------------------|
-| Minced Default | 3          |                       | 23              | 47              | 26              | 50              |
-| Minced Paper | 3            |                       | 16              | 128             | 16              | 128             |
-| Piler_1 (Default) | 3       | 0.9                   | 16              | 64              | 8               | 64              | 0.9                     | 0.75                    |
-
-
 | **ToolRunned** | **minNumRepeats** | **MinRepeatConservation** | **minRepeatLenght** | **maxRepeatLenght** | **minSpacerLength** | **maxSpacerLength** | **searchWL** | **MinLocalAlignmentLength** | **MinLocalAlignIdentity** | **min/max_repeatLenRatio** | **min/max_spacerLenRatio** | **** |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **MincedDefault** | 3 |  | 23 | 47 | 26 | 50 | 8 |  |  |  |  |  |
@@ -19,22 +10,7 @@
 | **CRISPRDetect3(online)** | 3 |  | 11 |  |  | 125 | 11 |  |  |  |  |  |
 
 
-| ToolRunned| minNumRepeats | MinRepeatConservation | minRepeatLenght | maxRepeatLenght | minSpacerLength | maxSpacerLength | searchWL | MinLocalAlignmentLength | MinLocalAlignIdentity | min/max_repeatLenRatio | min/max_spacerLenRatio |   |
-|:---------------------:|:-------------:|:---------------------:|:---------------:|:---------------:|:---------------:|:---------------:|:--------:|:-----------------------:|:---------------------:|:----------------------:|:----------------------:|:---:|
-| MincedDefault         | 3             |                       | 23              | 47              | 26              | 50              | 8        |                         |                       |                        |                        |   |
-| MincedPaper           | 3             |                       | 16              | 128             | 16              | 128             | 8        |                         |                       |                        |                        |   |
-| Pilercr_1(Default)    | 3             | 0.9                   | 16              | 64              | 8               | 64              |          | 16                      | 0.94                  | 0.9                    | 0.75                   |   |
-| Pilercr_2             | 3             | 0.8                   | 16              | 128             | 8               | 128             |          | 16                      | 0.85                  | 0.9                    | 0.75                   |   |
-| CRISPRDetect3         | 3             |                       | 23              |                 |                 | 125 (500)       | 11       |                         |                       |                        |                        |   |
-| CRISPRDetect3(online) | 3             |                       | 11              |                 |                 | 125             | 11       |                         |                       |                        |                        |   |
-|                       |               |                       |                 |                 |                 |                 |          |                         |                       |                        |                        |   |
-|                       |               |                       |                 |                 |                 |                 |          |                         |                       |                        |                        |   |
-|                       |               |                       |                 |                 |                 |                 |          |                         |                       |                        |                        |   |
-
-
-
-command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
-    # command="minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50" # Default command
+# Tools time
 
 ## Minced
 - Default (0m0.707s)
@@ -86,22 +62,115 @@ command="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters
 
 
 ## CRISPRDetect
-- Default (-flank) (0m6.596s)
+
+- Default (-flank) (default +direction) (0m6.596s)
 `CRISPRDetect3 -array_quality_score_cutoff 3 -left_flank_length 0 -right_flank_length 0 -f M1023330751.fna -o M1023330751_default.CRISPRDetect3 > M1023330751_default.log`
-- Default (-check_direction) (0m6.098s)
+```sh
+	Checking 121 sequences for CRISPR like sequence repeats.
+	Total 18 sequences identified to have CRISPR like sequence repeats.
+
+	Putative CRISPRs prediction done.
+	Total putative CRISPRs to process: 3 from 3 sequences
+	Processing: NODE_492_length_39267_cov_15.735 	 Remaining: 2
+	Processing: NODE_805_length_25269_cov_18.2314 	 Remaining: 1
+	Processing: NODE_313_length_55098_cov_16.9228 	 Remaining: 0
+	  Array_quality_score= 4.53
+	  Array_quality_score= 3.02
+NA-0,,1
+```
+
+- Default - direction (0m6.098s)
 `CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -f M1023330751.fna -o M1023330751_NOdirection.CRISPRDetect3 > M1023330751_NOdirection.log`
-- Default + cpu ALL (-check_direction) (0m7.760s)
-`CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -T 0 -left_flank_length 0 -right_flank_length 0 -f M1023330751.fna -o M1023330751_cpu_NOdirection.CRISPRDetect3 > M1023330751_cpu_NOdirection.log`
-- Default + cpu ALL (0m8.445s)
-`CRISPRDetect3 -array_quality_score_cutoff 3 -T 0 -left_flank_length 0 -right_flank_length 0 -f M1023330751.fna -o M1023330751_cpu.CRISPRDetect3 > M1023330751_cpu.log`
-- Default + cpu + direction (0m7.369s)
+```sh
+	Checking 121 sequences for CRISPR like sequence repeats.
+	Total 18 sequences identified to have CRISPR like sequence repeats.
+
+	Putative CRISPRs prediction done.
+	Total putative CRISPRs to process: 3 from 3 sequences
+	Processing: NODE_492_length_39267_cov_15.735 	 Remaining: 2
+	Processing: NODE_805_length_25269_cov_18.2314 	 Remaining: 1
+	Processing: NODE_313_length_55098_cov_16.9228 	 Remaining: 0
+	  Array_quality_score= 4.53
+	  Array_quality_score= 3.02
+NA-0,,1
+```
+
+- Default + cpu ALL/3 + direction (0m7.369s)
 `CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 1 -T 64 -left_flank_length 0 -right_flank_length 0 -f M1023330751.fna -o M1023330751_cpu64_direction.CRISPRDetect3 > M1023330751_cpu64_direction.log`
-- Default + cpu ALL/3 (-check_direction) (0m7.948s)
+```sh
+	Putative CRISPRs prediction done.
+	Total putative CRISPRs to process: 11 from 9 sequences
+	Processing: NODE_492_length_39267_cov_15.735 	 Remaining: 8
+	Processing: NODE_697_length_29393_cov_18.2393 	 Remaining: 7
+	Processing: NODE_718_length_28741_cov_16.7331 	 Remaining: 6
+	Processing: NODE_777_length_26603_cov_17.39 	 Remaining: 5
+	Processing: NODE_805_length_25269_cov_18.2314 	 Remaining: 4
+	Processing: NODE_261_length_62767_cov_15.0645 	 Remaining: 3
+	Processing: NODE_940_length_20876_cov_18.6656 	 Remaining: 2
+	Processing: NODE_955_length_20547_cov_18.0301 	 Remaining: 1
+	Processing: NODE_313_length_55098_cov_16.9228 	 Remaining: 0
+	  Array_quality_score= 4.53
+	  Array_quality_score= 3.02
+NA-0,,1
+	  Array_quality_score= 0.74
+	  Array_quality_score= 2.13
+	  Array_quality_score= 1.69
+	  Array_quality_score= 0.74
+```
+
+- Default + cpu ALL/3 - direction (0m7.948s)
 `CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -T 64 -left_flank_length 0 -right_flank_length 0 -f M1023330751.fna -o M1023330751_cpu64_NOdirection.CRISPRDetect3 > M1023330751_cpu64_NOdirection.log`
-- Default + cpu ALL/3 (-check_direction) + cas ()
+```sh
+	Putative CRISPRs prediction done.
+	Total putative CRISPRs to process: 11 from 9 sequences
+	Processing: NODE_492_length_39267_cov_15.735 	 Remaining: 8
+	Processing: NODE_697_length_29393_cov_18.2393 	 Remaining: 7
+	Processing: NODE_718_length_28741_cov_16.7331 	 Remaining: 6
+	Processing: NODE_777_length_26603_cov_17.39 	 Remaining: 5
+	Processing: NODE_805_length_25269_cov_18.2314 	 Remaining: 4
+	Processing: NODE_261_length_62767_cov_15.0645 	 Remaining: 3
+	Processing: NODE_940_length_20876_cov_18.6656 	 Remaining: 2
+	Processing: NODE_955_length_20547_cov_18.0301 	 Remaining: 1
+	Processing: NODE_313_length_55098_cov_16.9228 	 Remaining: 0
+	  Array_quality_score= 4.53
+	  Array_quality_score= 3.02
+NA-0,,1
+	  Array_quality_score= 2.13
+	  Array_quality_score= 0.74
+	  Array_quality_score= 1.69
+	  Array_quality_score= 0.74
+```
+
+- Default + cpu ALL/3 - direction + cas ()
 `CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -T 64 -left_flank_length 0 -right_flank_length 0 -annotate_cas_genes 1 -f M1023330751.fna -o M1023330751_cpu64_NOdirection_cas.CRISPRDetect3 > M1023330751_cpu64_NOdirection_cas.log`
+
 - Default + cpu ALL/3 + direction + cas ()
 `CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 1 -T 64 -left_flank_length 0 -right_flank_length 0 -annotate_cas_genes 1 -f M1023330751.fna -o M1023330751_cpu64_direction_cas.CRISPRDetect3 > M1023330751_cpu64_direction_cas.log`
+
+- Default (real, with \n) + cpu ALL/3 - direction
+```sh
+	Putative CRISPRs prediction done.
+	Total putative CRISPRs to process: 11 from 9 sequences
+	Processing: NODE_492_length_39267_cov_15.735 	 Remaining: 8
+	Processing: NODE_697_length_29393_cov_18.2393 	 Remaining: 7
+	Processing: NODE_718_length_28741_cov_16.7331 	 Remaining: 6
+	Processing: NODE_777_length_26603_cov_17.39 	 Remaining: 5
+	Processing: NODE_805_length_25269_cov_18.2314 	 Remaining: 4
+	Processing: NODE_261_length_62767_cov_15.0645 	 Remaining: 3
+	Processing: NODE_940_length_20876_cov_18.6656 	 Remaining: 2
+	Processing: NODE_955_length_20547_cov_18.0301 	 Remaining: 1
+	Processing: NODE_313_length_55098_cov_16.9228 	 Remaining: 0
+	  Array_quality_score= 4.49
+	  Array_quality_score= 3.02
+NA-0,,1
+	  Array_quality_score= 0.74
+	  Array_quality_score= 2.13
+	  Array_quality_score= 1.69
+	  Array_quality_score= 0.74
+```
+
+
+
 
 
 - Default (0m13.719s)

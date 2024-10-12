@@ -1,0 +1,43 @@
+pilercr v1.06
+By Robert C. Edgar
+
+NODE_6421_length_4372_cov_9.0278.fna: 1 putative CRISPR arrays found.
+
+
+
+DETAIL REPORT
+
+
+
+Array 1
+>NODE_6421_length_4372_cov_9.0278
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                               Spacer
+==========  ======  ======  ======  ==========    =================================    ======
+         1      33    97.0      35                -................................    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
+        69      33   100.0      34  CCTGTAGCGC    .................................    GTAACAGGGAAATATGTATGCGCATCAGCAGATT
+       136      33    97.0      34  TCAGCAGATT    .........................A.......    TAAATGGCAGGACGAAACAGTAGAAACAGTTCTT
+       203      33    90.9          AACAGTTCTT    ..................A....A..G......    TTTTGTAAAAA
+==========  ======  ======  ======  ==========    =================================
+         4      33              34                CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
+
+
+SUMMARY BY SIMILARITY
+
+
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer  +  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  =  =========
+    1  NODE_6421_length           1         234         4      33      34  +  CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
+
+
+
+SUMMARY BY POSITION
+
+
+
+>NODE_6421_length_4372_cov_9.0278
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    1  NODE_6421_length           1         234         4      33      34              CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT

@@ -1,0 +1,324 @@
+ISSUE: difference between with and without \n, difference between tools (number of DRs recognized), CRISPRDetect3 Insertion/Deletion
+MAG:    M1023330751
+Contig: NODE_492_length_39267_cov_15.735
+
+- Pilercr (with and without \n):
+       Pos  Repeat     %id  Spacer    Repeat                                  Spacer
+==========  ======  ======  ======    ====================================    ======
+      6811      36   100.0      29    ....................................    CTTTTCATCGGCTTTATAAACCGTGCCTT
+      6876      36   100.0      28    ....................................    GGATTATACGACCATGCACGCTACCATG
+      6940      36   100.0      28    ....................................    CCAAAGTGTGACACACTTAAAACCGCAA
+      7004      36   100.0      29    ....................................    AATGTTCTCGTTAGAGTAAGTGAGCGTGA
+      7069      36   100.0      27    ....................................    GTATTAGCCTGTTCATTTTCCCATTGT
+      7132      36   100.0      29    ....................................    TGACAGTGCAAAAGTAGTGTATAAGTTTA
+      7197      36   100.0      29    ....................................    CGGCTTTTCTTCTATGCCTTCCGTTACGA
+      7262      36   100.0      29    ....................................    TACGTAGCTCGGCCACTACCGGGATAACC
+      7327      36   100.0      28    ....................................    GTACGGGCATTGGCAGGAACTATTTATT
+      7391      36   100.0            ....................................    
+==========  ======  ======  ======    ====================================
+        10      36              28    ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
+
+- MinCED (without \n):
+CRISPR 1   Range: 6746 - 7426
+POSITION        REPEAT                          SPACER
+--------        ------------------------------------    ----------------------------
+6746            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CACGAAAACTTTTTGGACGTGGTATGTCA   [ 36, 29 ]
+6811            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CTTTTCATCGGCTTTATAAACCGTGCCTT   [ 36, 29 ]
+6876            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    GGATTATACGACCATGCACGCTACCATG    [ 36, 28 ]
+6940            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CCAAAGTGTGACACACTTAAAACCGCAA    [ 36, 28 ]
+7004            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    AATGTTCTCGTTAGAGTAAGTGAGCGTGA   [ 36, 29 ]
+7069            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    GTATTAGCCTGTTCATTTTCCCATTGT     [ 36, 27 ]
+7132            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    TGACAGTGCAAAAGTAGTGTATAAGTTTA   [ 36, 29 ]
+7197            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CGGCTTTTCTTCTATGCCTTCCGTTACGA   [ 36, 29 ]
+7262            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    TACGTAGCTCGGCCACTACCGGGATAACC   [ 36, 29 ]
+7327            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    GTACGGGCATTGGCAGGAACTATTTATT    [ 36, 28 ]
+7391            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
+--------        ------------------------------------    ----------------------------
+Repeats: 11     Average Length: 36              Average Length: 28
+
+- MinCED (with \n):
+CRISPR 1   Range: 6681 - 7426
+POSITION        REPEAT                          SPACER
+--------        ------------------------------------    ----------------------------
+6681            TTAAGGAATAGTAGAAATTTAAAGAGCCGTATAGAC    AACTTAAAGTACTTGGACTCCCATGTCGA   [ 36, 29 ]
+6746            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CACGAAAACTTTTTGGACGTGGTATGTCA   [ 36, 29 ]
+6811            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CTTTTCATCGGCTTTATAAACCGTGCCTT   [ 36, 29 ]
+6876            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    GGATTATACGACCATGCACGCTACCATG    [ 36, 28 ]
+6940            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CCAAAGTGTGACACACTTAAAACCGCAA    [ 36, 28 ]
+7004            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    AATGTTCTCGTTAGAGTAAGTGAGCGTGA   [ 36, 29 ]
+7069            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    GTATTAGCCTGTTCATTTTCCCATTGT     [ 36, 27 ]
+7132            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    TGACAGTGCAAAAGTAGTGTATAAGTTTA   [ 36, 29 ]
+7197            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    CGGCTTTTCTTCTATGCCTTCCGTTACGA   [ 36, 29 ]
+7262            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    TACGTAGCTCGGCCACTACCGGGATAACC   [ 36, 29 ]
+7327            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC    GTACGGGCATTGGCAGGAACTATTTATT    [ 36, 28 ]
+7391            ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
+--------        ------------------------------------    ----------------------------
+Repeats: 12     Average Length: 36              Average Length: 28
+
+- CRISPRDetect3 (without \n):
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence              	Insertion/Deletion
+==========	======	======	======	====================================	=============================	==================
+      6746	    36	 100.0	    29	....................................	CACGAAAACTTTTTGGACGTGGTATGTCA	
+      6811	    36	 100.0	    29	....................................	CTTTTCATCGGCTTTATAAACCGTGCCTT	
+      6876	    36	 100.0	    28	....................................	GGATTATACGACCATGCACGCTACCATG 	
+      6940	    36	 100.0	    28	....................................	CCAAAGTGTGACACACTTAAAACCGCAA 	
+      7004	    36	 100.0	    29	....................................	AATGTTCTCGTTAGAGTAAGTGAGCGTGA	
+      7069	    36	 100.0	    27	....................................	GTATTAGCCTGTTCATTTTCCCATTGT  	
+      7132	    36	 100.0	    29	....................................	TGACAGTGCAAAAGTAGTGTATAAGTTTA	
+      7197	    36	 100.0	    29	....................................	CGGCTTTTCTTCTATGCCTTCCGTTACGA	
+      7262	    36	 100.0	    29	....................................	TACGTAGCTCGGCCACTACCGGGATAACC	
+      7327	    36	 100.0	    28	....................................	GTACGGGCATTGGCAGGAACTATTTATT 	
+      7391	    36	 100.0	     0	....................................	|                            	
+==========	======	======	======	====================================	=============================	==================
+        11	    36	 100.0	    29	ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
+
+- CRISPRDetect3 (with \n):
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence              	Insertion/Deletion
+==========	======	======	======	====================================	=============================	==================
+      6679	    36	  91.7	    29	..T..G...................G..........	AACTTAAAGTACTTGGACTCCCATGTCGA	AG [6684]
+      6746	    36	 100.0	    29	....................................	CACGAAAACTTTTTGGACGTGGTATGTCA	
+      6811	    36	 100.0	    29	....................................	CTTTTCATCGGCTTTATAAACCGTGCCTT	
+      6876	    36	 100.0	    28	....................................	GGATTATACGACCATGCACGCTACCATG 	
+      6940	    36	 100.0	    28	....................................	CCAAAGTGTGACACACTTAAAACCGCAA 	
+      7004	    36	 100.0	    29	....................................	AATGTTCTCGTTAGAGTAAGTGAGCGTGA	
+      7069	    36	 100.0	    27	....................................	GTATTAGCCTGTTCATTTTCCCATTGT  	
+      7132	    36	 100.0	    29	....................................	TGACAGTGCAAAAGTAGTGTATAAGTTTA	
+      7197	    36	 100.0	    29	....................................	CGGCTTTTCTTCTATGCCTTCCGTTACGA	
+      7262	    36	 100.0	    29	....................................	TACGTAGCTCGGCCACTACCGGGATAACC	
+      7327	    36	 100.0	    28	....................................	GTACGGGCATTGGCAGGAACTATTTATT 	
+      7391	    36	 100.0	     0	....................................	|                            	
+==========	======	======	======	====================================	=============================	==================
+        12	    36	  99.3	    29	ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
+
+                                    ATTTAAGGAATAGTAGAAATTTAAAGAGCCGTATAGAC  AACTTAAAGTACTTGGACTCCCATGTCGA
+
+- CRISPRDetect3 (with \n) +orientation (reverse: reverse&complement)
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence              	Insertion/Deletion
+==========	======	======	======	====================================	=============================	==================
+      7426	    36	 100.0	    28	....................................	AATAAATAGTTCCTGCCAATGCCCGTAC 	
+      7362	    36	 100.0	    29	....................................	GGTTATCCCGGTAGTGGCCGAGCTACGTA	
+      7297	    36	 100.0	    29	....................................	TCGTAACGGAAGGCATAGAAGAAAAGCCG	
+      7232	    36	 100.0	    29	....................................	TAAACTTATACACTACTTTTGCACTGTCA	
+      7167	    36	 100.0	    27	....................................	ACAATGGGAAAATGAACAGGCTAATAC  	
+      7104	    36	 100.0	    29	....................................	TCACGCTCACTTACTCTAACGAGAACATT	
+      7039	    36	 100.0	    28	....................................	TTGCGGTTTTAAGTGTGTCACACTTTGG 	
+      6975	    36	 100.0	    28	....................................	CATGGTAGCGTGCATGGTCGTATAATCC 	
+      6911	    36	 100.0	    29	....................................	AAGGCACGGTTTATAAAGCCGATGAAAAG	
+      6846	    36	 100.0	    29	....................................	TGACATACCACGTCCAAAAAGTTTTCGTG	
+      6781	    36	 100.0	     0	....................................	|                            	
+==========	======	======	======	====================================	=============================	==================
+        11	    36	 100.0	    29	GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT	
+
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    AATAAATAGTTCCTGCCAATGCCCGTAC
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    GGTTATCCCGGTAGTGGCCGAGCTACGTA
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    TCGTAACGGAAGGCATAGAAGAAAAGCCG
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    TAAACTTATACACTACTTTTGCACTGTCA
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    ACAATGGGAAAATGAACAGGCTAATAC
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    TCACGCTCACTTACTCTAACGAGAACATT
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    TTGCGGTTTTAAGTGTGTCACACTTTGG
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    CATGGTAGCGTGCATGGTCGTATAATCC
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    AAGGCACGGTTTATAAAGCCGATGAAAAG
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT    TGACATACCACGTCCAAAAAGTTTTCGTG
+                                    GTCTATACGGTTCTTTAAATTTCTACTATTGTAGAT
+
+
+
+
+
+ISSUE: difference between tools (cause: level of identity of DR), difference DR (1bp differnt), Pilercr deletion in reapeat reference
+MAG:    M1856252453
+Contig: NODE_6421_length_4372_cov_9.0278
+
+Pilercr modify:
+>NODE_6421_length_4372_cov_9.0278
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                Spacer
+==========  ======  ======  ======  ==========    ==================================    ======
+         1      34    94.1      35                --...............................-    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
+        70      34   100.0      34  CCTGTAGCGC    .................................-    GTAACAGGGAAATATGTATGCGCATCAGCAGATT
+       138      34    94.1          TCAGCAGATT    .........................A.......T    AAATGGCAGG
+==========  ======  ======  ======  ==========    ==================================
+         3      34              34                CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT-
+
+MINCED (with and without \n):
+Sequence 'NODE_6421_length_4372_cov_9.0278' (4372 bp)
+
+CRISPR 3   Range: 1 - 234
+POSITION	REPEAT				                SPACER
+--------	--------------------------------	-----------------------------------
+1		    GTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT	AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGCC	[ 32, 36 ]
+69		    GTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT	GTAACAGGGAAATATGTATGCGCATCAGCAGATTC	    [ 32, 35 ]
+136		    GTCAGCCTCTTCGTGAGGCTGTGAATTGAAAT	TAAATGGCAGGACGAAACAGTAGAAACAGTTCTTC	    [ 32, 35 ]
+203		    GTCAGCCTCTTCGTGAGACTGTAAGGTGAAAT	
+--------	--------------------------------	-----------------------------------
+Repeats: 4	Average Length: 32		Average Length: 35
+
+
+PILERCR_1 (with and without \n):
+Array 1
+>NODE_6421_length_4372_cov_9.0278
+
+       Pos  Repeat     %id  Spacer  Repeat                               Spacer
+==========  ======  ======  ======  =================================    ======
+         1      33    97.0      35  -................................    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
+        69      33   100.0      34  .................................    GTAACAGGGAAATATGTATGCGCATCAGCAGATT
+       136      33    97.0          .........................A.......    TAAATGGCAGG
+==========  ======  ======  ======  =================================
+         3      33              34  CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
+
+PILERCR_2 (with and without \n):
+>NODE_6421_length_4372_cov_9.0278
+
+       Pos  Repeat     %id  Spacer  Repeat                               Spacer
+==========  ======  ======  ======  =================================    ======
+         1      33    97.0      35  -................................    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
+        69      33   100.0      34  .................................    GTAACAGGGAAATATGTATGCGCATCAGCAGATT
+       136      33    97.0      34  .........................A.......    TAAATGGCAGGACGAAACAGTAGAAACAGTTCTT
+       203      33    90.9          ..................A....A..G......    TTTTGTAAAAA
+==========  ======  ======  ======  =================================
+         4      33              34  CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
+
+CRISPRDetect:
+>NODE_6421_length_4372_cov_9.0278		Array_Orientation: Forward
+
+  Position	Repeat	   %id	Spacer	Repeat_Sequence                 	Spacer_Sequence                     	Insertion/Deletion
+==========	======	======	======	================================	====================================	==================
+         1	    32	 100.0	    36	................................	AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGCC	
+        69	    32	 100.0	    35	................................	GTAACAGGGAAATATGTATGCGCATCAGCAGATTC 	
+       136	    32	  96.9	    35	........................A.......	TAAATGGCAGGACGAAACAGTAGAAACAGTTCTTC 	
+       203	    32	  90.6	    33	.................A....A..G......	TTTTGTAAAAAGTGCAATCGAATTTACTTTTTT   	
+       268	    32	  71.9	     0	.C....T....TA.A...T.A.......G..G	|                                   	
+==========	======	======	======	================================	====================================	==================
+         5	    32	  91.9	    35	GTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT	                                    	       
+                        	       
+
+
+
+ISSUE: Long spacer (cause: doesn't recognize the DRs inside), difference between with and without \n, difference between tools, pilercr creates 2 CRISPR instead of 1
+MAG:    M1856252453
+Contig: NODE_2676_length_8889_cov_6.11014
+
+Minced (with and without \n):
+CRISPR 2   Range: 7324 - 8349
+POSITION	REPEAT				SPACER
+--------	------------------------------------	------------------------------
+7324		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	TTCCAGTGTGGGATAGAACAACGCTTTTCT	[ 36, 30 ]
+7390		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	ATACAGCGGACGCAACCAAGAAAGCTACT	[ 36, 29 ]
+7455		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	TCAAGTTCTATGCTATAATACAATTCATAG	[ 36, 30 ]
+7521		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	TTCTACACGACAAAAAATATCAGCAAACTC	[ 36, 30 ]
+7587		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	AAGCGTGAGCTGCTCCTACTAAATCTACTG	[ 36, 30 ]
+7653		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	GGCGATCAATACAGAACTTGGAAGAATAGCA	[ 36, 31 ]
+7720		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	TGTTTTGGAAACTATCAAGGTATAGGGTGA	[ 36, 30 ]
+7786		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	CAAAAAAGTTGGCAATACGACAGAAAATGA	[ 36, 30 ]
+7852		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	GCACGATGATCTCGAACTTTGGAAAAGTAG	[ 36, 30 ]
+7918		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	AGGATGATCTGGAGAACTGGTGCGGCGGAA	[ 36, 30 ]
+7984		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	CATTTCTTGCAACGAGTATGTGTTCCAGTG	[ 36, 30 ]
+8050		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	ATCTTGCGCAGAATCAACGTTAGCATTAGT	[ 36, 30 ]
+8116		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	AAATTACAATTAAATACTATCCTGTTGCGA	[ 36, 30 ]
+8182		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	AGGCAAAAATGCTACAATGTTCTAAAAACA	[ 36, 30 ]
+8248		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	CAACCGTACAAGATGCATAGCGTGCTTGTT	[ 36, 30 ]
+8314		GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC	
+--------	------------------------------------	------------------------------
+Repeats: 16	Average Length: 36		Average Length: 30
+
+PILERCR_1 (with \n):
+Array 2
+>NODE_2676_length_8889_cov_6.11014
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
+==========  ======  ======  ======  ==========    ====================================    ======
+      7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
+      7390      36   100.0      29  ACGCTTTTCT    ....................................    ATACAGCGGACGCAACCAAGAAAGCTACT
+      7455      36   100.0      30  GAAAGCTACT    ....................................    TCAAGTTCTATGCTATAATACAATTCATAG
+      7521      36   100.0      30  CAATTCATAG    ....................................    TTCTACACGACAAAAAATATCAGCAAACTC
+      7587      36   100.0      30  CAGCAAACTC    ....................................    AAGCGTGAGCTGCTCCTACTAAATCTACTG
+      7653      36   100.0      31  AAATCTACTG    ....................................    GGCGATCAATACAGAACTTGGAAGAATAGCA
+      7720      36   100.0      30  AAGAATAGCA    ....................................    TGTTTTGGAAACTATCAAGGTATAGGGTGA
+      7786      36   100.0      30  TATAGGGTGA    ....................................    CAAAAAAGTTGGCAATACGACAGAAAATGA
+      7852      36   100.0      30  CAGAAAATGA    ....................................    GCACGATGATCTCGAACTTTGGAAAAGTAG
+      7918      36   100.0     360  GGAAAAGTAG    ....................................    AGGATGATCTGGAGAACTGGTGCGGCGGAAGTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAACCATTTCTTGCAACGAGTATGTGTTCCAGTGGTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAACATCTTGCGCAGAATCAACGTTAGCATTAGTGTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAACAAATTACAATTAAATACTATCCTGTTGCGAGTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAACAGGCAAAAATGCTACAATGTTCTAAAAACAGTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAACCAACCGTACAAGATGCATAGCGTGCTTGTT
+      8314      36   100.0          CGTGCTTGTT    ....................................    CAGATGAAGG
+==========  ======  ======  ======  ==========    ====================================
+        11      36              63                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+Array 3
+>NODE_2676_length_8889_cov_6.11014
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
+==========  ======  ======  ======  ==========    ====================================    ======
+      7984      36   100.0      30  TGCGGCGGAA    ....................................    CATTTCTTGCAACGAGTATGTGTTCCAGTG
+      8050      36   100.0      30  TGTTCCAGTG    ....................................    ATCTTGCGCAGAATCAACGTTAGCATTAGT
+      8116      36   100.0      30  TAGCATTAGT    ....................................    AAATTACAATTAAATACTATCCTGTTGCGA
+      8182      36   100.0      30  CCTGTTGCGA    ....................................    AGGCAAAAATGCTACAATGTTCTAAAAACA
+      8248      36   100.0      30  TCTAAAAACA    ....................................    CAACCGTACAAGATGCATAGCGTGCTTGTT
+      8314      36   100.0          CGTGCTTGTT    ....................................    CAGATGAAGG
+==========  ======  ======  ======  ==========    ====================================
+         6      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+PILERCR_1 (without \n):
+>NODE_2676_length_8889_cov_6.11014
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
+==========  ======  ======  ======  ==========    ====================================    ======
+      7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
+      7390      36   100.0      29  ACGCTTTTCT    ....................................    ATACAGCGGACGCAACCAAGAAAGCTACT
+      7455      36   100.0      30  GAAAGCTACT    ....................................    TCAAGTTCTATGCTATAATACAATTCATAG
+      7521      36   100.0      30  CAATTCATAG    ....................................    TTCTACACGACAAAAAATATCAGCAAACTC
+      7587      36   100.0      30  CAGCAAACTC    ....................................    AAGCGTGAGCTGCTCCTACTAAATCTACTG
+      7653      36   100.0      31  AAATCTACTG    ....................................    GGCGATCAATACAGAACTTGGAAGAATAGCA
+      7720      36   100.0      30  AAGAATAGCA    ....................................    TGTTTTGGAAACTATCAAGGTATAGGGTGA
+      7786      36   100.0      30  TATAGGGTGA    ....................................    CAAAAAAGTTGGCAATACGACAGAAAATGA
+      7852      36   100.0      30  CAGAAAATGA    ....................................    GCACGATGATCTCGAACTTTGGAAAAGTAG
+      7918      36   100.0      30  GGAAAAGTAG    ....................................    AGGATGATCTGGAGAACTGGTGCGGCGGAA
+      7984      36   100.0      30  TGCGGCGGAA    ....................................    CATTTCTTGCAACGAGTATGTGTTCCAGTG
+      8050      36   100.0      30  TGTTCCAGTG    ....................................    ATCTTGCGCAGAATCAACGTTAGCATTAGT
+      8116      36   100.0      30  TAGCATTAGT    ....................................    AAATTACAATTAAATACTATCCTGTTGCGA
+      8182      36   100.0      30  CCTGTTGCGA    ....................................    AGGCAAAAATGCTACAATGTTCTAAAAACA
+      8248      36   100.0          TCTAAAAACA    ....................................    CAACCGTACA
+==========  ======  ======  ======  ==========    ====================================
+        15      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+PILERCR_2 (with \n):
+>NODE_2676_length_8889_cov_6.11014
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
+==========  ======  ======  ======  ==========    ====================================    ======
+      7521      36   100.0      30  CAATTCATAG    ....................................    TTCTACACGACAAAAAATATCAGCAAACTC
+      7587      36   100.0      30  CAGCAAACTC    ....................................    AAGCGTGAGCTGCTCCTACTAAATCTACTG
+      7653      36   100.0      31  AAATCTACTG    ....................................    GGCGATCAATACAGAACTTGGAAGAATAGCA
+      7720      36   100.0      30  AAGAATAGCA    ....................................    TGTTTTGGAAACTATCAAGGTATAGGGTGA
+      7786      36   100.0      30  TATAGGGTGA    ....................................    CAAAAAAGTTGGCAATACGACAGAAAATGA
+      7852      36   100.0      30  CAGAAAATGA    ....................................    GCACGATGATCTCGAACTTTGGAAAAGTAG
+      7918      36   100.0      30  GGAAAAGTAG    ....................................    AGGATGATCTGGAGAACTGGTGCGGCGGAA
+      7984      36   100.0      30  TGCGGCGGAA    ....................................    CATTTCTTGCAACGAGTATGTGTTCCAGTG
+      8050      36   100.0      30  TGTTCCAGTG    ....................................    ATCTTGCGCAGAATCAACGTTAGCATTAGT
+      8116      36   100.0      30  TAGCATTAGT    ....................................    AAATTACAATTAAATACTATCCTGTTGCGA
+      8182      36   100.0      30  CCTGTTGCGA    ....................................    AGGCAAAAATGCTACAATGTTCTAAAAACA
+      8248      36   100.0      30  TCTAAAAACA    ....................................    CAACCGTACAAGATGCATAGCGTGCTTGTT
+      8314      36   100.0          CGTGCTTGTT    ....................................    CAGATGAAGG
+==========  ======  ======  ======  ==========    ====================================
+        13      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
+
+PILERCR_2 (without \n):
+>NODE_2676_length_8889_cov_6.11014
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
+==========  ======  ======  ======  ==========    ====================================    ======
+      7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
+      7390      36   100.0      29  ACGCTTTTCT    ....................................    ATACAGCGGACGCAACCAAGAAAGCTACT
+      7455      36   100.0      30  GAAAGCTACT    ....................................    TCAAGTTCTATGCTATAATACAATTCATAG
+      7521      36   100.0      30  CAATTCATAG    ....................................    TTCTACACGACAAAAAATATCAGCAAACTC
+      7587      36   100.0      30  CAGCAAACTC    ....................................    AAGCGTGAGCTGCTCCTACTAAATCTACTG
+      7653      36   100.0      31  AAATCTACTG    ....................................    GGCGATCAATACAGAACTTGGAAGAATAGCA
+      7720      36   100.0      30  AAGAATAGCA    ....................................    TGTTTTGGAAACTATCAAGGTATAGGGTGA
+      7786      36   100.0      30  TATAGGGTGA    ....................................    CAAAAAAGTTGGCAATACGACAGAAAATGA
+      7852      36   100.0      30  CAGAAAATGA    ....................................    GCACGATGATCTCGAACTTTGGAAAAGTAG
+      7918      36   100.0      30  GGAAAAGTAG    ....................................    AGGATGATCTGGAGAACTGGTGCGGCGGAA
+      7984      36   100.0      30  TGCGGCGGAA    ....................................    CATTTCTTGCAACGAGTATGTGTTCCAGTG
+      8050      36   100.0      30  TGTTCCAGTG    ....................................    ATCTTGCGCAGAATCAACGTTAGCATTAGT
+      8116      36   100.0      30  TAGCATTAGT    ....................................    AAATTACAATTAAATACTATCCTGTTGCGA
+      8182      36   100.0      30  CCTGTTGCGA    ....................................    AGGCAAAAATGCTACAATGTTCTAAAAACA
+      8248      36   100.0      30  TCTAAAAACA    ....................................    CAACCGTACAAGATGCATAGCGTGCTTGTT
+      8314      36   100.0          CGTGCTTGTT    ....................................    CAGATGAAGG
+==========  ======  ======  ======  ==========    ====================================
+        16      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
