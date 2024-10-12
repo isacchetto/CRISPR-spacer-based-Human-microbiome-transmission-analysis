@@ -91,9 +91,8 @@ class CRISPR:
         contig_name (str): the name of the contig that the CRISPR was found in
         start (int): Position of the first base in the CRISPR (one-indexed, inclusive)
         end (int): position of the last base in the CRISPR (one-indexed, inclusive)
-        spacers (list): a list of the ordered spacers in the CRISPR
         repeats (list): a list of the ordered repeats in the CRISPR
-        flankers (dict): a dictionary with the left and right flankers of the CRISPR
+        spacers (list): a list of the ordered spacers in the CRISPR
     
     Methods:
         __init__(): Constructor
@@ -105,23 +104,21 @@ class CRISPR:
         setEnd(end): Sets the end attribute
         addRepeat(repeat): Adds a repeat to the repeats list
         addSpacer(spacer): Adds a spacer to the spacers list
-        setFlankerLeft(left): Sets the left flanker
-        setFlankerRight(right): Sets the right flanker
+        sequence(): Returns the complete sequence of the CRISPR
     '''
     def __init__(self, file_name=None, contig_name=None, start=None, end=None):
         self.file_name = file_name
         self.contig_name = contig_name
         self.start = start
         self.end = end
-        self.spacers = []
         self.repeats = []
-        self.flankers = {'left': '', 'right': ''}
+        self.spacers = []
     
     def __repr__(self):
-        return f'<CRISPR object: (\n{self.file_name}\n{self.contig_name}\n{self.start}\n{self.end}\n{self.spacers}\n{self.repeats}\n{self.flankers})>\n'
+        return f'<CRISPR object: (\n{self.file_name}\n{self.contig_name}\n{self.start}\n{self.end}\n{self.repeats}\n{self.spacers})>\n'
     
     def __str__(self):
-        return f'f_name: {self.file_name}\ncontig: {self.contig_name}\nstart: {self.start}\nend: {self.end}\nspacers: {self.spacers}\nrepeats: {self.repeats}\nflankers: {self.flankers}\n'
+        return f'f_name: {self.file_name}\ncontig: {self.contig_name}\nstart: {self.start}\nend: {self.end}\nrepeats: {self.repeats}\nspacers: {self.spacers}\n'
     
     def __len__(self):
         return sum(len(spacer) for spacer in self.spacers) + sum(len(repeat) for repeat in self.repeats)
@@ -153,12 +150,12 @@ class CRISPR:
     
     def addSpacer(self, spacer):
         self.spacers.append(spacer)
-
-    def setFlankerLeft(self, left):
-        self.flankers['left'] = left
-
-    def setFlankerRight(self, right):
-        self.flankers['right'] = right
+    
+    def sequence(self):
+        return ''.join([sub[item] for item in range(min(len(self.repeats), len(self.spacers)))
+                             for sub in [self.repeats, self.spacers]] +
+                   self.repeats[len(self.spacers):] + self.spacers[len(self.repeats):])
+        
 
 def parse_minced(file_path):
     crisprs = []
@@ -212,18 +209,23 @@ def parse_pilercr(file_path):
                 if len(seqs) == 7 and crispr_tmp is None: # first line: flankerLeft - repeat - spacer
                     start=int(seqs[0]) + seqs[5][:seqs[5].find(".")].count("-") # adjust start position if there are gaps in the repeat
                     crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
-                    crispr_tmp.setFlankerLeft(seqs[4])
                     repeats = [seqs[5]]
                     crispr_tmp.addSpacer(seqs[6])
+                elif len(seqs) == 6 and crispr_tmp is None: # first line: repeat - spacer (CRISPR start at beginning of contig)
+                    start=int(seqs[0]) 
+                    crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
+                    repeats = [seqs[4]]
+                    crispr_tmp.addSpacer(seqs[5])
                 elif len(seqs) == 7 and crispr_tmp is not None: # next line: repeat - spacer
                     repeats.append(seqs[5])
                     crispr_tmp.addSpacer(seqs[6])
                 elif len(seqs) == 6 and crispr_tmp is not None: # last line: repeat - flankerRight
                     repeats.append(seqs[4])
-                    crispr_tmp.setFlankerRight(seqs[5])
-                elif len(seqs) == 4 and crispr_tmp is not None: # consensus repeat
-                    consensus = seqs[3]
-                    for repeat in develop_repeats(repeats, consensus):
+                elif len(seqs) == 5 and crispr_tmp is not None: # last line: repeat (CRISPR end at end of contig)
+                    repeats.append(seqs[4])
+                elif len(seqs) == 4 and crispr_tmp is not None: # reference repeat
+                    reference = seqs[3]
+                    for repeat in develop_repeats(repeats, reference):
                         crispr_tmp.addRepeat(repeat)
                     repeats = []
                     crispr_tmp.setEnd(crispr_tmp.start + len(crispr_tmp) - 1)
