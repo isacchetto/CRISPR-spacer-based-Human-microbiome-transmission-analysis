@@ -1,0 +1,106 @@
+pilercr v1.06
+By Robert C. Edgar
+
+/var/folders/x3/bp98gqzd2rb_5mg_2vq7cp6m0000gn/T/tmpzjes0ic6_M1440811244.fna: 4 putative CRISPR arrays found.
+
+
+
+DETAIL REPORT
+
+
+
+Array 1
+>RubelMA_2020_k141_30838
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                        Spacer
+==========  ======  ======  ======  ==========    ==========================    ======
+      3245      26    80.8      42  TTTTACAGAA    -.....................----    TATTGGGGTGATTAGATGTGTGGAGTCATCCGCTTTGCCTGT
+      3313      26   100.0      38  CTTTGCCTGT    ..........................    GTTGCTTCTAGTTGTGTAGAACCGTCCACTCCTTTTGC
+      3377      26    88.5          CTCCTTTTGC    ............A...C....G....    CACTTGTCAG
+==========  ======  ======  ======  ==========    ==========================
+         3      26              40                TTTAGTTGTGTAGAAGTGTCCCGTTT
+
+
+Array 2
+>RubelMA_2020_k141_30969
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                            Spacer
+==========  ======  ======  ======  ==========    ==============================================    ======
+       463      46    93.5      80  ACATTGAACA    ....................TG.....G..................    TGAAATGCCACTGACATCTCAGTATTTTTGGCTTGAATTGTATGAGGTTTTGAATGTAAAACCACATAAAAGACAATTTC
+       589      46    82.6      36  AGACAATTTC    ........................A..............-------    AAAATTCTTTCTTTTCCGATAAAAAACGTACCTTTG
+       671      46    84.8          CGTACCTTTG    C........AAG...A..C......................C....    ATTATAAAAA
+==========  ======  ======  ======  ==========    ==============================================
+         3      46              58                TATTCCCGATTTTTGTCATTAATGTCACTTTTCGGGAATGAATATG
+
+
+Array 3
+>RubelMA_2020_k141_49138
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                                                                                         Spacer
+==========  ======  ======  ======  ==========    ===========================================================================================    ======
+      8033      91    98.9      25  TCATTCTATT    .....................................................................................T....-    CGTGCAATATTTAATTTCTTTCTTC
+      8149      91    95.6      20  TTCTTTCTTC    ...............................................................................AG..TG.....-    AAAGCAAGAAAAAGGAAAAA
+      8260      91    89.0          AAAGGAAAAA    -.............................................................................G...---------    CTTCTTGTTT
+==========  ======  ======  ======  ==========    ===========================================================================================
+         3      91              22                GGTGGGCGTTGACGGATTCGAACCGCCGACCCTCTGCTTGTAAGGCAGATGCTCTGAACCAGCTGAGCTAAACGCCCGATAGTGCCTTCT-
+
+
+Array 4
+>RubelMA_2020_k141_57984
+
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                              Spacer
+==========  ======  ======  ======  ==========    ================================    ======
+      4275      32   100.0      35  TAGATATAGA    ................................    ACACCTACAATATTAGGGTATTGTACCGGGACTGT
+      4342      32   100.0      33  CCGGGACTGT    ................................    TGTAATGTGCGGATTAAAGCACGATAACCCCAT
+      4407      32   100.0      35  ATAACCCCAT    ................................    TTCCAAAAGCAATTGCAGCAAGAAGCGAAAGCCTA
+      4474      32   100.0          CGAAAGCCTA    ................................    ATCAATGGCCCAGTATTCGGCAATATCGAAGATG
+==========  ======  ======  ======  ==========    ================================
+         4      32              34                GTCACACCCTACGTGGGTGTGTGGATTGAAAC
+
+
+SUMMARY BY SIMILARITY
+
+
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer  +  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  =  =========
+    1  RubelMA_2020_k14        3245         153         3      26      40  +  TTTAGTTGTGTAGAAGTGTCCCGTTT
+
+    2  RubelMA_2020_k14         463         247         3      46      58  +  TATTCCCGATTTTTGTCATTAATGTCACTTTTCGGGAATGAATATG
+
+    3  RubelMA_2020_k14        8033         306         3      91      22  +  GGTGGGCGTTGACGGATTCGAACCGCCGACCCTCTGCTTGTAAGGCAGATGCTCTGAACCAGCTGAGCTAAACGCCCGATAGTGCCTTCT
+
+    4  RubelMA_2020_k14        4275         231         4      32      34  +  GTCACACCCTACGTGGGTGTGTGGATTGAAAC
+
+
+
+SUMMARY BY POSITION
+
+
+
+>RubelMA_2020_k141_30838
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    1  RubelMA_2020_k14        3245         153         3      26      40              TTTAGTTGTGTAGAAGTGTCCCGTTT
+
+
+>RubelMA_2020_k141_30969
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    2  RubelMA_2020_k14         463         247         3      46      58              TATTCCCGATTTTTGTCATTAATGTCACTTTTCGGGAATGAATATG
+
+
+>RubelMA_2020_k141_49138
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    3  RubelMA_2020_k14        8033         306         3      91      22              GGTGGGCGTTGACGGATTCGAACCGCCGACCCTCTGCTTGTAAGGCAGATGCTCTGAACCAGCTGAGCTAAACGCCCGATAGTGCCTTCT
+
+
+>RubelMA_2020_k141_57984
+
+Array          Sequence    Position      Length  # Copies  Repeat  Spacer    Distance  Consensus
+=====  ================  ==========  ==========  ========  ======  ======  ==========  =========
+    4  RubelMA_2020_k14        4275         231         4      32      34              GTCACACCCTACGTGGGTGTGTGGATTGAAAC

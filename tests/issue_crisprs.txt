@@ -89,8 +89,7 @@ Repeats: 12     Average Length: 36              Average Length: 28
       7391	    36	 100.0	     0	....................................	|                            	
 ==========	======	======	======	====================================	=============================	==================
         12	    36	  99.3	    29	ATCTACAATAGTAGAAATTTAAAGAACCGTATAGAC
-
-                                    ATTTAAGGAATAGTAGAAATTTAAAGAGCCGTATAGAC  AACTTAAAGTACTTGGACTCCCATGTCGA
+                                   ATTTAAGGAATAGTAGAAATTTAAAGAGCCGTATAGAC
 
 - CRISPRDetect3 (with \n) +orientation (reverse: reverse&complement)
   Position	Repeat	   %id	Spacer	Repeat_Sequence                     	Spacer_Sequence              	Insertion/Deletion
@@ -129,9 +128,7 @@ ISSUE: difference between tools (cause: level of identity of DR), difference DR 
 MAG:    M1856252453
 Contig: NODE_6421_length_4372_cov_9.0278
 
-Pilercr modify:
->NODE_6421_length_4372_cov_9.0278
-
+PILERCR_1 modify:
        Pos  Repeat     %id  Spacer  Left flank    Repeat                                Spacer
 ==========  ======  ======  ======  ==========    ==================================    ======
          1      34    94.1      35                --...............................-    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
@@ -141,8 +138,6 @@ Pilercr modify:
          3      34              34                CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT-
 
 MINCED (with and without \n):
-Sequence 'NODE_6421_length_4372_cov_9.0278' (4372 bp)
-
 CRISPR 3   Range: 1 - 234
 POSITION	REPEAT				                SPACER
 --------	--------------------------------	-----------------------------------
@@ -155,9 +150,6 @@ Repeats: 4	Average Length: 32		Average Length: 35
 
 
 PILERCR_1 (with and without \n):
-Array 1
->NODE_6421_length_4372_cov_9.0278
-
        Pos  Repeat     %id  Spacer  Repeat                               Spacer
 ==========  ======  ======  ======  =================================    ======
          1      33    97.0      35  -................................    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
@@ -167,8 +159,6 @@ Array 1
          3      33              34  CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
 
 PILERCR_2 (with and without \n):
->NODE_6421_length_4372_cov_9.0278
-
        Pos  Repeat     %id  Spacer  Repeat                               Spacer
 ==========  ======  ======  ======  =================================    ======
          1      33    97.0      35  -................................    AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGC
@@ -179,8 +169,6 @@ PILERCR_2 (with and without \n):
          4      33              34  CGTCAGCCTCTTCGTGAGGCTGTGAGTTGAAAT
 
 CRISPRDetect:
->NODE_6421_length_4372_cov_9.0278		Array_Orientation: Forward
-
   Position	Repeat	   %id	Spacer	Repeat_Sequence                 	Spacer_Sequence                     	Insertion/Deletion
 ==========	======	======	======	================================	====================================	==================
          1	    32	 100.0	    36	................................	AGGATATGTACTTAGCTTAGAAGCTCCTGTAGCGCC	
@@ -223,8 +211,6 @@ Repeats: 16	Average Length: 36		Average Length: 30
 
 PILERCR_1 (with \n):
 Array 2
->NODE_2676_length_8889_cov_6.11014
-
        Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
 ==========  ======  ======  ======  ==========    ====================================    ======
       7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
@@ -240,10 +226,7 @@ Array 2
       8314      36   100.0          CGTGCTTGTT    ....................................    CAGATGAAGG
 ==========  ======  ======  ======  ==========    ====================================
         11      36              63                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
-
 Array 3
->NODE_2676_length_8889_cov_6.11014
-
        Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
 ==========  ======  ======  ======  ==========    ====================================    ======
       7984      36   100.0      30  TGCGGCGGAA    ....................................    CATTTCTTGCAACGAGTATGTGTTCCAGTG
@@ -256,8 +239,6 @@ Array 3
          6      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
 
 PILERCR_1 (without \n):
->NODE_2676_length_8889_cov_6.11014
-
        Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
 ==========  ======  ======  ======  ==========    ====================================    ======
       7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
@@ -279,8 +260,6 @@ PILERCR_1 (without \n):
         15      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
 
 PILERCR_2 (with \n):
->NODE_2676_length_8889_cov_6.11014
-
        Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
 ==========  ======  ======  ======  ==========    ====================================    ======
       7521      36   100.0      30  CAATTCATAG    ....................................    TTCTACACGACAAAAAATATCAGCAAACTC
@@ -300,8 +279,6 @@ PILERCR_2 (with \n):
         13      36              30                GTTTGAGAGTCTTGTTAATACAGAAGGATTTCAAAC
 
 PILERCR_2 (without \n):
->NODE_2676_length_8889_cov_6.11014
-
        Pos  Repeat     %id  Spacer  Left flank    Repeat                                  Spacer
 ==========  ======  ======  ======  ==========    ====================================    ======
       7324      36   100.0      30  CGGATTTGAG    ....................................    TTCCAGTGTGGGATAGAACAACGCTTTTCT
