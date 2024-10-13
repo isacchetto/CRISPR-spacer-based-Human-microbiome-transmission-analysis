@@ -104,7 +104,7 @@ class CRISPR:
         setEnd(end): Sets the end attribute
         addRepeat(repeat): Adds a repeat to the repeats list
         addSpacer(spacer): Adds a spacer to the spacers list
-        sequence(): Returns the complete sequence of the CRISPR
+        sequence(): Returns the complete sequence of the CRISPR 
     '''
     def __init__(self, file_name=None, contig_name=None, start=None, end=None):
         self.file_name = file_name
@@ -126,9 +126,10 @@ class CRISPR:
     def __bool__(self):
         return (isinstance(self.file_name, str) and self.file_name != '' and
                 isinstance(self.contig_name, str) and self.contig_name != '' and
-                isinstance(self.start, int) and self.start >= 0 and
-                isinstance(self.end, int) and self.end >= self.start and
-                len(self) == (self.end - self.start + 1))
+                isinstance(self.start, int) and self.start > 0 and
+                isinstance(self.end, int) and self.end > self.start and
+                len(self) == (self.end - self.start + 1) and 
+                len(self.repeats) == len(self.spacers) + 1)
     
     def __eq__(self, other):
         return self.file_name == other.file_name and self.contig_name == other.contig_name and self.start == other.start and self.end == other.end
@@ -159,13 +160,20 @@ class CRISPR:
 
 def parse_minced(file_path):
     crisprs = []
+    crispr_tmp = None
+    file_name = file_path.split('/')[-1].split('.')[0]
+    contig_name = None
     with open(file_path, 'r') as file:
         for line in file:
             if line.startswith("Sequence '"):
                 contig_name = line.split("'")[1]
             elif line.startswith("CRISPR"):
-                start, end = map(int, line.split()[3:6:2]) # Take from 4th to 6th element, step 2
-                crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=end)
+                if crispr_tmp is not None:
+                    raise ValueError(f"CRISPR not finished in file {file_path}, contig {crispr_tmp.contig_name}")
+                else:
+                    start, end = map(int, line.split()[3:6:2]) # Take from 4th to 6th element, step 2
+                    crispr_tmp = CRISPR(file_name=file_name, contig_name=contig_name, start=start, end=end)
+                    contig_name = None
             elif line[:1].isdigit():
                 seqs = line.split()
                 if len(seqs) == 7:
@@ -175,8 +183,9 @@ def parse_minced(file_path):
                     crispr_tmp.addRepeat(seqs[1])
             # Save the instance
             elif line.startswith("Repeats"):
-                if bool(crispr_tmp):
+                if crispr_tmp:
                     crisprs.append(crispr_tmp)
+                    crispr_tmp = None
                 else:
                     raise ValueError(f"Invalid CRISPR format in file {file_path}")
     return crisprs
@@ -195,8 +204,11 @@ def develop_repeats(repeats, reference):
 
 def parse_pilercr(file_path):
     crisprs = []
+    crispr_tmp = None
+    file_name = file_path.split('/')[-1].split('.')[0]
+    contig_name = None
+    repeats = []
     with open(file_path, 'r') as file:
-        crispr_tmp = None
         for line in file:
             line = line.strip()
             if line.startswith("Array"):
@@ -207,14 +219,16 @@ def parse_pilercr(file_path):
             elif line[:1].isdigit():
                 seqs = line.split()
                 if len(seqs) == 7 and crispr_tmp is None: # first line: flankerLeft - repeat - spacer
-                    start=int(seqs[0]) + seqs[5][:seqs[5].find(".")].count("-") # adjust start position if there are gaps in the repeat
+                    start=int(seqs[0])# + seqs[5][:seqs[5].find(".")].count("-") # adjust start position if there are gaps at the beginning of the first repeat (already works well, I was confused)
                     crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
-                    repeats = [seqs[5]]
+                    contig_name = None
+                    repeats.append(seqs[5])
                     crispr_tmp.addSpacer(seqs[6])
                 elif len(seqs) == 6 and crispr_tmp is None: # first line: repeat - spacer (CRISPR start at beginning of contig)
                     start=int(seqs[0]) 
                     crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
-                    repeats = [seqs[4]]
+                    contig_name = None
+                    repeats.append(seqs[4])
                     crispr_tmp.addSpacer(seqs[5])
                 elif len(seqs) == 7 and crispr_tmp is not None: # next line: repeat - spacer
                     repeats.append(seqs[5])
@@ -229,12 +243,14 @@ def parse_pilercr(file_path):
                         crispr_tmp.addRepeat(repeat)
                     repeats = []
                     crispr_tmp.setEnd(crispr_tmp.start + len(crispr_tmp) - 1)
-                    if bool(crispr_tmp):
+                    if crispr_tmp:
                         crisprs.append(crispr_tmp)
                         crispr_tmp = None
                     else:
                         raise ValueError(f"Invalid CRISPR format in file {file_path}")
             elif line.startswith("SUMMARY"):
+                if crispr_tmp is not None:
+                    raise ValueError(f"CRISPR not finished in file {file_path}, contig {crispr_tmp.contig_name}")
                 break
         return crisprs
 
@@ -313,7 +329,7 @@ if __name__ == '__main__':
             # remove_insertion_from_repeat=1
 
             # fix_gaps_in_repeats=1
-        commands["CRISPRDetect3"]="CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect3"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
     if not commands:
         print("No tools found: minced, pilercr, CRISPRDetect3", file=sys.stderr)
         exit()
