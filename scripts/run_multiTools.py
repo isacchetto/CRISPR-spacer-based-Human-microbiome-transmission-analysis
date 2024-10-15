@@ -15,12 +15,13 @@ from threading import Lock
 import tempfile
 from simple_term_menu import TerminalMenu
 import pandas as pd
+# import CRISPRtools as ct
 
 
 
 # run_multiTools.py
-# Version 0.1
-# 08/10/2024
+# Version 1.0
+# 16/10/2024
 # by isacchetto
 
 
@@ -38,6 +39,7 @@ def future_progress_indicator(future):
 # Function to unzip and run the tool
 def unzip_and_run(command_run, input_file, output_file):
     global errors, lock_errors
+    tool = command_run[0]
     with open(input_file, 'rb') as file, tempfile.NamedTemporaryFile("wb", suffix="_" + os.path.basename(input_file)[:-8]+".fna", delete=True) as tmp_file:
         decompressor = bz2.BZ2Decompressor()
         for data in iter(lambda : file.read(100 * 1024), b''):
@@ -61,6 +63,7 @@ def unzip_and_run(command_run, input_file, output_file):
 # Function to run the tool
 def run(command_run, input_file, output_file):
     global errors, lock_errors
+    tool = command_run[0]
     match tool:
         case "minced":
             completedProcess = subprocess.run(command_run + [input_file], check=True, stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
@@ -77,11 +80,6 @@ def run(command_run, input_file, output_file):
     else:
         return 1
 
-# Function to show the command preview for TerminalMenu
-def show_preview(command):
-    return commands[command]
-
-
 class CRISPR:
     '''
     A class used to represent a CRISPR array
@@ -91,9 +89,8 @@ class CRISPR:
         contig_name (str): the name of the contig that the CRISPR was found in
         start (int): Position of the first base in the CRISPR (one-indexed, inclusive)
         end (int): position of the last base in the CRISPR (one-indexed, inclusive)
-        spacers (list): a list of the ordered spacers in the CRISPR
         repeats (list): a list of the ordered repeats in the CRISPR
-        flankers (dict): a dictionary with the left and right flankers of the CRISPR
+        spacers (list): a list of the ordered spacers in the CRISPR
     
     Methods:
         __init__(): Constructor
@@ -105,23 +102,21 @@ class CRISPR:
         setEnd(end): Sets the end attribute
         addRepeat(repeat): Adds a repeat to the repeats list
         addSpacer(spacer): Adds a spacer to the spacers list
-        setFlankerLeft(left): Sets the left flanker
-        setFlankerRight(right): Sets the right flanker
+        sequence(): Returns the complete sequence of the CRISPR 
     '''
     def __init__(self, file_name=None, contig_name=None, start=None, end=None):
         self.file_name = file_name
         self.contig_name = contig_name
         self.start = start
         self.end = end
-        self.spacers = []
         self.repeats = []
-        self.flankers = {'left': '', 'right': ''}
+        self.spacers = []
     
     def __repr__(self):
-        return f'<CRISPR object: (\n{self.file_name}\n{self.contig_name}\n{self.start}\n{self.end}\n{self.spacers}\n{self.repeats}\n{self.flankers})>\n'
+        return f'<CRISPR object: (\n{self.file_name}\n{self.contig_name}\n{self.start}\n{self.end}\n{self.repeats}\n{self.spacers})>\n'
     
     def __str__(self):
-        return f'f_name: {self.file_name}\ncontig: {self.contig_name}\nstart: {self.start}\nend: {self.end}\nspacers: {self.spacers}\nrepeats: {self.repeats}\nflankers: {self.flankers}\n'
+        return f'f_name: {self.file_name}\ncontig: {self.contig_name}\nstart: {self.start}\nend: {self.end}\nrepeats: {self.repeats}\nspacers: {self.spacers}\n'
     
     def __len__(self):
         return sum(len(spacer) for spacer in self.spacers) + sum(len(repeat) for repeat in self.repeats)
@@ -129,9 +124,10 @@ class CRISPR:
     def __bool__(self):
         return (isinstance(self.file_name, str) and self.file_name != '' and
                 isinstance(self.contig_name, str) and self.contig_name != '' and
-                isinstance(self.start, int) and self.start >= 0 and
+                isinstance(self.start, int) and self.start > 0 and
                 isinstance(self.end, int) and self.end >= self.start and
-                len(self) == (self.end - self.start + 1))
+                len(self) == (self.end - self.start + 1) and 
+                len(self.repeats) == len(self.spacers) + 1)
     
     def __eq__(self, other):
         return self.file_name == other.file_name and self.contig_name == other.contig_name and self.start == other.start and self.end == other.end
@@ -153,22 +149,28 @@ class CRISPR:
     
     def addSpacer(self, spacer):
         self.spacers.append(spacer)
-
-    def setFlankerLeft(self, left):
-        self.flankers['left'] = left
-
-    def setFlankerRight(self, right):
-        self.flankers['right'] = right
+    
+    def sequence(self):
+        return ''.join([sub[item] for item in range(min(len(self.repeats), len(self.spacers)))
+                             for sub in [self.repeats, self.spacers]] +
+                   self.repeats[len(self.spacers):] + self.spacers[len(self.repeats):])
+        
 
 def parse_minced(file_path):
     crisprs = []
+    crispr_tmp = None
+    file_name = file_path.split('/')[-1].split('.')[0]
+    contig_name = None
     with open(file_path, 'r') as file:
         for line in file:
             if line.startswith("Sequence '"):
                 contig_name = line.split("'")[1]
             elif line.startswith("CRISPR"):
-                start, end = map(int, line.split()[3:6:2]) # Take from 4th to 6th element, step 2
-                crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=end)
+                if crispr_tmp is not None:
+                    raise ValueError(f"CRISPR not finished in file {file_path}, contig {crispr_tmp.contig_name}")
+                else:
+                    start, end = map(int, line.split()[3:6:2]) # Take from 4th to 6th element, step 2
+                    crispr_tmp = CRISPR(file_name=file_name, contig_name=contig_name, start=start, end=end)
             elif line[:1].isdigit():
                 seqs = line.split()
                 if len(seqs) == 7:
@@ -178,8 +180,9 @@ def parse_minced(file_path):
                     crispr_tmp.addRepeat(seqs[1])
             # Save the instance
             elif line.startswith("Repeats"):
-                if bool(crispr_tmp):
+                if crispr_tmp:
                     crisprs.append(crispr_tmp)
+                    crispr_tmp = None
                 else:
                     raise ValueError(f"Invalid CRISPR format in file {file_path}")
     return crisprs
@@ -198,8 +201,11 @@ def develop_repeats(repeats, reference):
 
 def parse_pilercr(file_path):
     crisprs = []
+    crispr_tmp = None
+    file_name = file_path.split('/')[-1].split('.')[0]
+    contig_name = None
+    repeats = []
     with open(file_path, 'r') as file:
-        crispr_tmp = None
         for line in file:
             line = line.strip()
             if line.startswith("Array"):
@@ -210,63 +216,127 @@ def parse_pilercr(file_path):
             elif line[:1].isdigit():
                 seqs = line.split()
                 if len(seqs) == 7 and crispr_tmp is None: # first line: flankerLeft - repeat - spacer
-                    start=int(seqs[0]) + seqs[5][:seqs[5].find(".")].count("-") # adjust start position if there are gaps in the repeat
+                    start=int(seqs[0])# + seqs[5][:seqs[5].find(".")].count("-") # adjust start position if there are gaps at the beginning of the first repeat (already works well, I was confused)
                     crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
-                    crispr_tmp.setFlankerLeft(seqs[4])
-                    repeats = [seqs[5]]
+                    contig_name = None
+                    repeats.append(seqs[5])
                     crispr_tmp.addSpacer(seqs[6])
+                elif len(seqs) == 6 and crispr_tmp is None: # first line: repeat - spacer (CRISPR start at beginning of contig)
+                    start=int(seqs[0]) 
+                    crispr_tmp = CRISPR(file_name=file_path.split('/')[-1].split('.')[0], contig_name=contig_name, start=start, end=None)
+                    contig_name = None
+                    repeats.append(seqs[4])
+                    crispr_tmp.addSpacer(seqs[5])
                 elif len(seqs) == 7 and crispr_tmp is not None: # next line: repeat - spacer
                     repeats.append(seqs[5])
                     crispr_tmp.addSpacer(seqs[6])
                 elif len(seqs) == 6 and crispr_tmp is not None: # last line: repeat - flankerRight
                     repeats.append(seqs[4])
-                    crispr_tmp.setFlankerRight(seqs[5])
-                elif len(seqs) == 4 and crispr_tmp is not None: # consensus repeat
-                    consensus = seqs[3]
-                    for repeat in develop_repeats(repeats, consensus):
+                elif len(seqs) == 5 and crispr_tmp is not None: # last line: repeat (CRISPR end at end of contig)
+                    repeats.append(seqs[4])
+                elif len(seqs) == 4 and crispr_tmp is not None: # reference repeat
+                    reference = seqs[3]
+                    for repeat in develop_repeats(repeats, reference):
                         crispr_tmp.addRepeat(repeat)
                     repeats = []
                     crispr_tmp.setEnd(crispr_tmp.start + len(crispr_tmp) - 1)
-                    if bool(crispr_tmp):
+                    if crispr_tmp:
                         crisprs.append(crispr_tmp)
                         crispr_tmp = None
                     else:
                         raise ValueError(f"Invalid CRISPR format in file {file_path}")
             elif line.startswith("SUMMARY"):
+                if crispr_tmp is not None:
+                    raise ValueError(f"CRISPR not finished in file {file_path}, contig {crispr_tmp.contig_name}")
                 break
         return crisprs
 
+# Function to separate the attributes and convert them into a dictionary
+def parse_attributes(attr_string):
+    attr_dict = {}
+    attributes = attr_string.split(';')
+    for attribute in attributes:
+        if '=' in attribute:
+            key, value = attribute.split('=')
+            key = key.strip()
+            value = value.strip()
+            attr_dict[key] = value
+    return attr_dict
+
+# Function to extract CRISPR information from a GFF file generated by CRISPRDetect3 and return a list of CRISPR objects
+def parse_CRISPRDetect3(gff_file_path):
+    # Reading the GFF file
+    try:
+        gff_df = pd.read_csv(gff_file_path, sep='\t', comment='#', header=None, 
+                         names=['seqid', 'source', 'type', 'start', 'end', 'score', 'strand', 'phase', 'attributes'])
+    except Exception as e:
+        raise ValueError(f"Error reading GFF file {gff_file_path}: {str(e)}")
+    # Apply the parsing function to the 'attributes' column
+    attributes_df = gff_df['attributes'].apply(parse_attributes).apply(pd.Series)
+    # Merge the parsed attributes to the original DataFrame and drop the original 'attributes' column
+    gff_df = pd.concat([gff_df.drop(columns=['attributes']), attributes_df], axis=1)
+    crisprs = []
+    crispr_tmp = None
+    file_name = gff_file_path.split('/')[-1].split('.')[0]
+    for _, row in gff_df.iterrows():
+        if row['type'] == 'repeat_region':  # Start a new CRISPR array
+            if crispr_tmp: # Save the previous CRISPR array
+                crisprs.append(crispr_tmp)
+            elif crispr_tmp is not None: # Check if the previous CRISPR array was finished
+                raise ValueError(f"CRISPR not finished in file {gff_file_path}, contig {crispr_tmp.contig_name}")
+            crispr_tmp = CRISPR(file_name=file_name, contig_name=row['seqid'], start=row['start'], end=row['end'])
+            crispr_id = row['ID']
+        elif row['type'] == 'direct_repeat' and row['Parent'] == crispr_id:  # Add a repeat
+            crispr_tmp.addRepeat(row['Note'])
+        elif row['type'] == 'binding_site' and row['Parent'] == crispr_id:  # Add a spacer
+            crispr_tmp.addSpacer(row['Note'])
+    # Add the last CRISPR array if one was being built
+    if crispr_tmp:
+        crisprs.append(crispr_tmp)
+    else:
+        raise ValueError(f"CRISPR not finished in file {gff_file_path}, contig {row['seqid']}")
+    return crisprs
+
+# Function to assign unique IDs and check for overlaps
+def assign_id_and_merge_overlaps(df):
+    df = df.sort_values(by=['MAG', 'Contig', 'Start']).reset_index(drop=True)
+    df['ID'] = None
+    current_id = 1
+    
+    for i in range(len(df)):
+        if df.loc[i, 'ID'] is None:
+            # Assign a new ID
+            df.loc[i, 'ID'] = current_id
+            current_id += 1
+        
+        # Check for overlaps with subsequent rows with the same 'MAG' and 'Contig'
+        for j in range(i + 1, len(df)):
+            if df.loc[i, 'MAG'] == df.loc[j, 'MAG'] and df.loc[i, 'Contig'] == df.loc[j, 'Contig']:
+                # Check for overlap of intervals
+                if df.loc[i, 'Start'] <= df.loc[j, 'End'] and df.loc[j, 'Start'] <= df.loc[i, 'End']:
+                    # Assign the same ID to the overlapping row
+                    df.loc[j, 'ID'] = df.loc[i, 'ID']
+            else:
+                # If 'MAG' or 'Contig' are different, break the loop
+                break
+    return df
+    
 if __name__ == '__main__':
 
     # Argument parser
     parser = argparse.ArgumentParser(prog='run_tools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
                                     Run minced/pilercr/CRISPRDetect3 on a directory of MAGs,
                                     and create a file.tsv of CRISPRs found with this column:
-                                    'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats',
+                                    'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'
                                     ['Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'] (if --cas_database is used)."""))
     parser.add_argument("input_directory", type=str, help="The input directory of the MAGs (in .fna or .bz2 format, see --decompress)")
     parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format (default: False)")
-    parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is './out/<input_directory>_<tool>_<commandCodename>' \n(see --inplace for more info)", default=None, dest="output_directory", metavar='OUTPUT_DIR')
+    parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is './out/<input_directory>_CRISPRtools' \n(see --inplace for more info)", default=None, dest="output_directory", metavar='OUTPUT_DIR')
     parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory, \ninstead into the 'out' directory of the current working directory (default: False)")
     parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes (created by CRISPCasFinder). \nBy adding this, the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed' \nwill be added to the file.tsv", default=None, dest="cas_database", metavar='CAS_DB')
     parser.add_argument("-t", "--threads", type=int, help=f"Number of threads to use (default: ALL/3 = {mp.cpu_count()//3})", default=mp.cpu_count()//3, dest="num_cpus", metavar='N_CPUS')
     parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it (default: False)")
     args = parser.parse_args()
-
-    # Check if input directory exists or not
-    if os.path.exists(args.input_directory):
-        input_dir = os.path.abspath(args.input_directory)
-    else:
-        print("The input directory does not exist", file=sys.stderr)
-        exit()
-    
-    # Check if cas database file exists or not
-    if args.cas_database is not None:
-        if os.path.exists(args.cas_database):
-            cas_database = os.path.abspath(args.cas_database)
-        else:
-            print("The cas database file does not exist, check the path", file=sys.stderr)
-            exit()
     
     # Verify the presence of the tools and create the commands
     commands = {}
@@ -311,83 +381,87 @@ if __name__ == '__main__':
             # remove_insertion_from_repeat=1
 
             # fix_gaps_in_repeats=1
-        commands["CRISPRDetect3"]="CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect3"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
     if not commands:
-        print("No tools found: minced, pilercr, CRISPRDetect3", file=sys.stderr)
+        print("No tools found: minced, pilercr, CRISPRDetect3. Exiting...", file=sys.stderr)
         exit()
 
-    # Select the command to use
-    # commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit) \n",
-    #                             menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
-    #                             menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-    #                             clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview)
-    # try: menu_command_index = commands_menu.show()
-    # except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-    # if menu_command_index is None: 
-    #     print("No command selected", file=sys.stderr); exit()
-    # else:
-    #     command = list(commands.values())[menu_command_index]
-    #     tool_version = list(commands.keys())[menu_command_index]
+    # Check if input directory exists or not
+    if os.path.exists(args.input_directory):
+        input_dir = os.path.abspath(args.input_directory)
+    else:
+        print("The input directory does not exist! Exiting...", file=sys.stderr)
+        exit()
+
+    # Check if cas database file exists or not
+    if args.cas_database is not None:
+        if os.path.exists(args.cas_database):
+            cas_database = os.path.abspath(args.cas_database)
+        else:
+            print("The cas database file does not exist, check the path! Exiting...", file=sys.stderr)
+            exit()
+        # Upload the TSV files
+        try:
+            cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
+        except ValueError as e:
+            print('Error: ', e, file=sys.stderr)
+            print('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file', file=sys.stderr)
+            print('Exiting...', file=sys.stderr)
+        
+
+    # Create output root directory
+    if args.inplace:
+        if args.output_directory==None:
+            # Create output root directory with unique name near the input directory
+            output_root_dir = f"{input_dir}_CRISPRtools"
+        else:
+            # Create output root directory with name specified by the user near the input directory
+            output_root_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.output_directory))
+    else:
+        if args.output_directory==None:
+            # Create output root directory with unique name in the out directory of the current working directory
+            output_root_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_CRISPRtools")
+        else:
+            # Create output root directory with name specified by the user in the out directory of the current working directory
+            output_root_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.output_directory))
 
     # select multi command to use
     commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit)", 
-                                 menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), menu_highlight_style=("bg_red", "fg_yellow", "bold"), clear_screen=False, raise_error_on_interrupt=True, preview_command=show_preview, preview_title="Command Preview", multi_select=True, show_multi_select_hint=True, multi_select_cursor_style=("fg_red", "bold"), multi_select_empty_ok=False, multi_select_select_on_accept=False)
-    try: menu_command_index = commands_menu.show()
+                                 menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), menu_highlight_style=("bg_red", "fg_yellow", "bold"), clear_screen=False, raise_error_on_interrupt=True, preview_command=lambda command: commands[command], preview_title="Command Preview", multi_select=True, show_multi_select_hint=True, multi_select_cursor_style=("fg_red", "bold"), multi_select_empty_ok=False, multi_select_select_on_accept=False)
+    try: commands_menu.show()
     except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-    if menu_command_index is None:
-        print("No command selected", file=sys.stderr); exit()
+    if commands_menu.chosen_menu_indices is None:
+        print("No command selected, exiting...", file=sys.stderr); exit()
     else:
-        print(menu_command_index)
-        print(commands_menu.chosen_menu_indices)
-        exit()
-        
-        # command = [list(commands.values())[i] for i in menu_command_index]
-        # tool_version = '_'.join([list(commands.keys())[i] for i in menu_command_index])
-        # exit()
+        commands={list(commands.keys())[i]: list(commands.values())[i] for i in commands_menu.chosen_menu_indices}
 
-    for i in menu_command_index:
-        command = list(commands.values())[i]
-        tool_codename = list(commands.keys())[i]
-
-    # Split the command
-    command_run=command.split()
-
-    # Create output directory
-    if menu_command_index.size > 1 and args.unify_output:
-        tool_codename = 'multiTools'
-        
-    if args.inplace:
-        if args.output_directory==None:
-            # Create output directory with unique name near the input directory
-            output_dir = f"{input_dir}_{tool_codename}"
-        else:
-            # Create output directory with name specified by the user near the input directory
-            output_dir = os.path.join(input_dir.removesuffix(os.path.basename(input_dir)), os.path.basename(args.output_directory))
-    else:
-        if args.output_directory==None:
-            # Create output directory with unique name in the out directory of the current working directory
-            output_dir = os.path.join(os.getcwd(), "out", f"{os.path.basename(input_dir)}_{tool_codename}")
-        else:
-            # Create output directory with name specified by the user in the out directory of the current working directory
-            output_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.output_directory))
-
-    # Check if the output directory exists and ask the user if they want to rename it or overwrite it
-    if os.path.exists(output_dir):
-        outdir_menu = TerminalMenu(["Rename (Incremental)", "Overwrite", "Exit"], title=f"The output directory already exists. What do you want to do?", 
-                                menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
-                                menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                                clear_screen=False, raise_error_on_interrupt=True)
-        try: outdir_index = outdir_menu.show()
-        except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
-        if outdir_index == 0:
-            output_dir = output_dir + '_1'
-            while os.path.exists(output_dir):
-                output_dir = output_dir[:-1] + str(int(output_dir[-1]) + 1)
-        elif outdir_index == 1:
-            if not args.dry_run:
-                shutil.rmtree(output_dir)
-        else:
-            exit()
+    # Create output directories
+    output_dirs = {}
+    for tool_codename in commands:
+        output_dir = os.path.join(output_root_dir, os.path.basename(input_dir)+'_'+tool_codename)
+        # Check if the output directory exists and ask the user if they want to rename it or overwrite it or skip
+        if os.path.exists(output_dir):
+            outdir_menu = TerminalMenu(["Rename (Incremental)", "Overwrite", "Not run this command", "Exit"], title=f"The output directory ./{os.path.relpath(output_dir)} already exists. What do you want to do?", 
+                                    menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
+                                    menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
+                                    clear_screen=False, raise_error_on_interrupt=True)
+            try: outdir_menu.show()
+            except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
+            if outdir_menu.chosen_menu_index is None:
+                print("No option selected, exiting...", file=sys.stderr); exit()
+            elif outdir_menu.chosen_menu_index == 0:
+                output_dir = output_dir + '_1'
+                while os.path.exists(output_dir):
+                    output_dir = "_".join(output_dir.split('_')[:-1]) + '_' + str(int(output_dir.split('_')[-1]) + 1)
+            elif outdir_menu.chosen_menu_index == 1:
+                if not args.dry_run:
+                    shutil.rmtree(output_dir)
+            elif outdir_menu.chosen_menu_index == 2:
+                commands.pop(tool_codename)
+                continue
+            else:
+                print("Exiting...", file=sys.stderr); exit()
+        output_dirs[tool_codename] = output_dir
 
     # Find all MAGs in the input directory
     if args.decompress:
@@ -395,176 +469,215 @@ if __name__ == '__main__':
                 for dirpath, _, filenames in os.walk(input_dir)
                 for filename in filenames
                 if filename.endswith('.bz2')
-               ]
+            ]
     else:
         mags = [os.path.join(dirpath,filename) 
                     for dirpath, _, filenames in os.walk(input_dir) 
                     for filename in filenames 
                     if filename.endswith('.fna')
                 ]
-    tasks_total = len(mags)
 
-    # Set up logging
-    if args.dry_run:
-        logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
-    else:
-        os.makedirs(output_dir, exist_ok=True)
-        logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, 'run_crisprdetect3.log'))])
-    tool=tool_codename.split('_')
-    logging.info("Tool: " + ' -> '.join(tool))
-    tool=tool[0]
-    match tool:
-        case "minced":
-            logging.info("Command: " + ' '.join(command_run + ['<mag>', '>', '<out.minced>']))
-        case "pilercr":
-            logging.info("Command: " + ' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>']))
-        case "CRISPRDetect3":
-            logging.info("Command: " + ' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>']))
-    logging.info("Input directory: " + input_dir)
-    if args.cas_database is not None:
-        logging.info("Cas database: " + cas_database)
-    logging.info("Output directory: ./" + os.path.relpath(output_dir))
-    logging.info(f"Found {tasks_total} MAGs")
-    logging.info(f"Using {args.num_cpus} threads")
-    if args.dry_run:
-        logging.info('Dry run, exiting...')
-        exit()
+    first=True
+    i=len(commands)
+    for tool_codename, command in commands.items():
+        i-=1
 
-    # ThreadPoolExecutor + subprocess.run  version
-    lock_tasks = Lock()
-    lock_errors = Lock()
-    tasks_completed = 0
-    errors = [] # used for catch subprocess errors
-    output_files = [] # used for parsing
-    with ThreadPoolExecutor(args.num_cpus) as executor:
-        logging.info(f'RUNNING {"UNZIP +" if args.decompress else ""} TOOL... ')
+        # Get the output directory
+        output_dir = output_dirs[tool_codename]
+        # Split the command
+        command_run=command.split()
+
+        # Set up logging
+        if args.dry_run:
+            logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
+        else:
+            os.makedirs(output_dir, exist_ok=True)
+            logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, 'run_crisprdetect3.log'))])
+        tool=tool_codename.split('_')
+        logging.info(f"TOOL: {' -> '.join(tool)}")
+        tool = tool[0]
+        match tool:
+            case "minced":
+                logging.info(f"Command: {' '.join(command_run + ['<mag>', '>', '<out.minced>'])}")
+            case "pilercr":
+                logging.info(f"Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
+            case "CRISPRDetect3":
+                logging.info(f"Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>'])}")
+        logging.info(f"Input directory: {input_dir}")
+        if args.cas_database is not None:
+            logging.info(f"Cas database: {cas_database}")
+        logging.info(f"Output directory: ./{os.path.relpath(output_dir)}")
+        tasks_total = len(mags)
+        logging.info(f"Found {tasks_total} MAGs")
+        logging.info(f"Using {args.num_cpus} threads")
+        if args.dry_run:
+            if i == 0:
+                logging.info('Dry run completed, no files were created. Exiting...'); exit()
+            continue
+
+        # ThreadPoolExecutor + subprocess.run  version
+        lock_tasks = Lock()
+        lock_errors = Lock()
+        tasks_completed = 0
+        errors = [] # used for catch subprocess errors
+        output_files = [] # used for parsing
+        with ThreadPoolExecutor(args.num_cpus) as executor:
+            logging.info(f'RUNNING {"UNZIP +" if args.decompress else ""} TOOL... ')
+            start_time = datetime.now()
+            for mag in mags:
+                output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 2 if args.decompress else 1)[0]+"."+tool, input_dir))
+                output_files.append(output_file)
+                os.makedirs(os.path.dirname(output_file), exist_ok=True)
+                future=executor.submit(unzip_and_run if args.decompress else run, command_run, mag, output_file)
+                future.add_done_callback(future_progress_indicator)
+        end_time = datetime.now()
+        logging.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+        if errors:
+            [logging.error(error) for error in errors]
+            logging.error('Done with errors!')
+        else:
+            logging.info('Done!')
+
+        # Parsing files
+        logging.info('PARSING FILES...')
         start_time = datetime.now()
-        for mag in mags:
-            cas_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 2 if args.decompress else 1)[0]+"."+tool, input_dir))
-            output_files.append(cas_file)
-            os.makedirs(os.path.dirname(cas_file), exist_ok=True)
-            future=executor.submit(unzip_and_run if args.decompress else run, command_run, mag, cas_file)
-            # if args.decompress:
-                # future=executor.submit(unzip_and_run, command_run, mag, output_file)
-                
-            # else:
-                # future=executor.submit(run, command_run, mag, output_file)
-            future.add_done_callback(future_progress_indicator)
-    end_time = datetime.now()
-    logging.info('Runned {}/{} MAGs in {}'.format(
-        tasks_completed,
-        tasks_total, 
-        datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    if errors:
-        [logging.error(error) for error in errors]
-        logging.error('Done with errors!')
-    else:
+
+        tasks_total = len(output_files)  
+        parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_codename+'_parsed.tsv')
+        logging.info('Parsed file: ./' + os.path.relpath(parsed_file))
+
+        # match tool:
+        #     case "minced":
+        #         crisprs_total = [crispr for file in output_files for crispr in parse_minced(file)]
+        #     case "pilercr":
+        #         crisprs_total = [crispr for file in output_files for crispr in parse_pilercr(file)]
+        #     case "CRISPRDetect3":
+        #         crisprs_total = [crispr for file in output_files for crispr in parse_CRISPRDetect3(file)]
+        
+        tasks_completed = 0
+        crisprs_total = []
+        match tool:
+            case "minced":
+                for file in output_files:
+                    crisprs_total+=parse_minced(file)
+                    tasks_completed+=1
+                    print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
+            case "pilercr":
+                for file in output_files:
+                    crisprs_total+=parse_pilercr(file)
+                    tasks_completed+=1
+                    print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
+            case "CRISPRDetect3":
+                for file in output_files:
+                    crisprs_total+=parse_CRISPRDetect3(file+'.gff')
+                    tasks_completed+=1
+                    print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
+
+
+        crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats), tool_codename] for a in crisprs_total],
+                                    columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'])
+
+        crisprs_df.to_csv(parsed_file, sep='\t')
+
+        end_time = datetime.now()
+        logging.info(f'Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')  
+        logging.info(f'Found {len(crisprs_total)} CRISPRs')
         logging.info('Done!')
 
-    # Parsing files
-    logging.info('RUNNING PARSE...')
-    start_time = datetime.now()
+        # Add Cas Distance
+        if args.cas_database is None:
+            continue
+        
+        logging.info('ADDING CAS DISTANCE...')
+        start_time = datetime.now()
 
-    tasks_total = len(output_files)  
-    parsed_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool_codename+'_parsed.tsv')
-    logging.info('Parsed file: ./' + os.path.relpath(parsed_file))
+        # Output file
+        logging.info(f'Add Cas Distance in ./{os.path.relpath(parsed_file)}')
 
-    # match tool:
-    #     case "minced":
-    #         crisprs_total = [crispr for file in output_files for crispr in parse_minced(file)]
-    #     case "pilercr":
-    #         crisprs_total = [crispr for file in output_files for crispr in parse_pilercr(file)]
-    #     case "CRISPRDetect3":
-    #         crisprs_total = [crispr for file in output_files for crispr in parse_CRISPRDetect3(file)]
+        # Create a DataFrame with the data of the CRISPR and Cas combined
+        merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+
+        # Add columns to the DataFrame
+        crisprs_df['Cas_0-1000']=0
+        crisprs_df['Cas_1000-10000']=0
+        crisprs_df['Cas_>100000']=0
+        crisprs_df['Cas_overlayed']=0
+
+        # Calculate the distance between CRISPR and Cas
+        for index, row in merged_df.iterrows():
+            if row['Start_Cas'] >= row['End_CRISPR']:
+                # print('Cas davati al CRISPR')
+                distance = row['Start_Cas'] - row['End_CRISPR']
+            elif row['End_Cas'] <= row['Start_CRISPR']:
+                # print('Cas prima il CRISPR')
+                distance = row['Start_CRISPR'] - row['End_Cas']
+            else:
+                # print('Cas che sovrappone al CRISPR')
+                distance = -1
+            
+            if distance >= 0 and distance <= 1000:
+                crisprs_df.at[index, 'Cas_0-1000'] += 1
+            elif distance > 1000 and distance <= 10000:
+                crisprs_df.at[index, 'Cas_1000-10000'] += 1
+            elif distance > 10000:
+                crisprs_df.at[index, 'Cas_>100000'] += 1
+            elif distance == -1:
+                crisprs_df.at[index, 'Cas_overlayed'] += 1
+            else:
+                logging.error(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
+
+        # Save the DataFrame in a TSV file
+        crisprs_df.to_csv(parsed_file, sep='\t')
+
+        end_time = datetime.now()
+        logging.info(f'Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+        logging.info('Done!')
+
+    # Tool comparison
+    parsed_files = [os.path.join(dirpath,filename)
+                for dirpath, _, filenames in os.walk(output_root_dir)
+                for filename in filenames
+                if filename.endswith('_parsed.tsv')
+            ]
     
-    tasks_completed = 0
-    crisprs_total = []
-    match tool:
-        case "minced":
-            for file in output_files:
-                crisprs_total+=parse_minced(file)
-                tasks_completed+=1
-                print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
-        case "pilercr":
-            for file in output_files:
-                crisprs_total+=parse_pilercr(file)
-                tasks_completed+=1
-                print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
-        case "CRISPRDetect3":
-            logging.error("CRISPRDetect3 not implemented yet")
-            logging.error("Done without parsing!")
-            exit()
-
-
-    crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats)] for a in crisprs_total],
-                                columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'])
-
-    crisprs_df.to_csv(parsed_file, sep='\t')
-
-    end_time = datetime.now()
-    logging.info('Parse {}/{} Files in {}'.format(
-        tasks_completed,
-        tasks_total, 
-        datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
-    logging.info('Found {} CRISPRs'.format(len(crisprs_total)))
-    logging.info('Done!')
-
-    # Add Cas Distance
-    if args.cas_database is None:
+    if len(parsed_files) < 2:
+        logging.error('No files to compare, exiting...')
         exit()
-    
-    logging.info('RUNNING CAS DISTANCE...')
-    start_time = datetime.now()
 
-    # Output file
-    cas_file = os.path.join(output_dir, os.path.basename(input_dir)+'_'+tool+'_parsed_cas.tsv')
-    logging.info("Output cas file: ./" + os.path.relpath(cas_file))
+    logging.info('RUNNING TOOL COMPARISON...')
+    logging.info(f'Found {len(parsed_files)} files to compare')
+    start_time = datetime.now()
+    comparison_file = os.path.join(output_root_dir, os.path.basename(input_dir)+'_toolsComparison.tsv')
+    parsed_dfs = []
 
     # Upload the TSV files
-    try:
-        cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
-    except ValueError as e:
-        logging.error('Errore: ', e)
-        logging.error('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file')
-        logging.error('Done, without adding Cas Distance!')
-        exit()
+    for file in parsed_files:
+        try:
+            parsed_dfs.append(pd.read_csv(file, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str}, index_col=False))
+        except FileNotFoundError as e:
+            logging.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
+            continue
+        except ValueError as e:
+            logging.error('Errore: ', e)
+            logging.error(f'Check the column names in the parsed file {file} (MAG, Contig, Start, End, Spacers, Repeats, ToolCodename), and secure that file is a TSV file')
+            continue
 
-    # Create a DataFrame with the data of the CRISPR and Cas combined
-    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+    # Concat the DataFrames
+    all_df = pd.concat([parsed_df for parsed_df in parsed_dfs], ignore_index=True)
 
-    # Add columns to the DataFrame
-    crisprs_df['Cas_0-1000']=0
-    crisprs_df['Cas_1000-10000']=0
-    crisprs_df['Cas_>100000']=0
-    crisprs_df['Cas_overlayed']=0
+    # Remove duplicates based on 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats' and keep one row, concatening 'ToolCodename' values
+    combined_df = all_df.groupby(['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], as_index=False).agg({
+        'ToolCodename': lambda x: ','.join(sorted(set(x)))  # Use set to remove duplicates and sorted for consistent order
+    }) 
 
-    # Calculate the distance between CRISPR and Cas
-    for index, row in merged_df.iterrows():
-        if row['Start_Cas'] >= row['End_CRISPR']:
-            # print('Cas davati al CRISPR')
-            distance = row['Start_Cas'] - row['End_CRISPR']
-        elif row['End_Cas'] <= row['Start_CRISPR']:
-            # print('Cas prima il CRISPR')
-            distance = row['Start_CRISPR'] - row['End_Cas']
-        else:
-            # print('Cas che sovrappone al CRISPR')
-            distance = -1
-        
-        if distance >= 0 and distance <= 1000:
-            crisprs_df.at[index, 'Cas_0-1000'] += 1
-        elif distance > 1000 and distance <= 10000:
-            crisprs_df.at[index, 'Cas_1000-10000'] += 1
-        elif distance > 10000:
-            crisprs_df.at[index, 'Cas_>100000'] += 1
-        elif distance == -1:
-            crisprs_df.at[index, 'Cas_overlayed'] += 1
-        else:
-            logging.error(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
+    # Apply the function to assign IDs and check for overlaps
+    final_df = assign_id_and_merge_overlaps(combined_df)
 
-    # Save the DataFrame in a TSV file
-    crisprs_df.to_csv(cas_file, sep='\t')
+    # Save the final DataFrame to a TSV file
+    final_df.to_csv(comparison_file, sep='\t')
 
     end_time = datetime.now()
-    logging.info('Add Cas Distance in {}'.format(datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))
+    logging.info(f'Tool comparison in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
     logging.info('Done!')
-    
+
+

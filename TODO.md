@@ -17,27 +17,29 @@
     - [x] minced
     - [x] pilercr (1 e 2)
     - [x] CRISPRDetect
-- [ ] Creare parsing:
+- [x] Creare parsing:
     - [x] creare parsing per minced
     - [x] creare parsing per pilercr
-    - [ ] creare parsing per CRISPRDetect
-- [ ] Creare file di output tsv
+    - [x] creare parsing per CRISPRDetect
+- [x] Creare file di output tsv
     - [x] creare file di output per minced
     - [x] creare file di output per pilercr
-    - [ ] creare file di output per CRISPRDetect
+    - [x] creare file di output per CRISPRDetect
 - [x] Creare file tools_difference.txt con un esempio di differenza tra i CRISPR trovati dai tools
 - [x] Dividere i CRISPR in base alla distanza tra cas e crispr
     - [x] 0-1000 bp
     - [x] 1000-10.000 bp
     - [x] >10.000 bp
 - [ ] capire se usare veramete CRISPRDetect3 e nel caso aggiornare bene l'environment.yml
-- [ ] aggiungere un argoument per far partire direttamente il tool che si vuole
+- [ ] catturare gli errori e metterli in un file di log (catturarli sui thread)
 - [ ] possibilita di far partire piu tool insieme (in serie) sulla stessa input dir
 - [ ] ricreare i tool intermedi basandosi su run_tool
 - [ ] 
 - [ ] far girare CRISPRDetect3
   - [ ] parsing CRISPRDetect3
   - [ ] CRISPRDetect3 crea output diversi a seconda se ci sono o no i \n nel file fasta
+
+
 - [ ] fare grafici per ogni tool:
   - [ ] lunghezza mediana DR (per capire i valori outlier e fare un successivo cut-off)
   - [ ] lunghezza mediana SP (per capire i valori outlier e fare un successivo cut-off)

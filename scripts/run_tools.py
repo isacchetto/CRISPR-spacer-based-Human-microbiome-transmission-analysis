@@ -15,6 +15,7 @@ from threading import Lock
 import tempfile
 from simple_term_menu import TerminalMenu
 import pandas as pd
+# import CRISPRtools as ct
 
 
 
@@ -38,6 +39,7 @@ def future_progress_indicator(future):
 # Function to unzip and run the tool
 def unzip_and_run(command_run, input_file, output_file):
     global errors, lock_errors
+    tool = command_run[0]
     with open(input_file, 'rb') as file, tempfile.NamedTemporaryFile("wb", suffix="_" + os.path.basename(input_file)[:-8]+".fna", delete=True) as tmp_file:
         decompressor = bz2.BZ2Decompressor()
         for data in iter(lambda : file.read(100 * 1024), b''):
@@ -61,6 +63,7 @@ def unzip_and_run(command_run, input_file, output_file):
 # Function to run the tool
 def run(command_run, input_file, output_file):
     global errors, lock_errors
+    tool = command_run[0]
     match tool:
         case "minced":
             completedProcess = subprocess.run(command_run + [input_file], check=True, stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
@@ -287,9 +290,8 @@ def parse_CRISPRDetect3(gff_file_path):
                 crisprs.append(crispr_tmp)
             elif crispr_tmp is not None: # Check if the previous CRISPR array was finished
                 raise ValueError(f"CRISPR not finished in file {gff_file_path}, contig {crispr_tmp.contig_name}")
-            else:
-                crispr_tmp = CRISPR(file_name=file_name, contig_name=row['seqid'], start=row['start'], end=row['end'])
-                crispr_id = row['ID']
+            crispr_tmp = CRISPR(file_name=file_name, contig_name=row['seqid'], start=row['start'], end=row['end'])
+            crispr_id = row['ID']
         elif row['type'] == 'direct_repeat' and row['Parent'] == crispr_id:  # Add a repeat
             crispr_tmp.addRepeat(row['Note'])
         elif row['type'] == 'binding_site' and row['Parent'] == crispr_id:  # Add a spacer
@@ -425,7 +427,7 @@ if __name__ == '__main__':
         if outdir_index == 0:
             output_dir = output_dir + '_1'
             while os.path.exists(output_dir):
-                output_dir = output_dir[:-1] + str(int(output_dir[-1]) + 1)
+                output_dir = "_".join(output_dir.split('_')[:-1]) + '_' + str(int(output_dir.split('_')[-1]) + 1)
         elif outdir_index == 1:
             if not args.dry_run:
                 shutil.rmtree(output_dir)
@@ -483,10 +485,10 @@ if __name__ == '__main__':
         logging.info(f'RUNNING {"UNZIP +" if args.decompress else ""} TOOL... ')
         start_time = datetime.now()
         for mag in mags:
-            cas_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 2 if args.decompress else 1)[0]+"."+tool, input_dir))
-            output_files.append(cas_file)
-            os.makedirs(os.path.dirname(cas_file), exist_ok=True)
-            future=executor.submit(unzip_and_run if args.decompress else run, command_run, mag, cas_file)
+            output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 2 if args.decompress else 1)[0]+"."+tool, input_dir))
+            output_files.append(output_file)
+            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            future=executor.submit(unzip_and_run if args.decompress else run, command_run, mag, output_file)
             # if args.decompress:
                 # future=executor.submit(unzip_and_run, command_run, mag, output_file)
                 
@@ -534,9 +536,10 @@ if __name__ == '__main__':
                 tasks_completed+=1
                 print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
         case "CRISPRDetect3":
-            logging.error("CRISPRDetect3 not implemented yet")
-            logging.error("Done without parsing!")
-            exit()
+            for file in output_files:
+                crisprs_total+=parse_CRISPRDetect3(file+'.gff')
+                tasks_completed+=1
+                print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
 
 
     crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats), tool_codename] for a in crisprs_total],
