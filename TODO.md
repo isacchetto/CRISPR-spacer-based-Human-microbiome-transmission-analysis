@@ -30,9 +30,9 @@
     - [x] 0-1000 bp
     - [x] 1000-10.000 bp
     - [x] >10.000 bp
+- [x] possibilita di far partire piu tool insieme (in serie) sulla stessa input dir
 - [ ] capire se usare veramete CRISPRDetect3 e nel caso aggiornare bene l'environment.yml
 - [ ] catturare gli errori e metterli in un file di log (catturarli sui thread)
-- [ ] possibilita di far partire piu tool insieme (in serie) sulla stessa input dir
 - [ ] ricreare i tool intermedi basandosi su run_tool
 - [ ] 
 - [ ] far girare CRISPRDetect3
@@ -60,6 +60,6 @@
 - [x] conforntare i tool e vedere se ci sono sovrapposti
   - [x] colonne: ID crispr , ToolCodename
   - [x] sistemare la colonna ToolCodename in modo che sia un set (non duplicati e ordinati)
-  - [ ] inserirlo nel multi_tool
+  - [x] inserirlo nel multi_tool
   - [ ] creare uno script .py
   - [ ] 

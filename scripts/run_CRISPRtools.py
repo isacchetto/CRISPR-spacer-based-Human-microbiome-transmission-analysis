@@ -9,7 +9,7 @@ import textwrap
 from datetime import datetime
 import argparse
 import logging
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import multiprocessing as mp
 from threading import Lock
 import tempfile
@@ -19,8 +19,8 @@ import pandas as pd
 
 
 
-# run_multiTools.py
-# Version 1.0
+# run_CRISPRtools.py
+# Version 2.0
 # 16/10/2024
 # by isacchetto
 
@@ -35,6 +35,24 @@ def future_progress_indicator(future):
             tasks_completed += 1
         # report progress
         print(f' Completed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
+
+def unzip1(file, unzipped_file):
+    with bz2.BZ2File(file) as file, open(unzipped_file,"wb") as new_file:
+        shutil.copyfileobj(file,new_file)
+    return 1
+
+def unzip2(file, unzipped_file):
+    with bz2.BZ2File(file, 'rb') as file, open(unzipped_file, 'wb') as new_file:
+            for data in iter(lambda : file.read(100 * 1024), b''):
+                new_file.write(data)
+    return 1
+
+def unzip3(file, unzipped_file):
+    with open(unzipped_file, 'wb') as new_file, open(file, 'rb') as file:
+            decompressor = bz2.BZ2Decompressor()
+            for data in iter(lambda : file.read(100 * 1024), b''):
+                new_file.write(decompressor.decompress(data))
+    return 1
 
 # Function to unzip and run the tool
 def unzip_and_run(command_run, input_file, output_file):
@@ -66,12 +84,12 @@ def run(command_run, input_file, output_file):
     tool = command_run[0]
     match tool:
         case "minced":
-            completedProcess = subprocess.run(command_run + [input_file], check=True, stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
+            completedProcess = subprocess.run(command_run + [input_file], stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
         case "pilercr":
             completedProcess = subprocess.run(command_run + ['-in', input_file, '-out', output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         case "CRISPRDetect3":
             # completedProcess = subprocess.run(['conda', 'run', '-n', 'CRISPRDetect'] + command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            completedProcess = subprocess.run(command_run + ['-f', input_file, '-o', output_file], check=True, stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            completedProcess = subprocess.run(command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
         with lock_errors:
@@ -324,7 +342,7 @@ def assign_id_and_merge_overlaps(df):
 if __name__ == '__main__':
 
     # Argument parser
-    parser = argparse.ArgumentParser(prog='run_tools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
+    parser = argparse.ArgumentParser(prog='CRISPRtools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
                                     Run minced/pilercr/CRISPRDetect3 on a directory of MAGs,
                                     and create a file.tsv of CRISPRs found with this column:
                                     'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'
@@ -463,19 +481,50 @@ if __name__ == '__main__':
                 print("Exiting...", file=sys.stderr); exit()
         output_dirs[tool_codename] = output_dir
 
-    # Find all MAGs in the input directory
-    if args.decompress:
+    # Set up logging
+    logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
+
+    # Find all MAGs in the input directory (and unzip them if needed)
+    if args.dry_run:
         mags = [os.path.join(dirpath,filename)
+                for dirpath, _, filenames in os.walk(input_dir)
+                for filename in filenames
+                if filename.endswith('.bz2' if args.decompress else '.fna')
+            ]
+        tasks_total = len(mags)
+    elif args.decompress:
+        files = [os.path.join(dirpath,filename)
                 for dirpath, _, filenames in os.walk(input_dir)
                 for filename in filenames
                 if filename.endswith('.bz2')
             ]
-    else:
+        tasks_total = len(files)
+        # Unzip mag files (if needed)
+        # ThreadPoolExecutor + unzip1 version
+        tasks_completed = 0
+        lock_tasks = Lock()
+        unzip_dir = os.path.join(output_root_dir, os.path.basename(input_dir)+'_unzipped')
+        with ThreadPoolExecutor(args.num_cpus) as executor:
+            logging.info('UNZIPPING FILES... ')
+            start_time = datetime.now()
+            for file in files:
+                unzipped_file=os.path.join(unzip_dir, os.path.relpath(file.rsplit('.', 1)[0], input_dir))
+                os.makedirs(os.path.dirname(unzipped_file), exist_ok=True)
+                if os.path.exists(unzipped_file):
+                    tasks_completed += 1
+                else:
+                    future=executor.submit(unzip1, file, unzipped_file)
+                    future.add_done_callback(future_progress_indicator)
+        end_time = datetime.now()
+        logging.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+        logging.info('Done!')
         mags = [os.path.join(dirpath,filename) 
-                    for dirpath, _, filenames in os.walk(input_dir) 
+                    for dirpath, _, filenames in os.walk(unzip_dir) 
                     for filename in filenames 
                     if filename.endswith('.fna')
                 ]
+        tasks_total = len(mags)
+
 
     first=True
     i=len(commands)
@@ -487,12 +536,10 @@ if __name__ == '__main__':
         # Split the command
         command_run=command.split()
 
-        # Set up logging
-        if args.dry_run:
-            logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
-        else:
+        # Create .log file
+        if not args.dry_run:
             os.makedirs(output_dir, exist_ok=True)
-            logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, 'run_crisprdetect3.log'))])
+            logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, f'run_{tool_codename}.log'))])
         tool=tool_codename.split('_')
         logging.info(f"TOOL: {' -> '.join(tool)}")
         tool = tool[0]
@@ -522,13 +569,13 @@ if __name__ == '__main__':
         errors = [] # used for catch subprocess errors
         output_files = [] # used for parsing
         with ThreadPoolExecutor(args.num_cpus) as executor:
-            logging.info(f'RUNNING {"UNZIP +" if args.decompress else ""} TOOL... ')
+            logging.info(f'RUNNING TOOL... ')
             start_time = datetime.now()
             for mag in mags:
-                output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 2 if args.decompress else 1)[0]+"."+tool, input_dir))
+                output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 1)[0]+"."+tool, input_dir))
                 output_files.append(output_file)
                 os.makedirs(os.path.dirname(output_file), exist_ok=True)
-                future=executor.submit(unzip_and_run if args.decompress else run, command_run, mag, output_file)
+                future=executor.submit(run, command_run, mag, output_file)
                 future.add_done_callback(future_progress_indicator)
         end_time = datetime.now()
         logging.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
@@ -647,7 +694,7 @@ if __name__ == '__main__':
     logging.info('RUNNING TOOL COMPARISON...')
     logging.info(f'Found {len(parsed_files)} files to compare')
     start_time = datetime.now()
-    comparison_file = os.path.join(output_root_dir, os.path.basename(input_dir)+'_toolsComparison.tsv')
+    comparison_file = os.path.join(output_root_dir, os.path.basename(input_dir)+'_tools_comparison.tsv')
     parsed_dfs = []
 
     # Upload the TSV files
