@@ -12,10 +12,20 @@ dependencies:
   - blast=2.15
   - hmmer=3.4
   # - simple-term-menu>=1.6.4
-variables:
-  # Add the path to the CRISPRDetect3 folder to the PATH variable in the activate.sh script
-  # export PATH="/FULL_PATH_TO_CRISPRDETECT3:$PATH"
-  # Remove the path to the CRISPRDetect3 folder from the PATH variable in the deactivate.sh script
-  # export PATH=$(echo $PATH | sed -e 's@/FULL_PATH_TO_CRISPRDETECT3:@@g')
+  # - pandas>= 2.2.2
 
+
+# Add the path to the CRISPRDetect3 folder to the PATH variable in the activate.sh script and remove it in the deactivate.sh script
+#   mkdir -p ${CONDA_PREFIX}/etc/conda/activate.d
+#   mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
+#   cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
+#   #!/bin/sh
+#   export PATH="FULL/PATH/TO/CRISPRDETECT/DIR:$PATH"
+#   EOF
+#   cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
+#   #!/bin/sh
+#   PATH="$(echo "${PATH}" | tr ':' '\n' | grep -v -x -F 'FULL/PATH/TO/CRISPRDETECT/DIR' | tr '\n' ':')" 
+#   PATH="${PATH%:}"
+#   export PATH
+#   EOF
 

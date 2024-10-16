@@ -568,11 +568,12 @@ if __name__ == '__main__':
         tasks_completed = 0
         errors = [] # used for catch subprocess errors
         output_files = [] # used for parsing
+        rel_path = unzip_dir if args.decompress else input_dir
         with ThreadPoolExecutor(args.num_cpus) as executor:
             logging.info(f'RUNNING TOOL... ')
             start_time = datetime.now()
             for mag in mags:
-                output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 1)[0]+"."+tool, input_dir))
+                output_file=os.path.join(output_dir, os.path.relpath(mag.rsplit('.', 1)[0]+"."+tool, rel_path))
                 output_files.append(output_file)
                 os.makedirs(os.path.dirname(output_file), exist_ok=True)
                 future=executor.submit(run, command_run, mag, output_file)
@@ -692,9 +693,10 @@ if __name__ == '__main__':
         exit()
 
     logging.info('RUNNING TOOL COMPARISON...')
-    logging.info(f'Found {len(parsed_files)} files to compare')
-    start_time = datetime.now()
     comparison_file = os.path.join(output_root_dir, os.path.basename(input_dir)+'_tools_comparison.tsv')
+    logging.info(f'Found {len(parsed_files)} files to compare')
+    logging.info(f'Comparison file: ./{os.path.relpath(comparison_file)}')
+    start_time = datetime.now()
     parsed_dfs = []
 
     # Upload the TSV files
