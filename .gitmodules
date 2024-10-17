@@ -1,3 +1,6 @@
 [submodule "tools/CRISPRDetect_2.4"]
 	path = tools/CRISPRDetect_2.4
 	url = git@github.com:davidchyou/CRISPRDetect_2.4.git
+[submodule "tools/CRISPRDetect_3.0"]
+	path = tools/CRISPRDetect_3.0
+	url = git@github.com:ambarishbiswas/CRISPRDetect_3.0.git
