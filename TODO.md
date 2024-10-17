@@ -2,8 +2,8 @@
 - [x] Installare tools
     - [x] installare minced
     - [x] installare pilercr
-    - [x] installare CRISPRDetect
-        - [x] creare link per environment_CRISPRDetect.yml di CRISPRDetect
+    - [x] installare CRISPRDetect3
+        - [x] creare link per environment_CRISPRDetect3.yml di CRISPRDetect
         - [x] rederlo eseguibile come CRISPRDetect (non `perl CRISPRDetect.pl`)
         - [x] scaricare GeneMarkS
             - [x] copiare gmhmmp e gmhmmp.pl in CRISPRDetect e renderli eseguibili

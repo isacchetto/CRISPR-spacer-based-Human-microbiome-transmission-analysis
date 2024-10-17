@@ -1,0 +1,33 @@
+name: CRISPRDetect2.4
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - perl-parallel-forkmanager>=2.03
+  - clustalw>=2.1
+  - emboss>=6.6.0
+  - viennarna>=2.6.4
+  - cd-hit>=4.8.1
+  - blast>=2.16
+
+
+
+# Add the path to the CRISPRDetect2.4 folder to the PATH variable in the activate.sh script and remove it in the deactivate.sh script
+  # CRISPRDETECTDIR="/FULL/PATH/TO/CRISPRDETECT/DIR"
+  # mkdir -p ${CONDA_PREFIX}/etc/conda/activate.d
+  # mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
+  # cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
+  # #!/bin/sh
+  # export PATH="${CRISPRDETECTDIR}:\$PATH"
+  # EOF
+  # cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
+  # #!/bin/sh
+  # PATH="\$(echo "\${PATH}" | tr ':' '\n' | grep -v -x -F '${CRISPRDETECTDIR}' | tr '\n' ':')" 
+  # PATH="\${PATH%:}"
+  # export PATH
+  # EOF
+  # sed '1s/.*/#\!\/usr\/bin\/env perl/' '${CRISPRDETECTDIR}/CRISPRDetect.pl' > '${CRISPRDETECTDIR}/CRISPRDetect2.4'
+  # chmod +x '${CRISPRDETECTDIR}/CRISPRDetect2.4'
+
+  
