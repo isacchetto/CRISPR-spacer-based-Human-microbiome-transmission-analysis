@@ -16,18 +16,17 @@ dependencies:
 
 
 # Add the path to the CRISPRDetect3 folder to the PATH variable in the activate.sh script and remove it in the deactivate.sh script
-  # CRISPRDETECTDIR="/FULL/PATH/TO/CRISPRDETECT/DIR"
-  # mkdir -p ${CONDA_PREFIX}/etc/conda/activate.d
-  # mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
-  # cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
-  # #!/bin/sh
-  # export PATH="FULL/PATH/TO/CRISPRDETECT/DIR:\$PATH"
-  # EOF
-  # cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
-  # #!/bin/sh
-  # PATH="\$(echo "\${PATH}" | tr ':' '\n' | grep -v -x -F 'FULL/PATH/TO/CRISPRDETECT/DIR' | tr '\n' ':')" 
-  # PATH="\${PATH%:}"
-  # export PATH
-  # EOF
-  # sed '1s/.*/#\!\/usr\/bin\/env perl/' '${CRISPRDETECTDIR}/CRISPRDetect.pl' > '${CRISPRDETECTDIR}/CRISPRDetect3'
-  # chmod +x '${CRISPRDETECTDIR}/CRISPRDetect3'
+# CRISPRDETECTDIR="/FULL/PATH/TO/CRISPRDETECT/DIR"
+# mkdir -p ${CONDA_PREFIX}/etc/conda/activate.d
+# mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
+# cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
+# #!/bin/sh
+# export PATH="${CRISPRDETECTDIR}:\$PATH"
+# EOF
+# cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
+# #!/bin/sh
+# PATH="\$(echo "\${PATH}" | tr ':' '\n' | grep -v -x -F '${CRISPRDETECTDIR}' | tr '\n' ':')" 
+# PATH="\${PATH%:}"
+# export PATH
+# EOF
+# sed -i.bak '1s/.*/#\!\/usr\/bin\/env perl/' ${CRISPRDETECTDIR}/CRISPRDetect3
