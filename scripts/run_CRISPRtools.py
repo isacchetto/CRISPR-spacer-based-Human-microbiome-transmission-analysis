@@ -76,7 +76,7 @@ def unzip_and_run(command_run, input_file, output_file):
                 completedProcess = subprocess.run(command_run + [tmp_file.name], stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
             case "pilercr":
                 completedProcess = subprocess.run(command_run + ['-in', tmp_file.name, '-out', output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            case "CRISPRDetect3":
+            case "CRISPRDetect3" | "CRISPRDetect2.4":
                 # completedProcess = subprocess.run(['conda', 'run', '-n', 'CRISPRDetect'] + command_run + ['-f', tmp_file.name, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 completedProcess = subprocess.run(command_run + ['-f', tmp_file.name, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
@@ -96,8 +96,9 @@ def run(command_run, input_file, output_file):
             completedProcess = subprocess.run(command_run + [input_file], stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
         case "pilercr":
             completedProcess = subprocess.run(command_run + ['-in', input_file, '-out', output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        case "CRISPRDetect3":
+        case "CRISPRDetect3" | "CRISPRDetect2.4":
             # completedProcess = subprocess.run(['conda', 'run', '-n', 'CRISPRDetect'] + command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print(f'input_file: {input_file} -> output_file: {output_file}')
             completedProcess = subprocess.run(command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
@@ -314,7 +315,8 @@ def parse_CRISPRDetect3(gff_file_path):
             if crispr_tmp: # Save the previous CRISPR array
                 crisprs.append(crispr_tmp)
             elif crispr_tmp is not None:
-                raise ValueError(f"Invalid CRISPR format in file {gff_file_path}, contig {crispr_tmp.contig_name}")
+                print(f"Invalid CRISPR format in file {gff_file_path}, contig {crispr_tmp.contig_name}")
+                # raise ValueError(f"Invalid CRISPR format in file {gff_file_path}, contig {crispr_tmp.contig_name}")
             crispr_tmp = CRISPR(file_name=file_name, contig_name=row['seqid'], start=row['start'], end=row['end'])
             crispr_id = row['ID']
         elif row['type'] == 'direct_repeat' and row['Parent'] == crispr_id:  # Add a repeat
@@ -413,6 +415,8 @@ if __name__ == '__main__':
 
             # fix_gaps_in_repeats=1
         commands["CRISPRDetect3"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
+    if shutil.which("CRISPRDetect2.4"):
+        commands["CRISPRDetect2"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
     if not commands:
         print("No tools found: minced, pilercr, CRISPRDetect3. Exiting...", file=sys.stderr)
         exit()
@@ -559,8 +563,9 @@ if __name__ == '__main__':
                 logging.info(f"Command: {' '.join(command_run + ['<mag>', '>', '<out.minced>'])}")
             case "pilercr":
                 logging.info(f"Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
-            case "CRISPRDetect3":
-                logging.info(f"Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>'])}")
+            case "CRISPRDetect3" | "CRISPRDetect2":
+                logging.info(f"Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}")
+            
         logging.info(f"Input directory: {input_dir}")
         if args.cas_database is not None:
             logging.info(f"Cas database: {cas_database}")
@@ -626,7 +631,7 @@ if __name__ == '__main__':
                     crisprs_total+=parse_pilercr(file)
                     tasks_completed+=1
                     print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
-            case "CRISPRDetect3":
+            case "CRISPRDetect3" | "CRISPRDetect2":
                 for file in output_files:
                     crisprs_total+=parse_CRISPRDetect3(f"{file}.gff")
                     tasks_completed+=1
