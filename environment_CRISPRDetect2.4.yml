@@ -19,7 +19,7 @@ dependencies:
 # mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
 # cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
 # #!/bin/sh
-# export PATH="${CRISPRDETECTDIR}:\$PATH"
+# export PATH="\$PATH:${CRISPRDETECTDIR}"
 # EOF
 # cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
 # #!/bin/sh
@@ -27,6 +27,7 @@ dependencies:
 # PATH="\${PATH%:}"
 # export PATH
 # EOF
+# sed -i.bak 's/grep/grep -F/g' ${CRISPRDETECTDIR}/CRISPRDetect.pl
+# sed -i.bak 's/grep -w '\''\$a/grep -wF '\''\$a/g; s/grep '\''\$a/grep -F '\''\$a/g' ${CRISPRDETECTDIR}/CD_MODULES/CRISPRDETECT_SUBS_1.pm 
 # sed '1s/.*/#\!\/usr\/bin\/env perl/' ${CRISPRDETECTDIR}/CRISPRDetect.pl > ${CRISPRDETECTDIR}/CRISPRDetect2.4
 # chmod +x ${CRISPRDETECTDIR}/CRISPRDetect2.4
-  

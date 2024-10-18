@@ -21,7 +21,7 @@ dependencies:
 # mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
 # cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
 # #!/bin/sh
-# export PATH="${CRISPRDETECTDIR}:\$PATH"
+# export PATH="\$PATH:${CRISPRDETECTDIR}"
 # EOF
 # cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
 # #!/bin/sh
