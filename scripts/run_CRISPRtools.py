@@ -98,7 +98,6 @@ def run(command_run, input_file, output_file):
             completedProcess = subprocess.run(command_run + ['-in', input_file, '-out', output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         case "CRISPRDetect3" | "CRISPRDetect2.4":
             # completedProcess = subprocess.run(['conda', 'run', '-n', 'CRISPRDetect'] + command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            print(f'input_file: {input_file} -> output_file: {output_file}')
             completedProcess = subprocess.run(command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
