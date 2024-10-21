@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crisprtools"
+version = "0.1.0"
+authors = [
+    {name = "Isacco Cenacchi", email = "isacco.cenacchi@studenti.unitn.it"},
+]
+description = "A toolset for CRISPR analysis"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["CRISPR", "CRISPRtools", "Minced", "pilercr", "CRISPRDetect"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+dependencies = [
+    "simple_term_menu",
+    "pandas",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[project.scripts]
+CRISPRTools = "scripts.CRISPRTools:main"
+run_minced = "scripts.run_minced:main"
+run_pilercr = "scripts.run_pilercr:main"
+run_CRISPRDetect = "scripts.run_CRISPRDetect:main"
+parse_minced = "scripts.parse_minced:main"
+parse_pilercr = "scripts.parse_pilercr:main"
+parse_CRISPRDetect = "scripts.parse_CRISPRDetect:main"
+
+[project.urls]
+Documentation = "https://github.com/isacchetto/CRISPR-spacer-based-Human-microbiome-transmission-analysis"
+Homepage = "https://github.com/isacchetto/CRISPR-spacer-based-Human-microbiome-transmission-analysis"
+Issues = "https://github.com/isacchetto/CRISPR-spacer-based-Human-microbiome-transmission-analysis/issues"
+Source = "https://github.com/isacchetto/CRISPR-spacer-based-Human-microbiome-transmission-analysis"
