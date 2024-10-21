@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# import sys
+# import os
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+# from CRISPRtools.run import your_function_name
 
 import os
 import sys
@@ -7,7 +11,7 @@ from datetime import datetime
 import argparse
 import logging
 import multiprocessing as mp
-import run_tools as rt
+import run_CRISPRtools as rt
 
 
 
@@ -82,8 +86,13 @@ if __name__ == '__main__':
     tasks_completed = 0
     # crisprs_total = [crispr for file in files for crispr in parse_minced(file)]
     crisprs_total = []
+    error=0
     for file in files:
-        crisprs_total+=rt.parse_CRISPRDetect3(file)
+        try:
+            crisprs_total+=rt.parse_CRISPRDetect3(file)
+        except Exception as e:
+            logging.error(f'Error parsing {file}: {e}')
+            error += 1
         tasks_completed+=1
         print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
 
@@ -93,6 +102,7 @@ if __name__ == '__main__':
     crisprs_df.to_csv(output_file, sep='\t')
 
     end_time = datetime.now()
+    logging.error(f'Errors: {error}/{tasks_total}')
     logging.info('Parse {}/{} Files in {}'.format(
         tasks_completed,
         tasks_total, 
