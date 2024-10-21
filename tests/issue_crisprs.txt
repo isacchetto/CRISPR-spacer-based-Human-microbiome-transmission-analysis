@@ -1,4 +1,28 @@
-ISSUE: difference between with and without \n, difference between tools (number of DRs recognized), CRISPRDetect3 Insertion/Deletion
+ISSUE:
+- MinCED:
+    - porzioni di DR finiscono in SPACER
+    - se DR inizia all'inizio del contig, non viene riconosciuto
+    - SPACER troppo lunghi, non funziona -maxSL
+    - Differenze se i conting sono con o senza \n
+- Pilercr:
+    - pos is never correct when there is a deletion in the repeat reference
+    - Long spacer (cause: doesn't recognize the DRs inside)
+    - difference between with and without \n (not often like MinCED)
+    - creates 2 CRISPR overlap instead of 1
+- CRISPRDetect3:
+    - difference between with and without \n
+    - CRISPRDetect3 Insertion/Deletion cause error in the dimension of CRISPR and in end position
+
+
+
+
+
+
+
+
+
+
+ISSUE: difference between with and without \n, difference between tools (number of DRs recognized), CRISPRDetect3 Insertion/Deletion, CRISPRDetect3 reverse
 MAG:    M1023330751
 Contig: NODE_492_length_39267_cov_15.735
 
@@ -124,7 +148,7 @@ Repeats: 12     Average Length: 36              Average Length: 28
 
 
 
-ISSUE: difference between tools (cause: level of identity of DR), difference DR (1bp differnt), Pilercr deletion in reapeat reference
+ISSUE: difference between tools (cause: level of identity of DR), difference DR (1bp different), Pilercr deletion in reapeat reference
 MAG:    M1856252453
 Contig: NODE_6421_length_4372_cov_9.0278
 

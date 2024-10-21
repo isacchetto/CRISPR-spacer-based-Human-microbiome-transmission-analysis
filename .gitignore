@@ -27,3 +27,16 @@ MAGs
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Local editor config #
+#######################
+.vscode
+
+# Python packaging files #
+##########################
+*.egg-info
+
+# Python caching files #
+########################
+__pycache__
+.ipynb_checkpoints
