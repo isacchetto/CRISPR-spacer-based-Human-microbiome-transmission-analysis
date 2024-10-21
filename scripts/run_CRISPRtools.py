@@ -416,7 +416,9 @@ if __name__ == '__main__':
 
             # fix_gaps_in_repeats=1
         commands["CRISPRDetect3"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
+        # ne torva di piu, e ci mette di piu:
         commands["CRISPRDetect3_cpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+        # ne torva di meno e ci mette simile a default:
         commands["CRISPRDetect3_nocpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
         commands["CRISPRDetect3_online"]=f"CRISPRDetect3 -array_quality_score_cutoff 2.5 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0 -repeat_length_cutoff 11"
     if shutil.which("CRISPRDetect2.4"):
