@@ -38,6 +38,6 @@ Thumbs.db
 
 # Python caching files #
 ########################
-**/__pycache__
+script/__pycache__
 *.py[cod]
 *.ipynb_checkpoints

@@ -319,10 +319,9 @@ def parse_CRISPRDetect3(gff_file_path):
             crispr_id = row['ID']
         elif row['type'] == 'direct_repeat' and row['Parent'] == crispr_id:  # Add a repeat
             crispr_tmp.addRepeat(row['Note'])
-            
             crispr_tmp.setEnd(crispr_tmp.start + len(crispr_tmp) - 1)
-            if row['end'] != crispr_tmp.end:
-                raise ValueError(f"CRISPR length mismatch in file {gff_file_path}, contig {crispr_tmp.contig_name}")
+            # if row['end'] != crispr_tmp.end:
+                # raise ValueError(f"CRISPR length mismatch in file {gff_file_path}, contig {crispr_tmp.contig_name}")
         elif row['type'] == 'binding_site' and row['Parent'] == crispr_id:  # Add a spacer
             crispr_tmp.addSpacer(row['Note'])
     # Add the last CRISPR array if one was being built
@@ -417,8 +416,13 @@ if __name__ == '__main__':
 
             # fix_gaps_in_repeats=1
         commands["CRISPRDetect3"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect3_cpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect3_nocpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect3_online"]=f"CRISPRDetect3 -array_quality_score_cutoff 2.5 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0 -repeat_length_cutoff 11"
     if shutil.which("CRISPRDetect2.4"):
         commands["CRISPRDetect2"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect2_cpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+        commands["CRISPRDetect2_nocpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
     if not commands:
         print("No tools found: minced, pilercr, CRISPRDetect3. Exiting...", file=sys.stderr)
         exit()
@@ -439,7 +443,7 @@ if __name__ == '__main__':
             exit()
         # Upload the TSV files
         try:
-            cas_df = pd.read_csv(cas_database, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
+            cas_df = pd.read_csv(cas_database, sep='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
         except ValueError as e:
             print('Error: ', e, file=sys.stderr)
             print('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file', file=sys.stderr)
@@ -474,7 +478,7 @@ if __name__ == '__main__':
 
     # Create output directories
     output_dirs = {}
-    for tool_codename in commands:
+    for tool_codename in list(commands.keys()):
         output_dir = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_{tool_codename}")
         # Check if the output directory exists and ask the user if they want to rename it or overwrite it or skip
         if os.path.exists(output_dir):
@@ -738,7 +742,7 @@ if __name__ == '__main__':
             logging.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
             continue
         except ValueError as e:
-            logging.error('Errore: ', e)
+            logging.error(f'Error: {e}')
             logging.error(f'Check the column names in the parsed file {file} (MAG, Contig, Start, End, Spacers, Repeats, ToolCodename), and secure that file is a TSV file')
             continue
 

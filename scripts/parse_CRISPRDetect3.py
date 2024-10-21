@@ -86,13 +86,12 @@ if __name__ == '__main__':
     tasks_completed = 0
     # crisprs_total = [crispr for file in files for crispr in parse_minced(file)]
     crisprs_total = []
-    error=0
+    errors = []
     for file in files:
         try:
             crisprs_total+=rt.parse_CRISPRDetect3(file)
         except Exception as e:
-            logging.error(f'Error parsing {file}: {e}')
-            error += 1
+            errors.append(f'Error parsing: {e}')
         tasks_completed+=1
         print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
 
@@ -102,10 +101,13 @@ if __name__ == '__main__':
     crisprs_df.to_csv(output_file, sep='\t')
 
     end_time = datetime.now()
-    logging.error(f'Errors: {error}/{tasks_total}')
     logging.info('Parse {}/{} Files in {}'.format(
         tasks_completed,
         tasks_total, 
         datetime.strftime(datetime.min + (end_time - start_time), '%Hh:%Mm:%S.%f')[:-3]+'s'))  
     logging.info('Found {} CRISPRs'.format(len(crisprs_total)))
-    logging.info('Done!')
+    if errors:
+        [logging.error(error) for error in errors]
+        logging.info('Done with errors!')
+    else:
+        logging.info('Done!')
