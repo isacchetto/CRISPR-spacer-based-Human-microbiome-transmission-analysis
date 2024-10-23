@@ -73,12 +73,17 @@ def unzip_and_run(command_run, input_file, output_file):
             tmp_file.write(decompressor.decompress(data))
         match tool:
             case "minced":
-                completedProcess = subprocess.run(command_run + [tmp_file.name], stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
+                completedProcess = subprocess.run(command_run + [tmp_file.name], 
+                                                  stdout=open(output_file, 'wb'), 
+                                                  stderr=subprocess.DEVNULL)
             case "pilercr":
-                completedProcess = subprocess.run(command_run + ['-in', tmp_file.name, '-out', output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                completedProcess = subprocess.run(command_run + ['-in', tmp_file.name, '-out', output_file], 
+                                                  stdout=subprocess.DEVNULL, 
+                                                  stderr=subprocess.DEVNULL)
             case "CRISPRDetect3" | "CRISPRDetect2.4":
-                # completedProcess = subprocess.run(['conda', 'run', '-n', 'CRISPRDetect'] + command_run + ['-f', tmp_file.name, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                completedProcess = subprocess.run(command_run + ['-f', tmp_file.name, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                completedProcess = subprocess.run(command_run + ['-f', tmp_file.name, '-o', output_file], 
+                                                  stdout = subprocess.DEVNULL, 
+                                                  stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
         with lock_errors:
@@ -93,12 +98,17 @@ def run(command_run, input_file, output_file):
     tool = command_run[0]
     match tool:
         case "minced":
-            completedProcess = subprocess.run(command_run + [input_file], stdout=open(output_file, 'wb'), stderr=subprocess.DEVNULL)
+            completedProcess = subprocess.run(command_run + [input_file], 
+                                              stdout=open(output_file, 'wb'), 
+                                              stderr=subprocess.DEVNULL)
         case "pilercr":
-            completedProcess = subprocess.run(command_run + ['-in', input_file, '-out', output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            completedProcess = subprocess.run(command_run + ['-in', input_file, '-out', output_file], 
+                                              stdout=subprocess.DEVNULL, 
+                                              stderr=subprocess.DEVNULL)
         case "CRISPRDetect3" | "CRISPRDetect2.4":
-            # completedProcess = subprocess.run(['conda', 'run', '-n', 'CRISPRDetect'] + command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            completedProcess = subprocess.run(command_run + ['-f', input_file, '-o', output_file], stdout = subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            completedProcess = subprocess.run(command_run + ['-f', input_file, '-o', output_file], 
+                                              stdout = subprocess.DEVNULL, 
+                                              stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
         with lock_errors:
@@ -140,10 +150,23 @@ class CRISPR:
         self.spacers = []
     
     def __repr__(self):
-        return f'<CRISPR object: (\n{self.file_name}\n{self.contig_name}\n{self.start}\n{self.end}\n{self.repeats}\n{self.spacers})>\n'
+        return (f'<CRISPR object: (\n'
+                f'{self.file_name}\n'
+                f'{self.contig_name}\n'
+                f'{self.start}\n'
+                f'{self.end}\n'
+                f'{self.repeats}\n'
+                f'{self.spacers})>\n'
+                )
     
     def __str__(self):
-        return f'f_name: {self.file_name}\ncontig: {self.contig_name}\nstart: {self.start}\nend: {self.end}\nrepeats: {self.repeats}\nspacers: {self.spacers}\n'
+        return (f'f_name: {self.file_name}\n'
+                f'contig: {self.contig_name}\n'
+                f'start: {self.start}\n'
+                f'end: {self.end}\n'
+                f'repeats: {self.repeats}\n'
+                f'spacers: {self.spacers}\n'
+                )
     
     def __len__(self):
         return sum(len(spacer) for spacer in self.spacers) + sum(len(repeat) for repeat in self.repeats)
@@ -157,7 +180,10 @@ class CRISPR:
                 len(self.repeats) == len(self.spacers) + 1)
     
     def __eq__(self, other):
-        return self.file_name == other.file_name and self.contig_name == other.contig_name and self.start == other.start and self.end == other.end
+        return (self.file_name == other.file_name and 
+                self.contig_name == other.contig_name and 
+                self.start == other.start and 
+                self.end == other.end)
     
     def setFile_name(self, file_name):
         self.file_name = file_name
@@ -335,7 +361,12 @@ def parse_CRISPRDetect3(gff_file_path):
 def add_cas_distance(crisprs_df, cas_df):
     errors = []
     # Create a DataFrame with the data of the CRISPR and Cas combined
-    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']
+                                ).reset_index().merge(cas_df, 
+                                                      on=['MAG', 'Contig'], 
+                                                      how="inner", 
+                                                      suffixes=('_CRISPR', '_Cas')
+                                                      ).set_index('index')
     # Add columns to the DataFrame
     crisprs_df['Cas_0-1000']=0
     crisprs_df['Cas_1000-10000']=0
@@ -393,18 +424,32 @@ def assign_id_and_merge_overlaps(df):
 if __name__ == '__main__':
 
     # Argument parser
-    parser = argparse.ArgumentParser(prog='CRISPRtools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
-                                    Run minced/pilercr/CRISPRDetect on a directory of MAGs,
-                                    and create a file.tsv of CRISPRs found with this column:
-                                    'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'
-                                    ['Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'] (if --cas_database is used)."""))
-    parser.add_argument("input_directory", type=str, help="The input directory of the MAGs (in .fna or .bz2 format, see --decompress)")
-    parser.add_argument("-d", "--decompress", action="store_true", help="Use this flag if the MAGs are compressed in .bz2 format (default: False)")
-    parser.add_argument("-out", "--output-dir", type=str, help="The output directory, default is './out/<input_directory>_CRISPRtools' \n(see --inplace for more info)", default=None, dest="output_directory", metavar='OUTPUT_DIR')
-    parser.add_argument("-i", "--inplace", action="store_true", help="Created output directory near the input directory, \ninstead into the 'out' directory of the current working directory (default: False)")
-    parser.add_argument("-cas", "--cas_database", type=str, help="The file.tsv where are stored the cas genes (created by CRISPCasFinder). \nBy adding this, the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed' \nwill be added to the file.tsv", default=None, dest="cas_database", metavar='CAS_DB')
-    parser.add_argument("-t", "--threads", type=int, help=f"Number of threads to use (default: ALL/3 = {mp.cpu_count()//3})", default=mp.cpu_count()//3, dest="num_cpus", metavar='N_CPUS')
-    parser.add_argument("-n", "--dry-run", action="store_true", help="Print information about what would be done without actually doing it (default: False)")
+    parser = argparse.ArgumentParser(prog='CRISPRtools', 
+                                     formatter_class=argparse.RawTextHelpFormatter, 
+                                     description=textwrap.dedent("""
+                                                                 Run minced/pilercr/CRISPRDetect on a directory of MAGs,
+                                                                 and create a file.tsv of CRISPRs found with this column:
+                                                                 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'
+                                                                 ['Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'] (if --cas_database is used).
+                                                                 """)
+                                    )
+    parser.add_argument("input_directory", type=str, 
+                        help="The input directory of the MAGs (in .fna or .bz2 format, see --decompress)")
+    parser.add_argument("-d", "--decompress", action="store_true", 
+                        help="Use this flag if the MAGs are compressed in .bz2 format (default: False)")
+    parser.add_argument("-out", "--output-dir", type=str, 
+                        help="The output directory, default is './out/<input_directory>_CRISPRtools' \n(see --inplace for more info)", 
+                        default=None, dest="output_directory", metavar='OUTPUT_DIR')
+    parser.add_argument("-i", "--inplace", action="store_true", 
+                        help="Created output directory near the input directory, \ninstead into the 'out' directory of the current working directory (default: False)")
+    parser.add_argument("-cas", "--cas_database", type=str, 
+                        help="The file.tsv where are stored the cas genes (created by CRISPCasFinder). \nBy adding this, the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed' \nwill be added to the file.tsv", 
+                        default=None, dest="cas_database", metavar='CAS_DB')
+    parser.add_argument("-t", "--threads", type=int, 
+                        help=f"Number of threads to use (default: ALL/3 = {mp.cpu_count()//3})", 
+                        default=mp.cpu_count()//3, dest="num_cpus", metavar='N_CPUS')
+    parser.add_argument("-n", "--dry-run", action="store_true", 
+                        help="Print information about what would be done without actually doing it (default: False)")
     args = parser.parse_args()
     
     # Verify the presence of the tools and create the commands
@@ -480,7 +525,10 @@ if __name__ == '__main__':
             exit()
         # Upload the TSV files
         try:
-            cas_df = pd.read_csv(cas_database, sep='\t', usecols=['MAG', 'Contig', 'Start', 'End'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int})
+            cas_df = pd.read_csv(cas_database, sep='\t', 
+                                 usecols=['MAG', 'Contig', 'Start', 'End'], 
+                                 dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int}
+                                 )
         except ValueError as e:
             print('Error: ', e, file=sys.stderr)
             print('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file', file=sys.stderr)
@@ -505,7 +553,13 @@ if __name__ == '__main__':
 
     # select multi command to use
     commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit)", 
-                                 menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), menu_highlight_style=("bg_red", "fg_yellow", "bold"), clear_screen=False, raise_error_on_interrupt=True, preview_command=lambda command: commands[command], preview_title="Command Preview", multi_select=True, show_multi_select_hint=True, multi_select_cursor_style=("fg_red", "bold"), multi_select_empty_ok=False, multi_select_select_on_accept=False)
+                                 menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
+                                 menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
+                                 clear_screen=False, raise_error_on_interrupt=True, 
+                                 preview_command=lambda command: commands[command], 
+                                 preview_title="Command Preview", multi_select=True, 
+                                 show_multi_select_hint=True, multi_select_cursor_style=("fg_red", "bold"), 
+                                 multi_select_empty_ok=False, multi_select_select_on_accept=False)
     try: commands_menu.show()
     except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
     if commands_menu.chosen_menu_indices is None:
@@ -519,10 +573,11 @@ if __name__ == '__main__':
         output_dir = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_{tool_codename}")
         # Check if the output directory exists and ask the user if they want to rename it or overwrite it or skip
         if os.path.exists(output_dir):
-            outdir_menu = TerminalMenu(["Rename (Incremental)", "Overwrite", "Not run this command", "Exit"], title=f"The output directory ./{os.path.relpath(output_dir)} already exists. What do you want to do?", 
-                                    menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
-                                    menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
-                                    clear_screen=False, raise_error_on_interrupt=True)
+            outdir_menu = TerminalMenu(["Rename (Incremental)", "Overwrite", "Not run this command", "Exit"],
+                                        title=f"The output directory ./{os.path.relpath(output_dir)} already exists. What do you want to do?", 
+                                        menu_cursor="> ", menu_cursor_style=("fg_red", "bold"), 
+                                        menu_highlight_style=("bg_red", "fg_yellow", "bold"), 
+                                        clear_screen=False, raise_error_on_interrupt=True)
             try: outdir_menu.show()
             except KeyboardInterrupt: print("Interrupted by the user", file=sys.stderr); exit()
             if outdir_menu.chosen_menu_index is None:
@@ -576,7 +631,8 @@ if __name__ == '__main__':
                         future=executor.submit(unzip1, file, unzipped_file)
                         future.add_done_callback(future_progress_indicator)
             end_time = datetime.now()
-            logger.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+            logger.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(
+                datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
             logger.info('Done!\n')
             mags = [os.path.join(dirpath,filename) 
                     for dirpath, _, filenames in os.walk(unzip_dir) 
@@ -619,7 +675,8 @@ if __name__ == '__main__':
             case "pilercr":
                 logger.info(f"Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
             case "CRISPRDetect3" | "CRISPRDetect2":
-                logger.info(f"Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}")
+                logger.info(f"""Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' 
+                                                                if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}""")
             
         logger.info(f"Input directory: {input_dir}")
         if args.cas_database is not None:
@@ -650,7 +707,8 @@ if __name__ == '__main__':
                 future=executor.submit(run, command_run, mag, output_file)
                 future.add_done_callback(future_progress_indicator)
         end_time = datetime.now()
-        logger.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+        logger.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(
+            datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
         if errors:
             [logger.error(error) for error in errors]
             logger.error('Done with errors!')
@@ -702,13 +760,16 @@ if __name__ == '__main__':
                     print(f' Parsed {tasks_completed} of {tasks_total} ...', end='\r', flush=True)
 
 
-        crisprs_df = pd.DataFrame([[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats), tool_codename] for a in crisprs_total],
-                                    columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'])
+        crisprs_df = pd.DataFrame(
+            [[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats), tool_codename] for a in crisprs_total],
+            columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename']
+            )
 
         crisprs_df.to_csv(parsed_file, sep='\t')
 
         end_time = datetime.now()
-        logger.info(f'Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')  
+        logger.info(f'Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(
+            datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
         logger.info(f'Found {len(crisprs_total)} CRISPRs')
         if errors:
             [logger.error(error) for error in errors]
@@ -721,7 +782,7 @@ if __name__ == '__main__':
             logger.info('ADDING CAS DISTANCE...')
             start_time = datetime.now()
             # Output file
-            logger.info(f'Add Cas Distance in ./{os.path.relpath(parsed_file)}')
+            logger.info(f'Add Cas Distance to ./{os.path.relpath(parsed_file)}')
             # Add Cas Distance
             crisprs_df, errors = add_cas_distance(crisprs_df, cas_df)
             # Save the DataFrame in a TSV file
@@ -759,22 +820,34 @@ if __name__ == '__main__':
     # Upload the TSV files
     for file in parsed_files:
         try:
-            parsed_dfs.append(pd.read_csv(file, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str}, index_col=False))
+            if args.cas_database:
+                parsed_dfs.append(pd.read_csv(file, delimiter='\t', 
+                                              usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename', 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'], 
+                                              dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str, 'Cas_0-1000': int, 'Cas_1000-10000': int, 'Cas_>100000': int, 'Cas_overlayed': int}, 
+                                              index_col=False))
+            else:
+                parsed_dfs.append(pd.read_csv(file, delimiter='\t', 
+                                              usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'], 
+                                              dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str}, 
+                                              index_col=False))
         except FileNotFoundError as e:
             logger.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
             continue
         except ValueError as e:
             logger.error(f'Error: {e}')
-            logger.error(f'Check the column names in the parsed file {file} (MAG, Contig, Start, End, Spacers, Repeats, ToolCodename), and secure that file is a TSV file')
+            logger.error(f'Check the column names in the parsed file {file} '
+                         f'(MAG, Contig, Start, End, Spacers, Repeats, ToolCodename'
+                         f'{", Cas_0-1000, Cas_1000-10000, Cas_>100000, Cas_overlayed" if args.cas_database else ""}), '
+                         f'and secure that file is a TSV file')
             continue
 
     # Concat the DataFrames
     all_df = pd.concat([parsed_df for parsed_df in parsed_dfs], ignore_index=True)
 
     # Remove duplicates based on 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats' and keep one row, concatening 'ToolCodename' values
-    combined_df = all_df.groupby(['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], as_index=False).agg({
-        'ToolCodename': lambda x: ','.join(sorted(set(x)))  # Use set to remove duplicates and sorted for consistent order
-    }) 
+    combined_df = all_df.groupby(['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], 
+                                 as_index=False).agg({'ToolCodename': lambda x: ','.join(sorted(set(x)))}) 
+                                # Use set to remove duplicates and sorted for consistent order 
 
     # Apply the function to assign IDs and check for overlaps
     final_df = assign_id_and_merge_overlaps(combined_df)
