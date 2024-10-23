@@ -331,6 +331,41 @@ def parse_CRISPRDetect3(gff_file_path):
         raise ValueError(f"CRISPR not finished at the end of file {gff_file_path}, contig {row['seqid']}")
     return crisprs
 
+# Function that add on crisprs_df the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'
+def add_cas_distance(crisprs_df, cas_df):
+    errors = []
+    # Create a DataFrame with the data of the CRISPR and Cas combined
+    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
+    # Add columns to the DataFrame
+    crisprs_df['Cas_0-1000']=0
+    crisprs_df['Cas_1000-10000']=0
+    crisprs_df['Cas_>100000']=0
+    crisprs_df['Cas_overlayed']=0
+    # Calculate the distance between CRISPR and Cas
+    for index, row in merged_df.iterrows():
+        if row['Start_Cas'] >= row['End_CRISPR']:
+            # print('Cas davati al CRISPR')
+            distance = row['Start_Cas'] - row['End_CRISPR']
+        elif row['End_Cas'] <= row['Start_CRISPR']:
+            # print('Cas prima il CRISPR')
+            distance = row['Start_CRISPR'] - row['End_Cas']
+        else:
+            # print('Cas che sovrappone al CRISPR')
+            distance = -1
+        
+        if distance >= 0 and distance <= 1000:
+            crisprs_df.at[index, 'Cas_0-1000'] += 1
+        elif distance > 1000 and distance <= 10000:
+            crisprs_df.at[index, 'Cas_1000-10000'] += 1
+        elif distance > 10000:
+            crisprs_df.at[index, 'Cas_>100000'] += 1
+        elif distance == -1:
+            crisprs_df.at[index, 'Cas_overlayed'] += 1
+        else:
+            errors.append(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
+        
+    return crisprs_df, errors
+
 # Function to assign unique IDs and check for overlaps
 def assign_id_and_merge_overlaps(df):
     df = df.sort_values(by=['MAG', 'Contig', 'Start']).reset_index(drop=True)
@@ -359,7 +394,7 @@ if __name__ == '__main__':
 
     # Argument parser
     parser = argparse.ArgumentParser(prog='CRISPRtools', formatter_class=argparse.RawTextHelpFormatter, description=textwrap.dedent("""
-                                    Run minced/pilercr/CRISPRDetect3 on a directory of MAGs,
+                                    Run minced/pilercr/CRISPRDetect on a directory of MAGs,
                                     and create a file.tsv of CRISPRs found with this column:
                                     'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'
                                     ['Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'] (if --cas_database is used)."""))
@@ -426,7 +461,7 @@ if __name__ == '__main__':
         commands["CRISPRDetect2_cpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
         commands["CRISPRDetect2_nocpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
     if not commands:
-        print("No tools found: minced, pilercr, CRISPRDetect3. Exiting...", file=sys.stderr)
+        print("No tools found: minced, pilercr, CRISPRDetect. Exiting...", file=sys.stderr)
         exit()
 
     # Check if input directory exists or not
@@ -506,48 +541,56 @@ if __name__ == '__main__':
 
     # Set up logging
     logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO')
+    logger=logging.getLogger(__name__)
+    if not args.dry_run:
+        os.makedirs(output_root_dir, exist_ok=True)
+        log_handler=logging.FileHandler(os.path.join(output_root_dir, f'run_CRISPRtools.log'))
+        log_handler.setLevel('INFO')
+        log_formatter=logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        log_handler.setFormatter(log_formatter)
+        logger.addHandler(log_handler)
 
     # Find all MAGs in the input directory (and unzip them if needed)
-    if args.dry_run:
-        mags = [os.path.join(dirpath,filename)
-                for dirpath, _, filenames in os.walk(input_dir)
-                for filename in filenames
-                if filename.endswith('.bz2' if args.decompress else '.fna')
-            ]
-        tasks_total = len(mags)
-    elif args.decompress:
+    if args.decompress:
         files = [os.path.join(dirpath,filename)
                 for dirpath, _, filenames in os.walk(input_dir)
                 for filename in filenames
                 if filename.endswith('.bz2')
             ]
         tasks_total = len(files)
-        # Unzip mag files (if needed)
-        # ThreadPoolExecutor + unzip1 version
-        tasks_completed = 0
-        lock_tasks = Lock()
-        unzip_dir = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_unzipped")
-        with ThreadPoolExecutor(args.num_cpus) as executor:
-            logging.info('UNZIPPING FILES... ')
-            start_time = datetime.now()
-            for file in files:
-                unzipped_file=os.path.join(unzip_dir, os.path.relpath(file.rsplit('.', 1)[0], input_dir))
-                os.makedirs(os.path.dirname(unzipped_file), exist_ok=True)
-                if os.path.exists(unzipped_file):
-                    tasks_completed += 1
-                else:
-                    future=executor.submit(unzip1, file, unzipped_file)
-                    future.add_done_callback(future_progress_indicator)
-        end_time = datetime.now()
-        logging.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
-        logging.info('Done!')
-        mags = [os.path.join(dirpath,filename) 
+        if not args.dry_run:
+            # Unzip mag files (if needed)
+            # ThreadPoolExecutor + unzip1 version
+            tasks_completed = 0
+            lock_tasks = Lock()
+            unzip_dir = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_unzipped")
+            with ThreadPoolExecutor(args.num_cpus) as executor:
+                logger.info('UNZIPPING FILES... ')
+                start_time = datetime.now()
+                for file in files:
+                    unzipped_file=os.path.join(unzip_dir, os.path.relpath(file.rsplit('.', 1)[0], input_dir))
+                    os.makedirs(os.path.dirname(unzipped_file), exist_ok=True)
+                    if os.path.exists(unzipped_file):
+                        tasks_completed += 1
+                    else:
+                        future=executor.submit(unzip1, file, unzipped_file)
+                        future.add_done_callback(future_progress_indicator)
+            end_time = datetime.now()
+            logger.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+            logger.info('Done!\n')
+            mags = [os.path.join(dirpath,filename) 
                     for dirpath, _, filenames in os.walk(unzip_dir) 
                     for filename in filenames 
                     if filename.endswith('.fna')
                 ]
+            tasks_total = len(mags)
+    else:
+        mags = [os.path.join(dirpath,filename) 
+                    for dirpath, _, filenames in os.walk(input_dir) 
+                    for filename in filenames 
+                    if filename.endswith('.fna')
+                ]
         tasks_total = len(mags)
-
 
     first=True
     i=len(commands)
@@ -559,31 +602,35 @@ if __name__ == '__main__':
         # Split the command
         command_run=command.split()
 
-        # Create .log file
+        # Create .log file for every tool 
         if not args.dry_run:
             os.makedirs(output_dir, exist_ok=True)
-            logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level='INFO', handlers=[logging.StreamHandler(), logging.FileHandler(os.path.join(output_dir, f'run_{tool_codename}.log'))])
+            log_handler_tool=logging.FileHandler(os.path.join(output_dir, f'run_{tool_codename}.log'))
+            log_handler_tool.setLevel('INFO')
+            log_handler_tool.setFormatter(log_formatter)
+            logger.addHandler(log_handler_tool)
+        
         tool=tool_codename.split('_')
-        logging.info(f"TOOL: {' -> '.join(tool)}")
+        logger.info(f"TOOL: {' -> '.join(tool)}")
         tool = tool[0]
         match tool:
             case "minced":
-                logging.info(f"Command: {' '.join(command_run + ['<mag>', '>', '<out.minced>'])}")
+                logger.info(f"Command: {' '.join(command_run + ['<mag>', '>', '<out.minced>'])}")
             case "pilercr":
-                logging.info(f"Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
+                logger.info(f"Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
             case "CRISPRDetect3" | "CRISPRDetect2":
-                logging.info(f"Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}")
+                logger.info(f"Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}")
             
-        logging.info(f"Input directory: {input_dir}")
+        logger.info(f"Input directory: {input_dir}")
         if args.cas_database is not None:
-            logging.info(f"Cas database: {cas_database}")
-        logging.info(f"Output directory: ./{os.path.relpath(output_dir)}")
-        tasks_total = len(mags)
-        logging.info(f"Found {tasks_total} MAGs")
-        logging.info(f"Using {args.num_cpus} threads")
+            logger.info(f"Cas database: {cas_database}")
+        logger.info(f"Output directory: ./{os.path.relpath(output_dir)}")
+        logger.info(f"Found {tasks_total} MAGs")
+        logger.info(f"Using {args.num_cpus} threads")
         if args.dry_run:
+            logger.makeRecord('INFO', '', '', 0, '\n', None, None)
             if i == 0:
-                logging.info('Dry run completed, no files were created. Exiting...'); exit()
+                logger.info('Dry run completed, no files were created. Exiting...'); exit()
             continue
 
         # ThreadPoolExecutor + subprocess.run  version
@@ -594,7 +641,7 @@ if __name__ == '__main__':
         output_files = [] # used for parsing
         rel_path = unzip_dir if args.decompress else input_dir
         with ThreadPoolExecutor(args.num_cpus) as executor:
-            logging.info(f'RUNNING TOOL... ')
+            logger.info(f'RUNNING TOOL... ')
             start_time = datetime.now()
             for mag in mags:
                 output_file = os.path.join(output_dir, os.path.relpath(f"{mag.rsplit('.', 1)[0]}.{tool}", rel_path))
@@ -603,20 +650,20 @@ if __name__ == '__main__':
                 future=executor.submit(run, command_run, mag, output_file)
                 future.add_done_callback(future_progress_indicator)
         end_time = datetime.now()
-        logging.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+        logger.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
         if errors:
-            [logging.error(error) for error in errors]
-            logging.error('Done with errors!')
+            [logger.error(error) for error in errors]
+            logger.error('Done with errors!')
         else:
-            logging.info('Done!')
+            logger.info('Done!')
 
         # Parsing files
-        logging.info('PARSING FILES...')
+        logger.info('PARSING FILES...')
         start_time = datetime.now()
 
         tasks_total = len(output_files)  
         parsed_file = os.path.join(output_dir, f"{os.path.basename(input_dir)}_{tool_codename}_parsed.tsv")
-        logging.info(f'Parsed file: ./{os.path.relpath(parsed_file)}')
+        logger.info(f'Parsed file: ./{os.path.relpath(parsed_file)}')
 
         # match tool:
         #     case "minced":
@@ -661,64 +708,38 @@ if __name__ == '__main__':
         crisprs_df.to_csv(parsed_file, sep='\t')
 
         end_time = datetime.now()
-        logging.info(f'Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')  
-        logging.info(f'Found {len(crisprs_total)} CRISPRs')
+        logger.info(f'Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')  
+        logger.info(f'Found {len(crisprs_total)} CRISPRs')
         if errors:
-            [logging.error(error) for error in errors]
-            logging.info('Done with errors!')
+            [logger.error(error) for error in errors]
+            logger.info(f'Done with errors!{"" if args.cas_database else os.linesep}')
         else:
-            logging.info('Done!')
+            logger.info(f'Done!{"" if args.cas_database else os.linesep}')
 
         # Add Cas Distance
-        if args.cas_database is None:
-            continue
+        if args.cas_database:
+            logger.info('ADDING CAS DISTANCE...')
+            start_time = datetime.now()
+            # Output file
+            logger.info(f'Add Cas Distance in ./{os.path.relpath(parsed_file)}')
+            # Add Cas Distance
+            crisprs_df, errors = add_cas_distance(crisprs_df, cas_df)
+            # Save the DataFrame in a TSV file
+            crisprs_df.to_csv(parsed_file, sep='\t')
+            end_time = datetime.now()
+            logger.info(f'Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+            if errors:
+                [logger.error(error) for error in errors]
+                logger.info('Done with errors!\n')
+            else:
+                logger.info('Done!\n')
+
+        logger.removeHandler(log_handler_tool)
         
-        logging.info('ADDING CAS DISTANCE...')
-        start_time = datetime.now()
-
-        # Output file
-        logging.info(f'Add Cas Distance in ./{os.path.relpath(parsed_file)}')
-
-        # Create a DataFrame with the data of the CRISPR and Cas combined
-        merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']).reset_index().merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas')).set_index('index')
-
-        # Add columns to the DataFrame
-        crisprs_df['Cas_0-1000']=0
-        crisprs_df['Cas_1000-10000']=0
-        crisprs_df['Cas_>100000']=0
-        crisprs_df['Cas_overlayed']=0
-
-        # Calculate the distance between CRISPR and Cas
-        for index, row in merged_df.iterrows():
-            if row['Start_Cas'] >= row['End_CRISPR']:
-                # print('Cas davati al CRISPR')
-                distance = row['Start_Cas'] - row['End_CRISPR']
-            elif row['End_Cas'] <= row['Start_CRISPR']:
-                # print('Cas prima il CRISPR')
-                distance = row['Start_CRISPR'] - row['End_Cas']
-            else:
-                # print('Cas che sovrappone al CRISPR')
-                distance = -1
-            
-            if distance >= 0 and distance <= 1000:
-                crisprs_df.at[index, 'Cas_0-1000'] += 1
-            elif distance > 1000 and distance <= 10000:
-                crisprs_df.at[index, 'Cas_1000-10000'] += 1
-            elif distance > 10000:
-                crisprs_df.at[index, 'Cas_>100000'] += 1
-            elif distance == -1:
-                crisprs_df.at[index, 'Cas_overlayed'] += 1
-            else:
-                logging.error(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
-
-        # Save the DataFrame in a TSV file
-        crisprs_df.to_csv(parsed_file, sep='\t')
-
-        end_time = datetime.now()
-        logging.info(f'Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
-        logging.info('Done!')
 
     # Tool comparison
+    logger.info('RUNNING TOOL COMPARISON...')
+
     parsed_files = [os.path.join(dirpath,filename)
                 for dirpath, _, filenames in os.walk(output_root_dir)
                 for filename in filenames
@@ -726,13 +747,12 @@ if __name__ == '__main__':
             ]
     
     if len(parsed_files) < 2:
-        logging.error('No files to compare, exiting...')
+        logger.error('No files to compare, exiting...')
         exit()
 
-    logging.info('RUNNING TOOL COMPARISON...')
     comparison_file = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_tools_comparison.tsv")
-    logging.info(f'Found {len(parsed_files)} files to compare')
-    logging.info(f'Comparison file: ./{os.path.relpath(comparison_file)}')
+    logger.info(f'Found {len(parsed_files)} files to compare')
+    logger.info(f'Comparison file: ./{os.path.relpath(comparison_file)}')
     start_time = datetime.now()
     parsed_dfs = []
 
@@ -741,11 +761,11 @@ if __name__ == '__main__':
         try:
             parsed_dfs.append(pd.read_csv(file, delimiter='\t', usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'], dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str}, index_col=False))
         except FileNotFoundError as e:
-            logging.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
+            logger.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
             continue
         except ValueError as e:
-            logging.error(f'Error: {e}')
-            logging.error(f'Check the column names in the parsed file {file} (MAG, Contig, Start, End, Spacers, Repeats, ToolCodename), and secure that file is a TSV file')
+            logger.error(f'Error: {e}')
+            logger.error(f'Check the column names in the parsed file {file} (MAG, Contig, Start, End, Spacers, Repeats, ToolCodename), and secure that file is a TSV file')
             continue
 
     # Concat the DataFrames
@@ -763,7 +783,7 @@ if __name__ == '__main__':
     final_df.to_csv(comparison_file, sep='\t')
 
     end_time = datetime.now()
-    logging.info(f'Tool comparison in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
-    logging.info('Done!')
+    logger.info(f'Tool comparison in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+    logger.info('Done!\n\n')
 
 
