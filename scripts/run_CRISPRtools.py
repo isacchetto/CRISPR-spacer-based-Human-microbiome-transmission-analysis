@@ -683,9 +683,8 @@ if __name__ == '__main__':
             logger.info(f"Cas database: {cas_database}")
         logger.info(f"Output directory: ./{os.path.relpath(output_dir)}")
         logger.info(f"Found {tasks_total} MAGs")
-        logger.info(f"Using {args.num_cpus} threads")
+        logger.info(f"Using {args.num_cpus} threads{'\n' if args.dry_run else ''}")
         if args.dry_run:
-            logger.makeRecord('INFO', '', '', 0, '\n', None, None)
             if i == 0:
                 logger.info('Dry run completed, no files were created. Exiting...'); exit()
             continue
