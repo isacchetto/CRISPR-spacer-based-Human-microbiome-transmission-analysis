@@ -379,46 +379,6 @@ def parse_CRISPRDetect3(gff_file_path):
         raise ValueError(f"CRISPR not finished at the end of file {gff_file_path}, contig {row['seqid']}")
     return crisprs
 
-# Function that add on crisprs_df the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'
-def add_cas_distance(crisprs_df, cas_df):
-    errors = []
-    # Create a DataFrame with the data of the CRISPR and Cas combined
-    merged_df = crisprs_df.drop(columns=['Spacers', 'Repeats', 'ToolCodename']
-                                ).reset_index().merge(cas_df, 
-                                                      on=['MAG', 'Contig'], 
-                                                      how="inner", 
-                                                      suffixes=('_CRISPR', '_Cas')
-                                                      ).set_index('index')
-    # Add columns to the DataFrame
-    crisprs_df['Cas_0-1000']=0
-    crisprs_df['Cas_1000-10000']=0
-    crisprs_df['Cas_>100000']=0
-    crisprs_df['Cas_overlayed']=0
-    # Calculate the distance between CRISPR and Cas
-    for index, row in merged_df.iterrows():
-        if row['Start_Cas'] >= row['End_CRISPR']:
-            # print('Cas davati al CRISPR')
-            distance = row['Start_Cas'] - row['End_CRISPR']
-        elif row['End_Cas'] <= row['Start_CRISPR']:
-            # print('Cas prima il CRISPR')
-            distance = row['Start_CRISPR'] - row['End_Cas']
-        else:
-            # print('Cas che sovrappone al CRISPR')
-            distance = -1
-        
-        if distance >= 0 and distance <= 1000:
-            crisprs_df.at[index, 'Cas_0-1000'] += 1
-        elif distance > 1000 and distance <= 10000:
-            crisprs_df.at[index, 'Cas_1000-10000'] += 1
-        elif distance > 10000:
-            crisprs_df.at[index, 'Cas_>100000'] += 1
-        elif distance == -1:
-            crisprs_df.at[index, 'Cas_overlayed'] += 1
-        else:
-            errors.append(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
-        
-    return crisprs_df, errors
-
 # Function to assign unique IDs and check for overlaps
 def assign_id_and_merge_overlaps(df):
     df = df.sort_values(by=['MAG', 'Contig', 'Start']).reset_index(drop=True)
@@ -468,8 +428,8 @@ if __name__ == '__main__':
                         help="The file.tsv where are stored the cas genes (created by CRISPCasFinder). \nBy adding this, the columns 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed' \nwill be added to the file.tsv", 
                         default=None, dest="cas_database", metavar='CAS_DB')
     parser.add_argument("-t", "--threads", type=int, 
-                        help=f"Number of threads to use (default: ALL/3 = {mp.cpu_count()//3})", 
-                        default=mp.cpu_count()//3, dest="num_cpus", metavar='N_CPUS')
+                        help=f"Number of threads to use (default: ALL/3 = {mp.cpu_count()//4})", 
+                        default=mp.cpu_count()//4, dest="num_cpus", metavar='N_CPUS')
     parser.add_argument("-n", "--dry-run", action="store_true", 
                         help="Print information about what would be done without actually doing it (default: False)")
     args = parser.parse_args()
@@ -482,7 +442,7 @@ if __name__ == '__main__':
             # -minRL 23 -maxRL 47
             # -minSL 26 -maxSL 50
         commands["minced_Default"]="minced -minNR 3 -minRL 23 -maxRL 47 -minSL 26 -maxSL 50" # Default command
-        commands["minced_Paper"]="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
+        commands["minced_Relaxed"]="minced -minNR 3 -minRL 16 -maxRL 128 -minSL 16 -maxSL 128" # Parameters on Paper PMCID: PMC10910872
     if shutil.which("pilercr"):
         # pilercr default parameters:
             # -minarray 3 -mincons 0.9 
@@ -490,8 +450,8 @@ if __name__ == '__main__':
             # -minspacer 8 -maxspacer 64 
             # -minrepeatratio 0.9 -minspacerratio 0.75 
             # -minhitlength 16 -minid 0.94
-        commands["pilercr_PILER1"]="pilercr -noinfo -quiet" # Default command
-        commands["pilercr_PILER2"]="pilercr -noinfo -quiet -minarray 3 -mincons 0.8 -minid 0.85 -maxrepeat 128 -maxspacer 128" # Parameters on Paper PMCID: PMC10910872
+        commands["pilercr_Default"]="pilercr -noinfo -quiet" # Default command
+        commands["pilercr_Relaxed"]="pilercr -noinfo -quiet -minarray 3 -mincons 0.8 -minid 0.85 -maxrepeat 128 -maxspacer 128" # Parameters on Paper PMCID: PMC10910872
     if shutil.which("CRISPRDetect3"):
         # CRISPRDetect3 default parameters:
             # -q 0 (quiet)
@@ -519,14 +479,14 @@ if __name__ == '__main__':
             # fix_gaps_in_repeats=1
         commands["CRISPRDetect3"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
         # ne torva di piu, e ci mette di piu:
-        commands["CRISPRDetect3_cpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+        # commands["CRISPRDetect3_cpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
         # ne torva di meno e ci mette simile a default:
-        commands["CRISPRDetect3_nocpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
-        commands["CRISPRDetect3_online"]=f"CRISPRDetect3 -array_quality_score_cutoff 2.5 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0 -repeat_length_cutoff 11"
-    if shutil.which("CRISPRDetect2.4"):
-        commands["CRISPRDetect2"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
-        commands["CRISPRDetect2_cpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
-        commands["CRISPRDetect2_nocpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
+        # commands["CRISPRDetect3_nocpu"]=f"CRISPRDetect3 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
+        # commands["CRISPRDetect3_online"]=f"CRISPRDetect3 -array_quality_score_cutoff 2.5 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0 -repeat_length_cutoff 11"
+    # if shutil.which("CRISPRDetect2.4"):
+    #     commands["CRISPRDetect2"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T {args.num_cpus} -left_flank_length 0 -right_flank_length 0"
+    #     commands["CRISPRDetect2_cpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -T 0 -left_flank_length 0 -right_flank_length 0"
+    #     commands["CRISPRDetect2_nocpu"]=f"CRISPRDetect2.4 -array_quality_score_cutoff 3 -check_direction 0 -q 1 -left_flank_length 0 -right_flank_length 0"
     if not commands:
         print("No tools found: minced, pilercr, CRISPRDetect. Exiting...", file=sys.stderr)
         exit()
@@ -537,25 +497,6 @@ if __name__ == '__main__':
     else:
         print("The input directory does not exist! Exiting...", file=sys.stderr)
         exit()
-
-    # Check if cas database file exists or not
-    if args.cas_database is not None:
-        if os.path.exists(args.cas_database):
-            cas_database = os.path.abspath(args.cas_database)
-        else:
-            print("The cas database file does not exist, check the path! Exiting...", file=sys.stderr)
-            exit()
-        # Upload the TSV files
-        try:
-            cas_df = pd.read_csv(cas_database, sep='\t', 
-                                 usecols=['MAG', 'Contig', 'Start', 'End'], 
-                                 dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int}
-                                 )
-        except ValueError as e:
-            print('Error: ', e, file=sys.stderr)
-            print('Check the column names in the input file (MAG, Contig, Start, End), and secure that file is a TSV file', file=sys.stderr)
-            print('Exiting...', file=sys.stderr)
-        
 
     # Create output root directory
     if args.inplace:
@@ -572,6 +513,34 @@ if __name__ == '__main__':
         else:
             # Create output root directory with name specified by the user in the out directory of the current working directory
             output_root_dir = os.path.join(os.getcwd(), "out", os.path.basename(args.output_directory))
+
+    # Check if cas database file exists or not
+    if args.cas_database is not None:
+        if os.path.exists(args.cas_database):
+            cas_database = os.path.abspath(args.cas_database)
+        else:
+            print("The cas database file does not exist, check the path! Exiting...", file=sys.stderr)
+            exit()
+        
+        # Create the output file for the cas distance
+        cas_output_file = os.path.join(output_root_dir, f"{os.path.basename(cas_database).rsplit('.', 1)[0]}_CRISPRtools.tsv")
+
+        # Upload the TSV files
+        if os.path.exists(cas_output_file): # Update the file already created
+            try:
+                cas_df = pd.read_csv(cas_output_file, sep='\t')
+            except ValueError as e:
+                print('Error in cas database file: ', e, file=sys.stderr)
+                print('Exiting...', file=sys.stderr)
+                exit()
+            cas_database = cas_output_file
+        else: # Operate on the file for the first time
+            try:
+                cas_df = pd.read_csv(cas_database, sep='\t')
+            except ValueError as e:
+                print('Error in cas database file: ', e, file=sys.stderr)
+                print('Exiting...', file=sys.stderr)
+                exit()
 
     # select multi command to use
     commands_menu = TerminalMenu(commands, title="Select the command to use:  (Press Q or Esc to quit)", 
@@ -658,13 +627,12 @@ if __name__ == '__main__':
                         future=executor.submit(unzip1, file, unzipped_file)
                         future.add_done_callback(future_progress_indicator)
             end_time = datetime.now()
-            logger.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(
+            logger.info(f'  Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(
                 datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
             if tasks_completed < tasks_total:
-                logger.critical('Unzipping done with errors!\n')
-                exit()
+                logger.critical(f'  Unzipping done with errors ({tasks_completed}/{tasks_total} unzipped)!\n')
             else:
-                logger.info('Unzipping done!\n')
+                logger.info('  Unzipping done!\n')
             mags = [os.path.join(dirpath,filename) 
                     for dirpath, _, filenames in os.walk(unzip_dir) 
                     for filename in filenames 
@@ -702,19 +670,19 @@ if __name__ == '__main__':
         tool = tool[0]
         match tool:
             case "minced":
-                logger.info(f"Command: {' '.join(command_run + ['<mag>', '>', '<out.minced>'])}")
+                logger.info(f"  Command: {' '.join(command_run + ['<mag>', '>', '<out.minced>'])}")
             case "pilercr":
-                logger.info(f"Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
+                logger.info(f"  Command: {' '.join(command_run + ['-in', '<mag>', '-out', '<out.pilercr>'])}")
             case "CRISPRDetect3" | "CRISPRDetect2":
-                logger.info(f"""Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' 
-                                                                if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}""")
+                logger.info(f"  Command: {' '.join(command_run + ['-f', '<mag>', '-o', '<out.CRISPRDetect3>' 
+                                                                if tool == 'CRISPRDetect3' else '<out.CRISPRDetect2>'])}")
             
-        logger.info(f"Input directory: {input_dir}")
+        logger.info(f"  Input directory: {input_dir}")
         if args.cas_database is not None:
-            logger.info(f"Cas database: {cas_database}")
-        logger.info(f"Output directory: ./{os.path.relpath(output_dir)}")
-        logger.info(f"Found {tasks_total} MAGs")
-        logger.info(f"Using {args.num_cpus} threads{'\n' if args.dry_run else ''}")
+            logger.info(f"  Cas database: {cas_database}")
+        logger.info(f"  Output directory: ./{os.path.relpath(output_dir)}")
+        logger.info(f"  Found {tasks_total} MAGs")
+        logger.info(f"  Using {args.num_cpus} threads{'\n' if args.dry_run else ''}")
         if args.dry_run:
             if i == 0:
                 logger.info('Dry run completed, no files were created. Exiting...'); exit()
@@ -737,13 +705,13 @@ if __name__ == '__main__':
                 future=executor.submit(run, command_run, mag, output_file)
                 future.add_done_callback(future_progress_indicator)
         end_time = datetime.now()
-        logger.info(f'Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(
+        logger.info(f'  Runned {tasks_completed}/{tasks_total} MAGs in {datetime.strftime(
             datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
         if errors:
             [logger.error(error) for error in errors]
-            logger.critical(f'Running done with {len(errors)} errors!')
+            logger.critical(f'  Running done with {len(errors)} errors!')
         else:
-            logger.info('Running done!')
+            logger.info('  Running done!')
 
         # Parsing files
         logger.info('PARSING FILES...')
@@ -751,7 +719,7 @@ if __name__ == '__main__':
 
         tasks_total = len(output_files)  
         parsed_file = os.path.join(output_dir, f"{os.path.basename(input_dir)}_{tool_codename}_parsed.tsv")
-        logger.info(f'Parsed file: ./{os.path.relpath(parsed_file)}')
+        logger.info(f'  Parsed file: ./{os.path.relpath(parsed_file)}')
 
         # match tool:
         #     case "minced":
@@ -798,32 +766,90 @@ if __name__ == '__main__':
         crisprs_df.to_csv(parsed_file, sep='\t')
 
         end_time = datetime.now()
-        logger.info(f'Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(
+        logger.info(f'  Parsed {tasks_completed}/{tasks_total} Files in {datetime.strftime(
             datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
-        logger.info(f'Found {len(crisprs_total)} CRISPRs')
+        logger.info(f'  Found {len(crisprs_total)} CRISPRs')
         if errors:
             [logger.error(error) for error in errors]
-            logger.critical(f'Parsing done with {len(errors)} errors!{"" if args.cas_database else os.linesep}')
+            logger.critical(f'  Parsing done with {len(errors)} errors!{"" if args.cas_database else os.linesep}')
         else:
-            logger.info(f'Parsing done!{"" if args.cas_database else os.linesep}')
+            logger.info(f'  Parsing done!{"" if args.cas_database else os.linesep}')
 
         # Add Cas Distance
         if args.cas_database:
             logger.info('ADDING CAS DISTANCE...')
             start_time = datetime.now()
             # Output file
-            logger.info(f'Add Cas Distance to ./{os.path.relpath(parsed_file)}')
-            # Add Cas Distance
-            crisprs_df, errors = add_cas_distance(crisprs_df, cas_df)
+            logger.info(f'  Add Cas Distance to ./{os.path.relpath(parsed_file)}')
+            logger.info(f'  Cas database updated: ./{os.path.relpath(cas_output_file)}')
+
+            # Save a column with the indices to make the merge
+            crisprs_df['index'] = crisprs_df.index
+            cas_df['index'] = cas_df.index
+
+            # Create a DataFrame with the data of the CRISPR and Cas combined
+            try:
+                merged_df = crisprs_df.merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas'))
+            except Exception as e:
+                logger.critical(f"  Error merging the DataFrames: {e}")
+                logger.critical(f'Adding Cas distance NOT DONE!\n')
+                continue
+
+            # Add columns to the DataFrame
+            crisprs_df['Cas_0-1000']=0
+            crisprs_df['Cas_1000-10000']=0
+            # crisprs_df['Cas_0-10000']=0
+            crisprs_df['Cas_>100000']=0
+            crisprs_df['Cas_overlayed']=0
+
+            # Add columns to cas_df to count the number of single spacers are near to a Cas for each Tool
+            cas_df[tool_codename] = 0
+
+            errors = []
+            # Calculate the distance between CRISPR and Cas
+            for index, row in merged_df.iterrows():
+                if row['Start_Cas'] >= row['End_CRISPR']:
+                    # print('Cas davati al CRISPR')
+                    distance = row['Start_Cas'] - row['End_CRISPR']
+                elif row['End_Cas'] <= row['Start_CRISPR']:
+                    # print('Cas prima il CRISPR')
+                    distance = row['Start_CRISPR'] - row['End_Cas']
+                else:
+                    # print('Cas che sovrappone al CRISPR')
+                    distance = -1
+                
+                if distance >= 0 and distance <= 1000:
+                    crisprs_df.at[row['index_CRISPR'], 'Cas_0-1000'] += 1
+                    cas_df.at[row['index_Cas'], tool_codename] += row['Spacers'].apply(lambda x: len(x.split(',')))
+                elif distance > 1000 and distance <= 10000:
+                    crisprs_df.at[row['index_CRISPR'], 'Cas_1000-10000'] += 1
+                    # cas_df.at[row['index_Cas'], "minced_Paper"] += 1
+                    cas_df.at[row['index_Cas'], tool_codename] += row['Spacers'].apply(lambda x: len(x.split(',')))
+                # if distance >= 0 and distance <= 10000:
+                #     crisprs_df.at[row['index_CRISPR'], 'Cas_0-10000'] += 1
+                #     cas_df.at[row['index_Cas'], "Minced_Default"] += 1
+                elif distance > 10000:
+                    crisprs_df.at[row['index_CRISPR'], 'Cas_>100000'] += 1
+                elif distance == -1:
+                    crisprs_df.at[row['index_CRISPR'], 'Cas_overlayed'] += 1
+                else:
+                    errors.append(f'Error: Distance of MAG: {row["MAG"]} and Contig: {row["Contig"]} is {distance}')
+
+            # Remove the index columns
+            crisprs_df = crisprs_df.drop(columns=['index'])
+            cas_df = cas_df.drop(columns=['index'])
+
             # Save the DataFrame in a TSV file
             crisprs_df.to_csv(parsed_file, sep='\t')
+            cas_df.to_csv(cas_output_file, sep='\t')
+
             end_time = datetime.now()
-            logger.info(f'Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+            logger.info(f'  Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
             if errors:
                 [logger.error(error) for error in errors]
-                logger.critical(f'Adding Cas distance done with {len(errors)} errors!\n')
+                logger.critical(f'  Adding Cas distance done with {len(errors)} errors!\n')
             else:
-                logger.info('Adding Cas distance done!\n')
+                logger.info('  Adding Cas distance done!\n')
 
         logger.removeHandler(log_handler_tool)
         
@@ -838,14 +864,14 @@ if __name__ == '__main__':
             ]
     
     if len(parsed_files) < 2:
-        logger.error('No files to compare')
+        logger.error('  No files to compare')
         telegram_handler.setLevel('INFO')
         logger.info('DONE without comparison!\n\n')
         exit()
 
     comparison_file = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_tools_comparison.tsv")
-    logger.info(f'Found {len(parsed_files)} files to compare')
-    logger.info(f'Comparison file: ./{os.path.relpath(comparison_file)}')
+    logger.info(f'  Found {len(parsed_files)} files to compare')
+    logger.info(f'  Comparison file: ./{os.path.relpath(comparison_file)}')
     start_time = datetime.now()
     parsed_dfs = []
 
@@ -863,14 +889,14 @@ if __name__ == '__main__':
                                           dtype=columns,
                                           index_col=False))
         except FileNotFoundError as e:
-            logger.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
+            logger.error(f"  The parsing file '{file}' does not exist, there was a problem with the parsing")
             continue
         except ValueError as e:
-            logger.error(f'Check the column names in the parsed file {file}: {e}')
+            logger.error(f'  Check the column names in the parsed file {file}: {e}')
             continue
 
     if not parsed_dfs and len(parsed_dfs) < 2:
-        logger.error('No files to compare')
+        logger.error('  No files to compare')
         telegram_handler.setLevel('INFO')
         logger.info('DONE without comparison!\n\n')
         exit()
@@ -892,7 +918,7 @@ if __name__ == '__main__':
     final_df.to_csv(comparison_file, sep='\t')
 
     end_time = datetime.now()
-    logger.info(f'Tool comparison in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
+    logger.info(f'  Tool comparison in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
     telegram_handler.setLevel('INFO')
     logger.info('DONE!\n\n')
 

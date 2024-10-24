@@ -60,4 +60,8 @@
   - [x] sistemare la colonna ToolCodename in modo che sia un set (non duplicati e ordinati)
   - [x] inserirlo nel multi_tool
   - [ ] creare uno script .py
-  - [ ] 
+
+- [ ] utilizzare colonne cas e prendere solo quelli dei cas vicini ai crispr (upset +  singoli + boxplot)
+- [ ] unique dr quanto aumenta il numero di dr aumentando i tool
+- [x] lavorare sui cas vedere quali tool trovano crispr vicino a cas e il numero una colonna per tool e il numero di spacer singoli vicino a cas
+- [ ] guardare i tool che girano sulle reads
