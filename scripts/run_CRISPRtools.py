@@ -647,6 +647,10 @@ if __name__ == '__main__':
                 ]
         tasks_total = len(mags)
 
+    if tasks_total == 0 and not args.dry_run:
+        logger.critical('No MAGs found in the input directory! Exiting...')
+        exit()
+
     first=True
     i=len(commands)
     for tool_codename, command in commands.items():
