@@ -820,11 +820,11 @@ if __name__ == '__main__':
                 
                 if distance >= 0 and distance <= 1000:
                     crisprs_df.at[row['index_CRISPR'], 'Cas_0-1000'] += 1
-                    cas_df.at[row['index_Cas'], tool_codename] += row['Spacers'].apply(lambda x: len(x.split(',')))
+                    cas_df.at[row['index_Cas'], tool_codename] += len(row['Spacers'].split(','))
                 elif distance > 1000 and distance <= 10000:
                     crisprs_df.at[row['index_CRISPR'], 'Cas_1000-10000'] += 1
                     # cas_df.at[row['index_Cas'], "minced_Paper"] += 1
-                    cas_df.at[row['index_Cas'], tool_codename] += row['Spacers'].apply(lambda x: len(x.split(',')))
+                    cas_df.at[row['index_Cas'], tool_codename] += len(row['Spacers'].split(','))
                 # if distance >= 0 and distance <= 10000:
                 #     crisprs_df.at[row['index_CRISPR'], 'Cas_0-10000'] += 1
                 #     cas_df.at[row['index_Cas'], "Minced_Default"] += 1
