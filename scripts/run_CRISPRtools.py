@@ -9,6 +9,8 @@ import textwrap
 from datetime import datetime
 import argparse
 import logging
+from logging import Handler
+import requests
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import multiprocessing as mp
 from threading import Lock
@@ -24,6 +26,22 @@ import pandas as pd
 # 16/10/2024
 # by isacchetto
 
+
+
+
+TELEGRAM_BOT_TOKEN=os.environ.get('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID=os.environ.get('TELEGRAM_CHAT_ID')
+
+# Class to send log messages to Telegram
+class RequestsHandler(Handler):
+	def emit(self, record):
+		log_entry = self.format(record)
+		payload = {
+			'chat_id': TELEGRAM_CHAT_ID,
+			'text': log_entry,
+			'parse_mode': 'HTML'
+		}
+		return requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', data=payload).content
 
 # Function to rename a directory with an incremental number
 def renamed_incremental(dir):
@@ -177,7 +195,9 @@ class CRISPR:
                 isinstance(self.start, int) and self.start > 0 and
                 isinstance(self.end, int) and self.end >= self.start and
                 len(self) == (self.end - self.start + 1) and 
-                len(self.repeats) == len(self.spacers) + 1)
+                len(self.repeats) == len(self.spacers) + 1 and
+                all(self.repeats) and all(self.spacers)
+                )
     
     def __eq__(self, other):
         return (self.file_name == other.file_name and 
@@ -344,6 +364,8 @@ def parse_CRISPRDetect3(gff_file_path):
             crispr_tmp = CRISPR(file_name=file_name, contig_name=row['seqid'], start=row['start'], end=None)
             crispr_id = row['ID']
         elif row['type'] == 'direct_repeat' and row['Parent'] == crispr_id:  # Add a repeat
+            if row['Note'] == '':
+                raise ValueError(f"Empty repeat in file {gff_file_path}, contig {row['seqid']}")
             crispr_tmp.addRepeat(row['Note'])
             crispr_tmp.setEnd(crispr_tmp.start + len(crispr_tmp) - 1)
             # if row['end'] != crispr_tmp.end:
@@ -604,6 +626,11 @@ if __name__ == '__main__':
         log_formatter=logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
         log_handler.setFormatter(log_formatter)
         logger.addHandler(log_handler)
+        if TELEGRAM_CHAT_ID and TELEGRAM_BOT_TOKEN:
+            telegram_handler = RequestsHandler()
+            telegram_handler.setLevel('CRITICAL')
+            telegram_handler.setFormatter(log_formatter)
+            logger.addHandler(telegram_handler)
 
     # Find all MAGs in the input directory (and unzip them if needed)
     if args.decompress:
@@ -633,7 +660,11 @@ if __name__ == '__main__':
             end_time = datetime.now()
             logger.info(f'Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(
                 datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
-            logger.info('Done!\n')
+            if tasks_completed < tasks_total:
+                logger.critical('Unzipping done with errors!\n')
+                exit()
+            else:
+                logger.info('Unzipping done!\n')
             mags = [os.path.join(dirpath,filename) 
                     for dirpath, _, filenames in os.walk(unzip_dir) 
                     for filename in filenames 
@@ -710,9 +741,9 @@ if __name__ == '__main__':
             datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
         if errors:
             [logger.error(error) for error in errors]
-            logger.error('Done with errors!')
+            logger.critical(f'Running done with {len(errors)} errors!')
         else:
-            logger.info('Done!')
+            logger.info('Running done!')
 
         # Parsing files
         logger.info('PARSING FILES...')
@@ -760,8 +791,8 @@ if __name__ == '__main__':
 
 
         crisprs_df = pd.DataFrame(
-            [[a.file_name, a.contig_name, a.start, a.end, ','.join(a.spacers), ','.join(a.repeats), tool_codename] for a in crisprs_total],
-            columns=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename']
+            [[a.file_name, a.contig_name, a.start, a.end, ','.join(a.repeats), ','.join(a.spacers), tool_codename] for a in crisprs_total],
+            columns=['MAG', 'Contig', 'Start', 'End', 'Repeats', 'Spacers', 'ToolCodename']
             )
 
         crisprs_df.to_csv(parsed_file, sep='\t')
@@ -772,9 +803,9 @@ if __name__ == '__main__':
         logger.info(f'Found {len(crisprs_total)} CRISPRs')
         if errors:
             [logger.error(error) for error in errors]
-            logger.info(f'Done with errors!{"" if args.cas_database else os.linesep}')
+            logger.critical(f'Parsing done with {len(errors)} errors!{"" if args.cas_database else os.linesep}')
         else:
-            logger.info(f'Done!{"" if args.cas_database else os.linesep}')
+            logger.info(f'Parsing done!{"" if args.cas_database else os.linesep}')
 
         # Add Cas Distance
         if args.cas_database:
@@ -790,9 +821,9 @@ if __name__ == '__main__':
             logger.info(f'Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
             if errors:
                 [logger.error(error) for error in errors]
-                logger.info('Done with errors!\n')
+                logger.critical(f'Adding Cas distance done with {len(errors)} errors!\n')
             else:
-                logger.info('Done!\n')
+                logger.info('Adding Cas distance done!\n')
 
         logger.removeHandler(log_handler_tool)
         
@@ -807,7 +838,9 @@ if __name__ == '__main__':
             ]
     
     if len(parsed_files) < 2:
-        logger.error('No files to compare, exiting...')
+        logger.error('No files to compare')
+        telegram_handler.setLevel('INFO')
+        logger.info('DONE without comparison!\n\n')
         exit()
 
     comparison_file = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_tools_comparison.tsv")
@@ -816,37 +849,41 @@ if __name__ == '__main__':
     start_time = datetime.now()
     parsed_dfs = []
 
+    columns={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'Repeats': str, 'Spacers': str, 'ToolCodename': str}
+    if args.cas_database:
+        columns.update({'Cas_0-1000': int, 'Cas_1000-10000': int, 'Cas_>100000': int, 'Cas_overlayed': int})
+    
+
+
     # Upload the TSV files
     for file in parsed_files:
         try:
-            if args.cas_database:
-                parsed_dfs.append(pd.read_csv(file, delimiter='\t', 
-                                              usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename', 'Cas_0-1000', 'Cas_1000-10000', 'Cas_>100000', 'Cas_overlayed'], 
-                                              dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str, 'Cas_0-1000': int, 'Cas_1000-10000': int, 'Cas_>100000': int, 'Cas_overlayed': int}, 
-                                              index_col=False))
-            else:
-                parsed_dfs.append(pd.read_csv(file, delimiter='\t', 
-                                              usecols=['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats', 'ToolCodename'], 
-                                              dtype={'MAG': str, 'Contig': str, 'Start': int, 'End': int, 'ToolCodename': str}, 
-                                              index_col=False))
+            parsed_dfs.append(pd.read_csv(file, delimiter='\t',
+                                          usecols=list(columns.keys()),
+                                          dtype=columns,
+                                          index_col=False))
         except FileNotFoundError as e:
             logger.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
             continue
         except ValueError as e:
-            logger.error(f'Error: {e}')
-            logger.error(f'Check the column names in the parsed file {file} '
-                         f'(MAG, Contig, Start, End, Spacers, Repeats, ToolCodename'
-                         f'{", Cas_0-1000, Cas_1000-10000, Cas_>100000, Cas_overlayed" if args.cas_database else ""}), '
-                         f'and secure that file is a TSV file')
+            logger.error(f'Check the column names in the parsed file {file}: {e}')
             continue
+
+    if not parsed_dfs and len(parsed_dfs) < 2:
+        logger.error('No files to compare')
+        telegram_handler.setLevel('INFO')
+        logger.info('DONE without comparison!\n\n')
+        exit()
 
     # Concat the DataFrames
     all_df = pd.concat([parsed_df for parsed_df in parsed_dfs], ignore_index=True)
 
-    # Remove duplicates based on 'MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats' and keep one row, concatening 'ToolCodename' values
-    combined_df = all_df.groupby(['MAG', 'Contig', 'Start', 'End', 'Spacers', 'Repeats'], 
-                                 as_index=False).agg({'ToolCodename': lambda x: ','.join(sorted(set(x)))}) 
-                                # Use set to remove duplicates and sorted for consistent order 
+    columns_groupby = list(columns.keys())
+    columns_groupby.remove('ToolCodename')
+
+    # Remove duplicates based on all columns and keep one row, concatening 'ToolCodename' values
+    combined_df = all_df.groupby(columns_groupby, as_index=False).agg({'ToolCodename': lambda x: ','.join(sorted(set(x)))}) 
+                                                                # Use set to remove duplicates and sorted for consistent order 
 
     # Apply the function to assign IDs and check for overlaps
     final_df = assign_id_and_merge_overlaps(combined_df)
@@ -856,6 +893,7 @@ if __name__ == '__main__':
 
     end_time = datetime.now()
     logger.info(f'Tool comparison in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
-    logger.info('Done!\n\n')
+    telegram_handler.setLevel('INFO')
+    logger.info('DONE!\n\n')
 
 
