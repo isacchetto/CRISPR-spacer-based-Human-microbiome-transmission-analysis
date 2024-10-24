@@ -630,7 +630,7 @@ if __name__ == '__main__':
             logger.info(f'  Unzipped {tasks_completed}/{tasks_total} files in {datetime.strftime(
                 datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
             if tasks_completed < tasks_total:
-                logger.critical(f'  Unzipping done with errors ({tasks_completed}/{tasks_total} unzipped)!\n')
+                logger.critical(f'Unzipping done with errors ({tasks_completed}/{tasks_total} unzipped)!\n')
             else:
                 logger.info('  Unzipping done!\n')
             mags = [os.path.join(dirpath,filename) 
@@ -713,7 +713,7 @@ if __name__ == '__main__':
             datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
         if errors:
             [logger.error(error) for error in errors]
-            logger.critical(f'  Running done with {len(errors)} errors!')
+            logger.critical(f'Running done with {len(errors)} errors!')
         else:
             logger.info('  Running done!')
 
@@ -775,7 +775,7 @@ if __name__ == '__main__':
         logger.info(f'  Found {len(crisprs_total)} CRISPRs')
         if errors:
             [logger.error(error) for error in errors]
-            logger.critical(f'  Parsing done with {len(errors)} errors!{"" if args.cas_database else os.linesep}')
+            logger.critical(f'Parsing done with {len(errors)} errors!{"" if args.cas_database else os.linesep}')
         else:
             logger.info(f'  Parsing done!{"" if args.cas_database else os.linesep}')
 
@@ -795,7 +795,7 @@ if __name__ == '__main__':
             try:
                 merged_df = crisprs_df.merge(cas_df, on=['MAG', 'Contig'], how="inner", suffixes=('_CRISPR', '_Cas'))
             except Exception as e:
-                logger.critical(f"  Error merging the DataFrames: {e}")
+                logger.critical(f"Error merging the DataFrames: {e}")
                 logger.critical(f'Adding Cas distance NOT DONE!\n')
                 continue
 
@@ -851,7 +851,7 @@ if __name__ == '__main__':
             logger.info(f'  Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
             if errors:
                 [logger.error(error) for error in errors]
-                logger.critical(f'  Adding Cas distance done with {len(errors)} errors!\n')
+                logger.critical(f'Adding Cas distance done with {len(errors)} errors!\n')
             else:
                 logger.info('  Adding Cas distance done!\n')
 
@@ -868,7 +868,7 @@ if __name__ == '__main__':
             ]
     
     if len(parsed_files) < 2:
-        logger.error('  No files to compare')
+        logger.error('No files to compare')
         telegram_handler.setLevel('INFO')
         logger.info('DONE without comparison!\n\n')
         exit()
@@ -893,14 +893,14 @@ if __name__ == '__main__':
                                           dtype=columns,
                                           index_col=False))
         except FileNotFoundError as e:
-            logger.error(f"  The parsing file '{file}' does not exist, there was a problem with the parsing")
+            logger.error(f"The parsing file '{file}' does not exist, there was a problem with the parsing")
             continue
         except ValueError as e:
-            logger.error(f'  Check the column names in the parsed file {file}: {e}')
+            logger.error(f'Check the column names in the parsed file {file}: {e}')
             continue
 
     if not parsed_dfs and len(parsed_dfs) < 2:
-        logger.error('  No files to compare')
+        logger.error('No files to compare')
         telegram_handler.setLevel('INFO')
         logger.info('DONE without comparison!\n\n')
         exit()

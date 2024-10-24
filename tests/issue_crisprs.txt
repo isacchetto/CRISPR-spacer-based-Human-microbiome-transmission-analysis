@@ -16,10 +16,20 @@ ISSUE:
 
 
 
+ISSUE: one repeat is empty
+MAG: M1063380224
+Conting: NODE_16144_length_3179_cov_3.50864
 
-
-
-
+Array 2
+>NODE_16144_length_3179_cov_3.50864
+       Pos  Repeat     %id  Spacer  Left flank    Repeat                    Spacer
+==========  ======  ======  ======  ==========    ======================    ======
+       804      22     0.0      37  CTTCTGCTAG    ----------------------    AAAAAAGTTTCGTGCAAACCATTAAGTTTCGTGCCGG
+       863      22   100.0      50  TTCGTGCCGG    ......................    TAAAATAAATTACCGCGAATTTCTAAAAACACCCCGCCAAAAGGTATGGT
+       935      22    90.9      45  AAGGTATGGT    ...................GA.    GATTTTTTGAAAAAGTTCAGTTAAATACCCTAACAAAGAGATGAA
+      1002      22    81.8          AAGAGATGAA    ..C........ATA........    ATATTTTCAA
+==========  ======  ======  ======  ==========    ======================
+         4      22              44                AAGTTTCCAATTATAGTAGAGG
 
 
 ISSUE: difference between with and without \n, difference between tools (number of DRs recognized), CRISPRDetect3 Insertion/Deletion, CRISPRDetect3 reverse
