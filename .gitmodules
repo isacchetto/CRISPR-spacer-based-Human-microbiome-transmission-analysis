@@ -4,3 +4,12 @@
 [submodule "tools/CRISPRDetect_3.0"]
 	path = tools/CRISPRDetect_3.0
 	url = git@github.com:ambarishbiswas/CRISPRDetect_3.0.git
+[submodule "tools/metaCRISPRDetect_1.0"]
+	path = tools/metaCRISPRDetect_1.0
+	url = git@github.com:ambarishbiswas/metaCRISPRDetect_1.0.git
+[submodule "tools/metaCRISPR"]
+	path = tools/metaCRISPR
+	url = git@github.com:hangelwen/metaCRISPR.git
+[submodule "tools/MetaCRAST"]
+	path = tools/MetaCRAST
+	url = git@github.com:molleraj/MetaCRAST.git

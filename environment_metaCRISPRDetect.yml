@@ -1,0 +1,26 @@
+name: MetaCRISPRDetect
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - megahit>=1.2.9
+  - spades>=4.0.0
+  - bbmap>=39.13
+
+
+
+# Add the path to the MetaCRISPRDetect folder to the PATH variable in the activate.sh script and remove it in the deactivate.sh script
+# METACRISPRDETECTDIR="/FULL/PATH/TO/MetaCRISPRDetect/DIR"
+# mkdir -p ${CONDA_PREFIX}/etc/conda/activate.d
+# mkdir -p ${CONDA_PREFIX}/etc/conda/deactivate.d
+# cat << EOF > ${CONDA_PREFIX}/etc/conda/activate.d/env_vars.sh
+# #!/bin/sh
+# export PATH="\$PATH:${METACRISPRDETECTDIR}"
+# EOF
+# cat << EOF > ${CONDA_PREFIX}/etc/conda/deactivate.d/env_vars.sh
+# #!/bin/sh
+# PATH="\$(echo "\${PATH}" | tr ':' '\n' | grep -v -x -F '${METACRISPRDETECTDIR}' | tr '\n' ':')" 
+# PATH="\${PATH%:}"
+# export PATH
+# EOF

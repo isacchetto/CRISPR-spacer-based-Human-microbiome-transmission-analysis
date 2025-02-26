@@ -47,21 +47,40 @@
   - [x] ratio minlen/maxlen DR (-minrepeatratio in pilercr) (per capire se ci sono CRISPR con DR fuori scala)
   - [ ] conservazione DR (-mincons in pilercr 0.9 (PILER1) e 0.8 (PILER2)) (per capire se i DR sono conservati o se ci sono molti errori/mismatches)
 
-- [ ] Cosa mettere nel Database di DR (in base alle statistiche sopra):
-  - [ ] riguardo la lunghezza mediana possiamo rimuvere i CRISPR con DR troppo corti o troppo lunghi (outliers)
-  - [ ] riguardo il coefficente di variazione / deviazione standard possiamo rimuovere i CRISPR con DR molto diversi tra loro (outliers)
-  - [ ] riguardo la conservazione possiamo rimuovere i CRISPR con DR poco conservati (outliers)
-  - [ ] riguardo il ratio minlen/maxlen DR potremmo pensare di rimuovere solo i DR che sono fuori scala
-  - [ ] con alcune statistiche si potrebbe pensare, invece che fare un cut-off per escludere i CRISPR, un modo per escludere i singoli DR che non rispettano i criteri (troppo lunghi o troppo poco conservati) per poi avere un DR unico per ogni crispr (o un motivo in modo da dare anche l'informazione dei mismatch)
-  - [ ] CRISPRDetect3 puo trovare l'orientamento dei CRISPR, dicendoti se forward o reverse ( dandoti il CRISPR reverse&complement), da capire se puo essere utile savarli nel database in questo modo o meno
-
 - [x] conforntare i tool e vedere se ci sono sovrapposti
   - [x] colonne: ID crispr , ToolCodename
   - [x] sistemare la colonna ToolCodename in modo che sia un set (non duplicati e ordinati)
   - [x] inserirlo nel multi_tool
   - [ ] creare uno script .py
 
-- [ ] utilizzare colonne cas e prendere solo quelli dei cas vicini ai crispr (upset +  singoli + boxplot)
-- [ ] unique dr quanto aumenta il numero di dr aumentando i tool
+- [ ] utilizzare colonne cas e prendere solo quelli dei cas vicini ai crispr
+  - [x] count
+  - [ ] upset
+  - [ ] singoli
+  - [ ] boxplot
+- [x] unique dr quanto aumenta il numero di dr aumentando i tool
 - [x] lavorare sui cas vedere quali tool trovano crispr vicino a cas e il numero una colonna per tool e il numero di spacer singoli vicino a cas
+
+
 - [ ] guardare i tool che girano sulle reads
+  - [ ] metaCRAST
+  - [ ] metaCRISPR
+
+
+
+- [x] UPSET PLOT raggruppando per CRISPR ID
+- [x] unire le righe per ID uguale e unendo tutti le DR per poi vedere se la similarità rimane bassa (e quindi sono veramente lo stesso CRISPR)
+
+- [ ] Guardare perche in CRISPRDetect il parse aggiunge piu volte lo stesso crispr
+
+
+muscle  max 100
+mafft >100
+
+matrix informazione -> somma informazione colonna -> media 
+
+
+db virus 
+script per allineare spacer al db virus
+
+

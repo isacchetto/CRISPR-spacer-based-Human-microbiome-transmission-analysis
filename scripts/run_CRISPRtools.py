@@ -100,7 +100,7 @@ def unzip_and_run(command_run, input_file, output_file):
                                                   stderr=subprocess.DEVNULL)
             case "CRISPRDetect3" | "CRISPRDetect2.4":
                 completedProcess = subprocess.run(command_run + ['-f', tmp_file.name, '-o', output_file], 
-                                                  stdout = subprocess.DEVNULL, 
+                                                  stdout=subprocess.DEVNULL, 
                                                   stderr=subprocess.DEVNULL)
     try: completedProcess.check_returncode()
     except subprocess.CalledProcessError as e: 
@@ -723,7 +723,7 @@ if __name__ == '__main__':
 
         tasks_total = len(output_files)  
         parsed_file = os.path.join(output_dir, f"{os.path.basename(input_dir)}_{tool_codename}_parsed.tsv")
-        logger.info(f'  Parsed file: ./{os.path.relpath(parsed_file)}')
+        logger.info(f'  Parsed file: ./{os.path.relpath(parsed_file, output_root_dir.rsplit('/', 1)[0])}')
 
         # match tool:
         #     case "minced":
@@ -784,8 +784,8 @@ if __name__ == '__main__':
             logger.info('ADDING CAS DISTANCE...')
             start_time = datetime.now()
             # Output file
-            logger.info(f'  Add Cas Distance to ./{os.path.relpath(parsed_file)}')
-            logger.info(f'  Cas database updated: ./{os.path.relpath(cas_output_file)}')
+            logger.info(f'  Add Cas Distance to ./{os.path.relpath(parsed_file, output_root_dir.rsplit('/', 1)[0])}')
+            logger.info(f'  Cas database updated: ./{os.path.relpath(cas_output_file, output_root_dir.rsplit('/', 1)[0])}')
 
             # Save a column with the indices to make the merge
             crisprs_df['index'] = crisprs_df.index
@@ -807,7 +807,8 @@ if __name__ == '__main__':
             crisprs_df['Cas_overlayed']=0
 
             # Add columns to cas_df to count the number of single spacers are near to a Cas for each Tool
-            cas_df[tool_codename] = 0
+            cas_df[f'{tool_codename}_SP'] = 0
+            cas_df[f'{tool_codename}_CRISPR'] = 0
 
             errors = []
             # Calculate the distance between CRISPR and Cas
@@ -824,11 +825,13 @@ if __name__ == '__main__':
                 
                 if distance >= 0 and distance <= 1000:
                     crisprs_df.at[row['index_CRISPR'], 'Cas_0-1000'] += 1
-                    cas_df.at[row['index_Cas'], tool_codename] += len(row['Spacers'].split(','))
+                    cas_df.at[row['index_Cas'], f'{tool_codename}_SP'] += len(row['Spacers'].split(','))
+                    cas_df.at[row['index_Cas'], f'{tool_codename}_CRISPR'] += 1
                 elif distance > 1000 and distance <= 10000:
                     crisprs_df.at[row['index_CRISPR'], 'Cas_1000-10000'] += 1
                     # cas_df.at[row['index_Cas'], "minced_Paper"] += 1
-                    cas_df.at[row['index_Cas'], tool_codename] += len(row['Spacers'].split(','))
+                    cas_df.at[row['index_Cas'], f'{tool_codename}_SP'] += len(row['Spacers'].split(','))
+                    cas_df.at[row['index_Cas'], f'{tool_codename}_CRISPR'] += 1
                 # if distance >= 0 and distance <= 10000:
                 #     crisprs_df.at[row['index_CRISPR'], 'Cas_0-10000'] += 1
                 #     cas_df.at[row['index_Cas'], "Minced_Default"] += 1
@@ -875,7 +878,7 @@ if __name__ == '__main__':
 
     comparison_file = os.path.join(output_root_dir, f"{os.path.basename(input_dir)}_tools_comparison.tsv")
     logger.info(f'  Found {len(parsed_files)} files to compare')
-    logger.info(f'  Comparison file: ./{os.path.relpath(comparison_file)}')
+    logger.info(f'  Comparison file: ./{os.path.relpath(comparison_file, output_root_dir.rsplit('/', 1)[0])}')
     start_time = datetime.now()
     parsed_dfs = []
 

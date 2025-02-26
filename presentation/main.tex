@@ -1,0 +1,60 @@
+% arara: pdflatex: { shell: yes, synctex: yes, options: [--output-directory=build] }
+% arara: move: { files: [ 'build/main.pdf' ], target: 'backup/main.pdf' }
+% arara: clean: { extensions: [ 'aux', 'log', 'toc', 'out', 'blg', 'bbl', 'bcf', 'glo', 'gls' ] }
+
+\documentclass{beamer}
+
+\usepackage{graphicx} % Per includere immagini
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\title{Tirocinio}
+\author{Isacco Cenacchi}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+% Slide 1
+\begin{frame}
+    \frametitle{\ttfamily CRISPR totali vs CRISPR con cas operon vicino}
+    \centering
+    \includegraphics[width=\linewidth]{../figs/CRISPR_totali_vs_CRISPR_cas_operon_vicino.png}
+    Vediamo che i CRISPRs associati a Cas Operon non aumentano troppo significativamente usando parametri piu rilassati
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{\ttfamily Numero totale di spacers distanti <10000bp da cas operon}
+    \begin{minipage}{0.7\textwidth}
+        \centering
+        \includegraphics[width=\textwidth, height=0.9\textheight, keepaspectratio]{../figs/Numero_totale_spacers_cas_operon.png}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.25\textwidth}
+        Anche dal numero di spacers (vicino ai cas operon) trovati da ogni tool vediamo che non aumentano di molto con i parametri più rilassati.
+    \end{minipage}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\ttfamily Unique DR all'aumentare dei tool}
+    \centering
+    \includegraphics[width=\linewidth]{../figs/Unique_DR_cumulative_and_individual.png}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\ttfamily Upset plot CRISPR}
+    \centering
+    \includegraphics[width=\linewidth]{../figs/Upset_plot_CRISPR.png}
+    Osserviamo che i CRISPRs trovati da ogni tool sono molto diversi tra loro. e ne vengono trovati pochi in comune.
+\end{frame}
+
+\begin{frame}
+    \frametitle{\ttfamily Upset plot ClusterID CRISPR}
+    \centering
+    \includegraphics[width=\linewidth]{../figs/Upset_plot_ClusterID.png}
+    Osserviamo che invece raggruppando i CRISPRs in ClusterID, osserviamo che i CRISPRs trovati dalla maggior parte dei tool sono quelli di "alta qualità", mentre i CRISPRs che non sono anche quelli piu lontani da cas operon.
+\end{frame}
+
+\end{document}
