@@ -84,3 +84,38 @@ db virus
 script per allineare spacer al db virus
 
 
+
+ho un dataframe chiamato 'df_exploded' in python che ha un CRISPR per ogni riga e ha queste colonne:
+MAG : file dalla quale è stato estratto il CRISPR
+Contig : contig dalla quale è stato estratto il CRISPR
+Start : start del CRISPR
+End : end del CRISPR
+Repeats : repeats del CRISPR (separati da virgola)
+Spacers : spacers del CRISPR (separati da virgola)
+Cas_0-1000 : numero di cas operon a meno di 1000 bp dal CRISPR
+Cas_1000-10000 : numero di cas operon tra 1000 e 10000 bp dal CRISPR
+Cas_>100000 : numero di cas operon a piu di 10000 bp dal CRISPR
+Cas_overlayed : numero di cas operon che sovrappongono il CRISPR
+ToolCodename : nome del tool che ha trovato il CRISPR (minced_Default, minced_Relaxed, pilercr_Default, pilercr_Relaxed,CRISPRDetect3_nocpu)
+SP_lens : lunghezza dei vari spacers (separati da virgola)
+DR_lens : lunghezza dei vari repeats (separati da virgola)
+median_DR_len : lunghezza mediana dei repeats
+median_SP_len : lunghezza mediana degli spacers
+max_DR_len : lunghezza massima dei repeats
+min_DR_len : lunghezza minima dei repeats
+max_SP_len : lunghezza massima degli spacers
+min_SP_len : lunghezza minima degli spacers
+std_DR_len : deviazione standard della lunghezza dei repeats
+std_SP_len : deviazione standard della lunghezza degli spacers
+cv_DR_len : coefficente di variazione della lunghezza dei repeats (std/mean)
+cv_SP_len : coefficente di variazione della lunghezza degli spacers (std/mean)
+minmax_DR_ratio : rapporto tra la lunghezza minima e massima dei repeats
+Nearby_Cas : booleano che indica se ci sono cas operon vicini al CRISPR (<1000 bp)
+Closest_Cas : cas operon piu vicino al CRISPR (Cas_0-1000, Cas_1000-10000, Cas_>100000, Cas_overlayed)
+Unique_DR : numero di DR unici trovati
+nSP_match_VSC5 : numero di spacers del CRISPR trovati nel dataset virale VSC5
+nSP_match_GPD : numero di spacers del CRISPR trovati nel dataset virale GPD
+nSP_match_MGV : numero di spacers del CRISPR trovati nel dataset virale MGV
+
+
+voglio ora fare un grafico con seaborn che mi mostri per ogni tool quanti CRISPR hanno spacer che matchano con i virus e quanti no (una barra per ogni dataset virale con etichette legenda e numeri) e che mi faccia anche distinguere dai CRISPR che hanno cas vicini e quelli che non ce l'hanno (Nearby_Cas) sempre con legenda de etichette e numeri
