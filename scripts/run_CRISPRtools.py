@@ -848,7 +848,7 @@ if __name__ == '__main__':
 
             # Save the DataFrame in a TSV file
             crisprs_df.to_csv(parsed_file, sep='\t')
-            cas_df.to_csv(cas_output_file, sep='\t')
+            cas_df.to_csv(cas_output_file, sep='\t', index=False)
 
             end_time = datetime.now()
             logger.info(f'  Added Cas Distance in {datetime.strftime(datetime.min + (end_time - start_time), "%Hh:%Mm:%S.%f")[:-3]}s')
